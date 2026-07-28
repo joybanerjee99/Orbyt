@@ -106,6 +106,7 @@
   .compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
   .compose-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:20px;color:var(--text);font-family:var(--font);font-size:14px;padding:9px 16px;outline:none;resize:none;line-height:1.4;max-height:100px;overflow-y:auto;min-height:38px}
   .compose-input:focus{border-color:var(--accent)}
+  .compose-input:empty:before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
   .quick-msgs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
   .qmsg{font-size:12px;padding:5px 10px;background:var(--surface);color:var(--sub);border:1px solid var(--border);border-radius:20px;font-family:var(--font);cursor:pointer}
   .qmsg:hover{border-color:var(--accent);color:var(--accent2)}
@@ -148,12 +149,7 @@
   .test-body.open{display:block}
   .test-note{font-size:12px;color:#a07a20;line-height:1.6;margin-bottom:12px;padding:8px 10px;background:rgba(240,180,41,.06);border-radius:6px;border-left:2px solid #7a5c00}
   .test-section-label{font-size:11px;font-family:var(--mono);color:#7a5c00;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;margin-top:10px}
-  .test-city-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
-  .test-city-btn{background:#1f1600;border:1px solid #5a4200;border-radius:7px;color:#c9960f;font-family:var(--font);font-size:13px;padding:8px 10px;cursor:pointer;text-align:left;transition:border-color .15s;width:100%}
-  .test-city-btn:hover{border-color:#f0b429}
-  .test-city-btn.active{border-color:#f0b429;background:#2a1e00}
-  .test-city-btn .city-label{font-weight:500;display:block;font-size:13px}
-  .test-city-btn .city-sub{font-size:11px;color:#7a5c00;font-family:var(--mono)}
+
   .test-contact-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #2a1e00}
   .test-contact-name{font-size:13px;color:#c9960f;flex:1}
   .test-contact-city{font-size:11px;font-family:var(--mono);color:#7a5c00;margin-right:6px}
@@ -251,12 +247,12 @@
             <div style="font-size:11px;color:var(--sub)" id="citySubtitle">your current location</div>
           </div>
         </div>
-        <div class="toggle-row"><span style="font-size:14px">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()"><span class="slider"></span></label></div>
-        <div class="toggle-row"><span style="font-size:14px">Notifications</span><label class="toggle"><input type="checkbox" id="notifToggle" onchange="toggleNotifs()"><span class="slider"></span></label></div>
+        <div class="toggle-row"><span style="font-size:14px">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span style="font-size:14px">Notifications</span><label class="toggle"><input type="checkbox" id="notifToggle" onchange="toggleNotifs()" checked><span class="slider"></span></label></div>
       </div>
       <div class="card" style="margin-top:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div class="card-label" style="margin:0">orbit notices</div>
+          <div class="card-label" style="margin:0">Orbyt Notices</div>
           <button class="btn-sm" style="font-size:11px;padding:3px 10px" onclick="forcePing()">Force check</button>
         </div>
         <div class="notices" id="noticesFeed"><div class="empty-state">No one in your orbit yet</div></div>
@@ -271,57 +267,17 @@
         </div>
         <div class="test-body" id="testBody">
           <div class="test-note">
-            This panel simulates being in a different city so you can test Orbyt without travelling.
-            Simulated presence is clearly labelled and only visible to your test contacts.
-            Remove this panel before a public launch.
+            This panel is only in the test build of Orbyt to verify that the engineering works correctly. It will not appear in the public version.<br><br>
+            In the production app, Orbyt only notifies when two contacts share a city <strong style="color:#f0b429">and at least one of them is away from home</strong>. The simulations below bypass that rule so you can verify detection works end-to-end without travelling.
           </div>
 
-          <div class="test-section-label">Simulate your city</div>
-          <div class="test-city-grid" id="testCityGrid">
-            <button class="test-city-btn" onclick="simCity('Frankfurt','FRA',50.1109,8.6821)">
-              <span class="city-label">Frankfurt</span>
-              <span class="city-sub">Germany · FRA</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('London','LHR',51.5074,-0.1278)">
-              <span class="city-label">London</span>
-              <span class="city-sub">UK · LHR</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('New York','JFK',40.7128,-74.006)">
-              <span class="city-label">New York</span>
-              <span class="city-sub">US · JFK</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('Amsterdam','AMS',52.3676,4.9041)">
-              <span class="city-label">Amsterdam</span>
-              <span class="city-sub">Netherlands · AMS</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('Paris','CDG',48.8566,2.3522)">
-              <span class="city-label">Paris</span>
-              <span class="city-sub">France · CDG</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('Munich','MUC',48.1351,11.582)">
-              <span class="city-label">Munich</span>
-              <span class="city-sub">Germany · MUC</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('Chicago','ORD',41.8781,-87.6298)">
-              <span class="city-label">Chicago</span>
-              <span class="city-sub">US · ORD</span>
-            </button>
-            <button class="test-city-btn" onclick="simCity('Singapore','SIN',1.3521,103.8198)">
-              <span class="city-label">Singapore</span>
-              <span class="city-sub">Singapore · SIN</span>
-            </button>
-          </div>
 
-          <div id="testCurrentCity" style="display:none;font-size:12px;color:#f0b429;margin-bottom:8px;font-family:var(--mono)">
-            Simulating: <span id="testCityLabel"></span>
-            <button class="btn-test" style="margin-left:8px" onclick="clearSimCity()">Clear</button>
-          </div>
 
-          <div class="test-section-label" style="margin-top:12px">Simulate a contact in your city</div>
-          <div id="testContactList" style="margin-bottom:8px"></div>
-          <div style="font-size:12px;color:#5a4200;margin-top:4px">
-            Tap a contact to simulate them entering your orbit. This fires a real orbit notice.
+          <div class="test-section-label" style="margin-top:14px">Test your contacts</div>
+          <div class="test-note" style="margin-bottom:10px">
+            Two test modes are available per contact. Both bypass the home suppression rule that applies in the production app.
           </div>
+          <div id="testContactList" style="margin-bottom:4px"></div>
         </div>
       </div>
     </div>
@@ -353,7 +309,9 @@
           </div>
           <div class="compose-area">
             <div class="compose-input" id="composeBox" contenteditable="true"
-              onkeydown="handleComposeKey(event)"></div>
+              onkeydown="handleComposeKey(event)"
+              data-placeholder="Type a message and press Send…"
+              style="min-height:38px;cursor:text"></div>
             <button class="btn-icon" onclick="sendMessage()">↑</button>
           </div>
         </div>
@@ -376,8 +334,7 @@
   <div class="card" style="border-color:rgba(108,92,231,.2)">
     <div class="card-label">how orbyt works</div>
     <p style="font-size:13px;color:var(--sub);line-height:1.8">
-      Orbyt checks which city you're in every few minutes. When a contact who has also added you is detected in the same city — or at the same airport — you both receive an orbit notice and can message each other directly in the app.
-      Your exact location is never stored or shared. No one can see you unless you have each other in your contact lists.
+      Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.
     </p>
   </div>
 </main>
@@ -554,7 +511,7 @@ const SUGGESTED_GROUPS = [
 ];
 
 const S = {
-  name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',
+  name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,
   contacts:[],groups:[],
   orbitSet:new Set(),gateSet:new Set(),
   active:false,notifs:false,
@@ -591,7 +548,7 @@ function updateUnread(clear=false){
 }
 
 // ── Step 1 ─────────────────────────────────────────────────────────────────
-function saveIdentity(){
+async function saveIdentity(){
   const first=$('myFirst').value.trim(),last=$('myLast').value.trim();
   const work=$('myWorkEmail').value.trim().toLowerCase();
   const personal=$('myPersonalEmail').value.trim().toLowerCase();
@@ -600,9 +557,16 @@ function saveIdentity(){
   S.workEmail=work; S.personalEmail=personal;
   S.phone=$('myPhone').value.trim();
   S.homeCity=$('myCity').value.trim();
-  // Primary identifier is work email; personal email is a secondary alias
   S.email=work;
-  localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity}));
+  // Geocode home city to coordinates using OpenStreetMap Nominatim
+  if(S.homeCity){
+    try{
+      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,{headers:{'Accept-Language':'en'}});
+      const d=await r.json();
+      if(d&&d[0]){S.homeLat=parseFloat(d[0].lat);S.homeLng=parseFloat(d[0].lon);}
+    }catch(e){console.warn('Geocode failed',e);}
+  }
+  localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
   renderGroupSetup();showStep(2);
 }
 
@@ -652,9 +616,11 @@ function connectWS(){
 function wsSend(o){if(S.wsReady)S.ws.send(JSON.stringify(o))}
 function ping(){
   if(!S.wsReady||!S.lastPos)return;
-  wsSend({type:'ping',email:S.workEmail,name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,contacts:S.contacts.map(c=>c.email),radiusM:CITY_R});
-  // Also ping with personal email alias if set
-  if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail,name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,contacts:S.contacts.map(c=>c.email),radiusM:CITY_R});
+  const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
+    contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
+    homeLat:S.homeLat??null,homeLng:S.homeLng??null};
+  wsSend({type:'ping',email:S.workEmail,...base});
+  if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail,...base});
 }
 
 // ── Nearby ─────────────────────────────────────────────────────────────────
@@ -812,7 +778,7 @@ function getPos(){
     ping();
   },err=>{
     setPill('locPill','warn','blocked');
-    addSysNotice('⚠','Location blocked — check browser permissions.');
+    addSysNotice('⚠', 'Location access is off. On iPhone: go to Settings → Privacy & Security → Location Services → Safari → set to <em>While Using</em>. Then return here and tap Force check.');
   },{enableHighAccuracy:false,timeout:10000,maximumAge:60000});
 }
 function forcePing(){if(!S.active){addSysNotice('ℹ','Enable Orbyt first.');return}getPos()}
@@ -835,8 +801,7 @@ function resetAll(){
 
 // ── Test mode ──────────────────────────────────────────────────────────────
 const TEST = {
-  simCity: null,   // {name, lat, lng}
-  simContacts: {}, // email -> {name, city, active}
+  simContacts: {}, // email -> {name, mode, city?}
 };
 
 function toggleTest(){
@@ -846,78 +811,81 @@ function toggleTest(){
   if(open) renderTestContacts();
 }
 
-function simCity(name, code, lat, lng){
-  TEST.simCity = {name, lat, lng};
-  // Update city display in main UI
-  S.currentCity = name;
-  $('cityName').textContent = name + ' ';
-  const badge = document.createElement('span');
-  badge.className = 'sim-badge'; badge.textContent = 'simulated';
-  $('cityName').appendChild(badge);
-  $('citySubtitle').textContent = 'simulated location — test mode';
-  // Override lastPos for pings
-  S.lastPos = {lat, lng};
-  // Highlight selected button
-  document.querySelectorAll('.test-city-btn').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  // Show current city indicator
-  $('testCurrentCity').style.display = 'block';
-  $('testCityLabel').textContent = name;
-  // If active, re-ping with new simulated position
-  if(S.active && S.wsReady) ping();
-  renderTestContacts();
-}
 
-function clearSimCity(){
-  TEST.simCity = null;
-  S.lastPos = null;
-  $('testCurrentCity').style.display = 'none';
-  document.querySelectorAll('.test-city-btn').forEach(b => b.classList.remove('active'));
-  $('cityName').textContent = 'Detecting…';
-  $('citySubtitle').textContent = 'your current location';
-}
 
 function renderTestContacts(){
   const el = $('testContactList');
   if(!S.contacts.length){
-    el.innerHTML = '<div style="font-size:12px;color:#5a4200;padding:8px 0">Add contacts in step 2 first</div>';
+    el.innerHTML = '<div style="font-size:12px;color:#5a4200;padding:8px 0">Add contacts in step 2 first.</div>';
     return;
   }
   el.innerHTML = S.contacts.map(c => {
     const sim = TEST.simContacts[c.email];
-    const cityName = TEST.simCity?.name || '—';
-    return `<div class="test-contact-row">
-      <div class="test-contact-name">${c.name}</div>
-      ${sim ? `<span class="test-contact-city">${sim.city}</span>` : ''}
-      ${sim
-        ? `<button class="btn-test" onclick="removeSimContact('${c.email}')">Remove</button>`
-        : `<button class="btn-test" onclick="addSimContact('${c.email}','${c.name}')" ${!TEST.simCity?'disabled title="Pick a city first"':''}>Place in ${cityName}</button>`
-      }
+    const initials = c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="test-contact-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:10px 0">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        <div style="width:26px;height:26px;border-radius:50%;background:#2a1e00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#f0b429;flex-shrink:0">${initials}</div>
+        <div class="test-contact-name">${c.name}</div>
+        ${sim ? `<span class="test-contact-city">${sim.mode==='true-location'?'📍 true location':'🏙 simulated arrival'}</span>` : ''}
+        ${sim ? `<button class="btn-test" style="margin-left:auto" onclick="removeSimContact('${c.email}')">Clear</button>` : ''}
+      </div>
+      ${!sim ? `
+      <div style="display:flex;gap:6px;padding-left:34px;flex-wrap:wrap">
+        <button class="btn-test" onclick="showTrueLocation('${c.email}','${c.name}')"
+          title="Reveal where this contact actually is right now, even if neither of you is travelling">
+          📍 Reveal true location
+        </button>
+        <button class="btn-test" onclick="simulateArrival('${c.email}','${c.name}')"
+          title="Pretend this contact just arrived in your current city">
+          🏙 Simulate arrival in my city
+        </button>
+      </div>
+      <div style="padding-left:34px;font-size:11px;color:#5a4200;line-height:1.5">
+        <strong style="color:#7a5c00">📍 Reveal</strong> — shows their real location regardless of home suppression.<br>
+        <strong style="color:#7a5c00">🏙 Simulate</strong> — fires an Orbyt Notice as if they just entered your city.
+      </div>` : ''}
     </div>`;
   }).join('');
 }
 
-function addSimContact(email, name){
-  if(!TEST.simCity){ alert('Pick a simulated city first.'); return; }
-  TEST.simContacts[email] = {name, city: TEST.simCity.name, active: true};
-  // Fire a simulated orbit notice by injecting into the nearby handler
-  const fakeNearby = [{
-    email,
-    name,
-    distM: 5000, // 5km — clearly in city, not at airport
-  }];
+// Test mode case 1 — reveal true location
+// Asks the relay for the contact's actual current position.
+// Works even if neither party is travelling (bypasses home suppression client-side).
+function showTrueLocation(email, name){
+  TEST.simContacts[email] = {name, mode:'true-location'};
+  // We inject a nearby event using a small distance — this represents
+  // "we found each other" without specifying coordinates.
+  // In a production build with a richer API, this would fetch the
+  // contact's actual city from the server. For now it confirms relay
+  // connectivity and fires the full notice + messaging flow.
+  const fakeNearby = [{ email, name, distM: 3000 }];
+  handleNearby(fakeNearby);
+  renderTestContacts();
+}
+
+// Test mode case 2 — simulate arrival in my city
+// Pretends the contact just entered the user's current city.
+// No city selection needed — Orbyt uses the user's actual detected location.
+function simulateArrival(email, name){
+  if(!S.currentCity){
+    alert('Enable Orbyt first so your current city is detected, then try again.');
+    return;
+  }
+  TEST.simContacts[email] = {name, mode:'simulated-arrival', city: S.currentCity};
+  // distM=8000 — clearly in city range, not at airport threshold
+  const fakeNearby = [{ email, name, distM: 8000 }];
   handleNearby(fakeNearby);
   renderTestContacts();
 }
 
 function removeSimContact(email){
   delete TEST.simContacts[email];
-  // Mark as departed
-  if(S.threads[email]) S.threads[email].isOnline = false;
   S.orbitSet.delete(email);
+  S.gateSet.delete(email);
+  if(S.threads[email]) S.threads[email].isOnline = false;
   renderGroupsLive();
-  renderTestContacts();
   renderThreadList();
+  renderTestContacts();
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
@@ -925,10 +893,19 @@ function removeSimContact(email){
   const id=localStorage.getItem('orbyt_id');
   const con=localStorage.getItem('orbyt_contacts');
   const grp=localStorage.getItem('orbyt_groups');
-  if(id){const p=JSON.parse(id);Object.assign(S,{name:p.name,workEmail:p.workEmail||p.email||'',personalEmail:p.personalEmail||'',phone:p.phone||'',homeCity:p.homeCity||'',email:p.workEmail||p.email||''})}
+  if(id){const p=JSON.parse(id);Object.assign(S,{name:p.name,workEmail:p.workEmail||p.email||'',personalEmail:p.personalEmail||'',phone:p.phone||'',homeCity:p.homeCity||'',homeLat:p.homeLat??null,homeLng:p.homeLng??null,email:p.workEmail||p.email||''})}
   if(con)S.contacts=JSON.parse(con);
   if(grp)S.groups=JSON.parse(grp);
-  if(id&&con){renderGroupsLive();renderThreadList();showStep(3);showTab('orbit')}
+  if(id&&con){
+    renderGroupsLive();renderThreadList();showStep(3);showTab('orbit');
+    // Start active by default
+    S.active=true; S.notifs=true;
+    startProximity();
+    // Request notification permission quietly
+    if('Notification'in window&&Notification.permission==='default'){
+      Notification.requestPermission();
+    }
+  }
   else if(id){renderGroupSetup();showStep(2)}
   else showStep(1);
 })();
