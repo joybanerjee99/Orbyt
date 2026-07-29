@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#6c5ce7">
 <title>Orbyt — know who's in your orbit</title>
-
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,150 +12,160 @@
 <meta name="apple-mobile-web-app-title" content="Orbyt">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-  :root {
-    --bg:#0c0c12; --surface:#15151f; --border:#252535; --muted:#3a3a52;
-    --text:#e8e8f2; --sub:#7878a0; --accent:#6c5ce7; --accent2:#a29bfe;
-    --green:#4dfa9a; --yellow:#fad64d; --radius:12px;
-    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 16px 80px}
-  header{width:100%;max-width:480px;padding:40px 0 4px;display:flex;align-items:baseline;gap:10px}
-  .wordmark{font-size:24px;font-weight:600;letter-spacing:-.5px}
-  .wordmark em{color:var(--accent);font-style:normal}
-  .tagline{font-size:12px;color:var(--sub);font-family:var(--mono);letter-spacing:.05em}
-  main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;margin-top:20px}
-  .steps{display:flex;gap:5px;margin-bottom:20px}
-  .step{flex:1;height:2px;border-radius:2px;background:var(--border);transition:background .3s}
-  .step.done{background:var(--accent)} .step.active{background:var(--accent2)}
-  .nav{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:4px}
-  .nav-tab{flex:1;padding:8px 6px;border-radius:7px;border:none;background:transparent;color:var(--sub);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
-  .nav-tab.active{background:var(--accent);color:#fff}
-  .nav-tab .ub{background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 5px;border-radius:20px;min-width:16px;text-align:center}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px}
-  .card-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
-  input[type=text],input[type=email],input[type=tel]{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s}
-  input:focus{border-color:var(--accent)}
-  textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;resize:vertical;transition:border-color .2s;line-height:1.5}
-  textarea:focus{border-color:var(--accent)}
-  label{display:block;font-size:12px;color:var(--sub);margin-bottom:5px}
-  .field{margin-bottom:14px} .field-row{display:flex;gap:10px} .field-row .field{flex:1}
-  .field-hint{font-size:11px;color:var(--muted);margin-top:4px}
-  button{cursor:pointer;font-family:var(--font);font-weight:500;border:none;border-radius:8px;transition:opacity .15s,transform .1s}
-  button:active{transform:scale(.97)}
-  .btn-primary{background:var(--accent);color:#fff;width:100%;padding:12px;font-size:15px}
-  .btn-primary:hover{opacity:.88}
-  .btn-sm{background:var(--border);color:var(--text);font-size:13px;padding:7px 14px}
-  .btn-sm:hover{background:var(--muted)}
-  .btn-ghost{background:transparent;color:var(--sub);font-size:13px;padding:7px 14px;border:1px solid var(--border)}
-  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-  .btn-ping{background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.25);font-size:12px;padding:4px 12px;border-radius:20px}
-  .btn-ping:hover{background:rgba(108,92,231,.22)}
-  .btn-icon{background:var(--accent);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;padding:0;line-height:1}
-  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--sub)}
-  .pill.on{border-color:var(--green);color:var(--green)}
-  .pill.off{border-color:var(--muted);color:var(--muted)}
-  .pill.warn{border-color:var(--yellow);color:var(--yellow)}
-  .pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
-  .pill.on .dot{animation:blink 1.8s infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-  .badge{font-size:11px;font-family:var(--mono);border-radius:20px;padding:2px 8px;flex-shrink:0}
-  .badge.orbit{color:var(--accent2);background:rgba(162,155,254,.08);border:1px solid rgba(162,155,254,.2)}
-  .badge.gate{color:var(--yellow);background:rgba(250,214,77,.08);border:1px solid rgba(250,214,77,.2)}
-  .notices{display:flex;flex-direction:column;gap:8px}
-  .notice{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);animation:sIn .3s ease}
-  .notice.gate{border-color:rgba(250,214,77,.25);background:rgba(250,214,77,.03)}
-  @keyframes sIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-  .notice-icon{font-size:20px;flex-shrink:0;line-height:1.4}
-  .notice-body{flex:1}
-  .notice-primary{font-size:14px;font-weight:500;margin-bottom:2px}
-  .notice-secondary{font-size:12px;color:var(--sub)}
-  .notice-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-  .thread-list{display:flex;flex-direction:column;gap:6px}
-  .thread-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s}
-  .thread-item:hover{border-color:var(--accent)}
-  .thread-item.unread{border-color:rgba(108,92,231,.35);background:rgba(108,92,231,.04)}
-  .thread-avatar{width:38px;height:38px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
-  .thread-info{flex:1;min-width:0}
-  .thread-name{font-size:14px;font-weight:500}
-  .thread-preview{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-  .thread-context{font-size:11px;font-family:var(--mono);color:var(--accent2);margin-top:2px}
-  .thread-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-  .thread-time{font-size:11px;color:var(--sub);font-family:var(--mono)}
-  .unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
-  .conv-header{display:flex;align-items:center;gap:10px;padding:0 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
-  .conv-back{background:transparent;border:none;color:var(--sub);font-size:22px;padding:0;cursor:pointer;line-height:1}
-  .conv-back:hover{color:var(--text)}
-  .conv-meta{flex:1}
-  .conv-name{font-size:15px;font-weight:500}
-  .conv-context{font-size:12px;color:var(--sub);font-family:var(--mono)}
-  .conv-status{font-size:11px;font-family:var(--mono)}
-  .conv-status.online{color:var(--green)} .conv-status.offline{color:var(--sub)}
-  .messages{display:flex;flex-direction:column;gap:10px;min-height:240px;max-height:360px;overflow-y:auto;padding-bottom:4px}
-  .msg{display:flex;flex-direction:column;max-width:78%}
-  .msg.sent{align-self:flex-end;align-items:flex-end}
-  .msg.recv{align-self:flex-start;align-items:flex-start}
-  .msg-bubble{padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.5;animation:mIn .2s ease}
-  @keyframes mIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-  .msg.sent .msg-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
-  .msg.recv .msg-bubble{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
-  .msg-time{font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:3px;padding:0 4px}
-  .compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-  .compose-input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:20px;color:var(--text);font-family:var(--font);font-size:14px;padding:9px 16px;outline:none;resize:none;line-height:1.4;max-height:100px;overflow-y:auto;min-height:38px}
-  .compose-input:focus{border-color:var(--accent)}
-  .compose-input:empty:before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
-  .quick-msgs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-  .qmsg{font-size:12px;padding:5px 10px;background:var(--surface);color:var(--sub);border:1px solid var(--border);border-radius:20px;font-family:var(--font);cursor:pointer}
-  .qmsg:hover{border-color:var(--accent);color:var(--accent2)}
-  .group-block{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px}
-  .group-header{display:flex;align-items:center;gap:10px;padding:10px 14px}
-  .group-name-text{font-size:14px;font-weight:500;flex:1}
-  .group-count{font-size:12px;color:var(--sub);font-family:var(--mono)}
-  .group-contacts{padding:0 14px 10px;display:flex;flex-direction:column;gap:5px}
-  .contact-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--border)}
-  .avatar{width:30px;height:30px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--accent2);flex-shrink:0}
-  .contact-info{flex:1;min-width:0}
-  .contact-name-t{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .contact-meta-t{font-size:11px;color:var(--sub);font-family:var(--mono)}
-  .mode-chip{font-size:11px;font-family:var(--mono);padding:2px 8px;border-radius:20px;border:1px solid var(--border);color:var(--sub);cursor:pointer;transition:all .15s}
-  .mode-chip.active{border-color:var(--accent);color:var(--accent2);background:rgba(108,92,231,.1)}
-  .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-  .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
-  .toggle input{opacity:0;width:0;height:0}
-  .slider{position:absolute;inset:0;background:var(--border);border-radius:11px;cursor:pointer;transition:background .2s}
-  .slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--sub);border-radius:50%;transition:transform .2s,background .2s}
-  .toggle input:checked+.slider{background:rgba(108,92,231,.3)}
-  .toggle input:checked+.slider::before{transform:translateX(18px);background:var(--accent)}
-  .city-status{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px}
-  .city-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite;flex-shrink:0}
-  hr{border:none;border-top:1px solid var(--border);margin:4px 0}
-  ::-webkit-scrollbar{width:3px} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  .hidden{display:none!important}
-  .note{font-size:12px;color:var(--sub);background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:8px;padding:10px 13px;line-height:1.6;margin-top:10px}
-  .empty-state{text-align:center;color:var(--muted);font-size:13px;padding:24px 0}
-  #statusBar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-  .email-section{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:10px}
-  .email-section-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
-  .test-banner{background:#1a1200;border:1px solid #7a5c00;border-radius:var(--radius);padding:0;overflow:hidden}
-  .test-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none}
-  .test-dot{width:7px;height:7px;border-radius:50%;background:#f0b429;flex-shrink:0;animation:blink 2s infinite}
-  .test-title{font-size:12px;font-family:var(--mono);color:#f0b429;letter-spacing:.08em;text-transform:uppercase;flex:1}
-  .test-chevron{font-size:14px;color:#7a5c00;transition:transform .2s}
-  .test-chevron.open{transform:rotate(180deg)}
-  .test-body{padding:0 14px 14px;display:none}
-  .test-body.open{display:block}
-  .test-note{font-size:12px;color:#a07a20;line-height:1.6;margin-bottom:12px;padding:8px 10px;background:rgba(240,180,41,.06);border-radius:6px;border-left:2px solid #7a5c00}
-  .test-section-label{font-size:11px;font-family:var(--mono);color:#7a5c00;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;margin-top:10px}
-
-  .test-contact-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #2a1e00}
-  .test-contact-name{font-size:13px;color:#c9960f;flex:1}
-  .test-contact-city{font-size:11px;font-family:var(--mono);color:#7a5c00;margin-right:6px}
-  .btn-test{background:#2a1e00;color:#f0b429;border:1px solid #7a5c00;font-size:12px;padding:4px 10px;border-radius:20px;cursor:pointer;font-family:var(--font)}
-  .btn-test:hover{background:#3a2a00}
-  .btn-test-primary{background:#7a5c00;color:#ffd166;border:none;font-size:13px;padding:9px 14px;border-radius:8px;cursor:pointer;font-family:var(--font);font-weight:500;width:100%;margin-top:6px}
-  .btn-test-primary:hover{background:#a07a00}
-  .sim-badge{font-size:10px;font-family:var(--mono);color:#f0b429;background:#2a1e00;border:1px solid #5a4200;border-radius:20px;padding:1px 7px;margin-left:4px}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0c0c12;--surface:#15151f;--border:#252535;--muted:#3a3a52;
+  --text:#e8e8f2;--sub:#7878a0;--accent:#6c5ce7;--accent2:#a29bfe;
+  --green:#4dfa9a;--yellow:#fad64d;--radius:12px;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 16px 80px}
+header{width:100%;max-width:480px;padding:40px 0 4px;display:flex;align-items:baseline;gap:10px}
+.wordmark{font-size:24px;font-weight:600;letter-spacing:-.5px}
+.wordmark em{color:var(--accent);font-style:normal}
+.tagline{font-size:12px;color:var(--sub);font-family:var(--mono);letter-spacing:.05em}
+main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;margin-top:20px}
+/* Steps */
+.steps{display:flex;gap:5px;margin-bottom:20px}
+.step{flex:1;height:2px;border-radius:2px;background:var(--border);transition:background .3s}
+.step.done{background:var(--accent)}.step.active{background:var(--accent2)}
+/* Nav */
+.nav{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:4px}
+.nav-tab{flex:1;padding:8px 4px;border-radius:7px;border:none;background:transparent;color:var(--sub);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.nav-tab.active{background:var(--accent);color:#fff}
+.nav-tab .ub{background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 5px;border-radius:20px;min-width:16px;text-align:center}
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px}
+.card-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+/* Inputs */
+input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;appearance:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:none;line-height:1.5}
+label{display:block;font-size:12px;color:var(--sub);margin-bottom:5px}
+.field{margin-bottom:14px}.field-row{display:flex;gap:10px}.field-row .field{flex:1}
+.field-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+/* Buttons */
+button{cursor:pointer;font-family:var(--font);font-weight:500;border:none;border-radius:8px;transition:opacity .15s,transform .1s}
+button:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff;width:100%;padding:12px;font-size:15px}
+.btn-primary:hover{opacity:.88}
+.btn-sm{background:var(--border);color:var(--text);font-size:13px;padding:7px 14px}
+.btn-sm:hover{background:var(--muted)}
+.btn-ghost{background:transparent;color:var(--sub);font-size:13px;padding:7px 14px;border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:transparent;color:#ff6b6b;font-size:12px;padding:4px 8px;border:1px solid rgba(255,107,107,.3);border-radius:6px}
+.btn-danger:hover{background:rgba(255,107,107,.1)}
+.btn-ping{background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.25);font-size:12px;padding:4px 12px;border-radius:20px}
+.btn-ping:hover{background:rgba(108,92,231,.22)}
+.btn-icon{background:var(--accent);color:#fff;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;padding:0;line-height:1}
+/* Pills */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--sub)}
+.pill.on{border-color:var(--green);color:var(--green)}
+.pill.off{border-color:var(--muted);color:var(--muted)}
+.pill.warn{border-color:var(--yellow);color:var(--yellow)}
+.pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.on .dot{animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.badge{font-size:11px;font-family:var(--mono);border-radius:20px;padding:2px 8px;flex-shrink:0}
+.badge.orbit{color:var(--accent2);background:rgba(162,155,254,.08);border:1px solid rgba(162,155,254,.2)}
+.badge.gate{color:var(--yellow);background:rgba(250,214,77,.08);border:1px solid rgba(250,214,77,.2)}
+/* Notices */
+.notice{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);animation:sIn .3s ease;margin-bottom:8px}
+.notice.gate{border-color:rgba(250,214,77,.25);background:rgba(250,214,77,.03)}
+@keyframes sIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.notice-icon{font-size:20px;flex-shrink:0;line-height:1.4}
+.notice-body{flex:1}
+.notice-primary{font-size:14px;font-weight:500;margin-bottom:2px}
+.notice-secondary{font-size:12px;color:var(--sub)}
+.notice-actions{display:flex;gap:6px;margin-top:8px}
+/* Threads */
+.thread-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s;margin-bottom:6px}
+.thread-item:hover,.thread-item:active{border-color:var(--accent)}
+.thread-item.unread{border-color:rgba(108,92,231,.35);background:rgba(108,92,231,.04)}
+.t-avatar{width:38px;height:38px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
+.t-info{flex:1;min-width:0}
+.t-name{font-size:14px;font-weight:500}
+.t-preview{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.t-context{font-size:11px;font-family:var(--mono);color:var(--accent2);margin-top:2px}
+.t-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.t-time{font-size:11px;color:var(--sub);font-family:var(--mono)}
+.unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+/* Conversation */
+.conv-header{display:flex;align-items:center;gap:10px;padding:0 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.conv-back{background:transparent;border:none;color:var(--sub);font-size:24px;padding:0;cursor:pointer;line-height:1;width:32px}
+.conv-back:hover{color:var(--text)}
+.conv-meta{flex:1}
+.conv-name{font-size:15px;font-weight:500}
+.conv-context{font-size:12px;color:var(--sub);font-family:var(--mono)}
+.conv-online{font-size:11px;font-family:var(--mono)}
+.conv-online.on{color:var(--green)}.conv-online.off{color:var(--sub)}
+.messages{display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:340px;overflow-y:auto;padding-bottom:4px}
+.msg{display:flex;flex-direction:column;max-width:80%}
+.msg.sent{align-self:flex-end;align-items:flex-end}
+.msg.recv{align-self:flex-start;align-items:flex-start}
+.msg-bubble{padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
+.msg.sent .msg-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.msg.recv .msg-bubble{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:3px;padding:0 4px}
+.compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.compose-area textarea{flex:1;border-radius:20px;padding:9px 16px;font-size:14px;min-height:40px;max-height:120px;line-height:1.4;overflow-y:auto}
+.quick-msgs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.qmsg{font-size:12px;padding:5px 10px;background:var(--surface);color:var(--sub);border:1px solid var(--border);border-radius:20px;font-family:var(--font);cursor:pointer}
+.qmsg:hover{border-color:var(--accent);color:var(--accent2)}
+/* Contact cards — Contacts tab */
+.contact-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.contact-card-top{display:flex;align-items:center;gap:10px}
+.cc-avatar{width:36px;height:36px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
+.cc-info{flex:1;min-width:0}
+.cc-name{font-size:14px;font-weight:500}
+.cc-email{font-size:11px;color:var(--sub);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-group-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
+.cc-group-label{font-size:12px;color:var(--sub);flex:0 0 auto}
+.cc-group-select{flex:1;font-size:13px;padding:5px 10px;border-radius:6px}
+/* Group management */
+.group-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
+.group-item-name{flex:1;font-size:14px;font-weight:500}
+.group-item-count{font-size:12px;color:var(--sub);font-family:var(--mono)}
+/* Toggle */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--border);border-radius:11px;cursor:pointer;transition:background .2s}
+.slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--sub);border-radius:50%;transition:transform .2s,background .2s}
+.toggle input:checked+.slider{background:rgba(108,92,231,.3)}
+.toggle input:checked+.slider::before{transform:translateX(18px);background:var(--accent)}
+/* City status */
+.city-status{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px}
+.city-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite;flex-shrink:0}
+/* Email section in step 1 */
+.email-section{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px}
+.email-section-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+/* Import coming soon badge */
+.coming-soon{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--sub);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;margin-right:5px}
+/* Test mode */
+.test-banner{background:#1a1200;border:1px solid #7a5c00;border-radius:var(--radius);padding:0;overflow:hidden}
+.test-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none}
+.test-dot{width:7px;height:7px;border-radius:50%;background:#f0b429;flex-shrink:0;animation:blink 2s infinite}
+.test-title{font-size:12px;font-family:var(--mono);color:#f0b429;letter-spacing:.08em;text-transform:uppercase;flex:1}
+.test-chevron{font-size:14px;color:#7a5c00;transition:transform .2s}
+.test-chevron.open{transform:rotate(180deg)}
+.test-body{padding:0 14px 14px;display:none}
+.test-body.open{display:block}
+.test-note{font-size:12px;color:#a07a20;line-height:1.6;margin-bottom:12px;padding:8px 10px;background:rgba(240,180,41,.06);border-radius:6px;border-left:2px solid #7a5c00}
+.test-section-label{font-size:11px;font-family:var(--mono);color:#7a5c00;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;margin-top:12px}
+.test-contact-row{padding:10px 0;border-top:1px solid #2a1e00}
+.test-contact-name{font-size:13px;color:#c9960f;font-weight:500;margin-bottom:6px}
+.btn-test{background:#2a1e00;color:#f0b429;border:1px solid #7a5c00;font-size:12px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:var(--font)}
+.btn-test:hover{background:#3a2a00}
+.sim-badge{font-size:10px;font-family:var(--mono);color:#f0b429;background:#2a1e00;border:1px solid #5a4200;border-radius:20px;padding:1px 7px;margin-left:4px}
+hr{border:none;border-top:1px solid var(--border);margin:6px 0}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.hidden{display:none!important}
+.note{font-size:12px;color:var(--sub);background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:8px;padding:10px 13px;line-height:1.6;margin-top:10px}
+.empty-state{text-align:center;color:var(--muted);font-size:13px;padding:24px 0}
+#statusBar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.section-desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -172,68 +180,82 @@
     <div class="step" id="s3"></div>
   </div>
 
-  <!-- ── STEP 1 ── -->
+  <!-- ── STEP 1: Identity ── -->
   <div class="card" id="step1">
     <div class="card-label">01 — about you</div>
     <div class="field-row">
-      <div class="field"><label>First name</label><input type="text" id="myFirst" placeholder="Alex"></div>
-      <div class="field"><label>Last name</label><input type="text" id="myLast" placeholder="Morgan"></div>
+      <div class="field"><label>First name</label><input type="text" id="myFirst" placeholder="Joe"></div>
+      <div class="field"><label>Last name</label><input type="text" id="myLast" placeholder="Doe"></div>
     </div>
-
     <div class="email-section">
       <div class="email-section-label">Email addresses</div>
       <div class="field" style="margin-bottom:10px">
         <label>Work email <span style="color:var(--accent)">*</span></label>
-        <input type="email" id="myWorkEmail" placeholder="alex@company.com">
+        <input type="email" id="myWorkEmail" placeholder="joe.doe@company.com">
         <div class="field-hint">Used by colleagues and professional contacts to find you</div>
       </div>
       <div class="field" style="margin-bottom:0">
         <label>Personal email <span style="color:var(--sub);font-size:11px">optional</span></label>
-        <input type="email" id="myPersonalEmail" placeholder="alex@gmail.com">
+        <input type="email" id="myPersonalEmail" placeholder="joe.doe@gmail.com">
         <div class="field-hint">Used by friends and family who don't have your work email</div>
       </div>
     </div>
-
     <div class="field">
       <label>Phone <span style="color:var(--sub);font-size:11px">optional — shown to mutual contacts</span></label>
       <input type="tel" id="myPhone" placeholder="+1 555 000 0000">
     </div>
     <div class="field">
       <label>Home city or town</label>
-      <input type="text" id="myCity" placeholder="e.g. Kelsterbach, Frankfurt, London…">
-      <div class="field-hint">Any city or town — Orbyt uses this to know when you're away</div>
+      <input type="text" id="myCity" placeholder="e.g. Torrance, Frankfurt, London">
+      <div class="field-hint">Any city or town — Orbyt uses this to know when you're away from home</div>
     </div>
     <button class="btn-primary" onclick="saveIdentity()">Continue →</button>
     <div class="note">Orbyt detects which city you're in automatically. No need to announce travel plans or check in on arrival.</div>
   </div>
 
-  <!-- ── STEP 2 ── -->
+  <!-- ── STEP 2: Contacts & Groups ── -->
   <div class="card hidden" id="step2">
-    <div class="card-label">02 — your contacts & groups</div>
-    <p style="font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6">Add contacts by email — work or personal. Groups let you control who can detect you and when. Rename any group to fit your life.</p>
+    <div class="card-label">02 — contacts & groups</div>
+    <p class="section-desc">Add contacts by email — work or personal. Then assign each one to a group. Groups let you control who can detect you.</p>
+
     <div class="field">
-      <label>Contact emails (one per line, work or personal)</label>
+      <label>Contact emails (one per line)</label>
       <textarea id="contactsRaw" rows="5" placeholder="colleague@mckinsey.com&#10;client@company.com&#10;friend@gmail.com&#10;sister@hotmail.com"></textarea>
+      <div class="field-hint" style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span class="coming-soon">📎 LinkedIn import — coming soon</span>
+        <span class="coming-soon">✉️ Email import — coming soon</span>
+      </div>
     </div>
-    <div style="margin-bottom:14px">
-      <label style="margin-bottom:8px">Groups <span style="color:var(--sub);font-size:11px">— tap a name to rename, toggle 🏙 for city alerts and ✈ for airport alerts</span></label>
+
+    <div class="field">
+      <label>Your groups <span style="color:var(--sub);font-size:11px">— tap a name to rename, toggle to enable/disable</span></label>
       <div id="groupSetupList" style="display:flex;flex-direction:column;gap:6px"></div>
       <button class="btn-ghost" style="margin-top:8px;width:100%;font-size:13px" onclick="addGroup()">+ add group</button>
     </div>
-    <button class="btn-primary" onclick="saveContacts()">Set up Orbyt →</button>
+
+    <div class="note" style="margin-bottom:14px">After adding emails, you'll assign each contact to a group on the next screen.</div>
+    <button class="btn-primary" onclick="saveContacts()">Continue →</button>
   </div>
 
-  <!-- ── STEP 3 ── -->
+  <!-- ── STEP 2b: Assign contacts to groups ── -->
+  <div class="card hidden" id="step2b">
+    <div class="card-label">03 — assign contacts to groups</div>
+    <p class="section-desc">Assign each contact to a group. This controls when they can detect you and vice versa.</p>
+    <div id="assignList"></div>
+    <button class="btn-primary" style="margin-top:8px" onclick="saveAssignments()">Set up Orbyt →</button>
+  </div>
+
+  <!-- ── STEP 3: App ── -->
   <div class="hidden" id="step3">
     <div class="nav">
-      <button class="nav-tab active" id="tab-orbit" onclick="showTab('orbit')">🏙 Orbit</button>
+      <button class="nav-tab active" id="tab-orbit" onclick="showTab('orbit')">🛸 Orbyt</button>
       <button class="nav-tab" id="tab-messages" onclick="showTab('messages')">
         💬 Messages <span class="ub hidden" id="unreadCount">0</span>
       </button>
       <button class="nav-tab" id="tab-contacts" onclick="showTab('contacts')">👥 Contacts</button>
     </div>
 
-    <!-- Orbit pane -->
+    <!-- ── Orbyt tab ── -->
     <div id="pane-orbit">
       <div class="card">
         <div id="statusBar">
@@ -250,16 +272,17 @@
         <div class="toggle-row"><span style="font-size:14px">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
         <div class="toggle-row"><span style="font-size:14px">Notifications</span><label class="toggle"><input type="checkbox" id="notifToggle" onchange="toggleNotifs()" checked><span class="slider"></span></label></div>
       </div>
+
       <div class="card" style="margin-top:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <div class="card-label" style="margin:0">Orbyt Notices</div>
           <button class="btn-sm" style="font-size:11px;padding:3px 10px" onclick="forcePing()">Force check</button>
         </div>
-        <div class="notices" id="noticesFeed"><div class="empty-state">No one in your orbit yet</div></div>
+        <div id="noticesFeed"><div class="empty-state">No one in your orbit yet</div></div>
       </div>
 
-      <!-- Test mode panel -->
-      <div class="test-banner" id="testBanner" style="margin-top:10px">
+      <!-- Test mode -->
+      <div class="test-banner" style="margin-top:10px">
         <div class="test-header" onclick="toggleTest()">
           <div class="test-dot"></div>
           <div class="test-title">Test mode — beta only</div>
@@ -268,28 +291,46 @@
         <div class="test-body" id="testBody">
           <div class="test-note">
             This panel is only in the test build of Orbyt to verify that the engineering works correctly. It will not appear in the public version.<br><br>
-            In the production app, Orbyt only notifies when two contacts share a city <strong style="color:#f0b429">and at least one of them is away from home</strong>. The simulations below bypass that rule so you can verify detection works end-to-end without travelling.
+            In the production app, Orbyt only notifies when two contacts share a city <strong style="color:#f0b429">and at least one of them is away from home</strong>. The simulations below bypass that rule.
           </div>
-
-
-
-          <div class="test-section-label" style="margin-top:14px">Test your contacts</div>
-          <div class="test-note" style="margin-bottom:10px">
-            Two test modes are available per contact. Both bypass the home suppression rule that applies in the production app.
-          </div>
-          <div id="testContactList" style="margin-bottom:4px"></div>
+          <div class="test-section-label">Test your contacts</div>
+          <div id="testContactList"></div>
         </div>
       </div>
     </div>
 
-    <!-- Messages pane -->
+    <!-- ── Messages tab ── -->
     <div id="pane-messages" class="hidden">
       <div id="threadListView">
         <div class="card">
-          <div class="card-label">messages</div>
-          <div class="thread-list" id="threadList"><div class="empty-state">No messages yet — say hello to someone in your orbit</div></div>
+          <div class="card-label">Messages</div>
+          <p class="section-desc">Message any contact directly — no need to switch to another app. When someone enters your orbit, tap their notice to start a conversation here.</p>
+          <div id="threadList"><div class="empty-state">No messages yet</div></div>
+        </div>
+        <!-- New message button -->
+        <div class="card" style="margin-top:10px">
+          <div class="card-label">New message</div>
+          <div class="field">
+            <label>Send to</label>
+            <select id="newMsgTarget">
+              <option value="">— choose a contact —</option>
+            </select>
+          </div>
+          <div class="quick-msgs">
+            <button class="qmsg" onclick="setNewMsg('Dinner tonight?')">Dinner tonight?</button>
+            <button class="qmsg" onclick="setNewMsg('Coffee this week?')">Coffee?</button>
+            <button class="qmsg" onclick="setNewMsg('Same city — want to catch up?')">Catch up?</button>
+            <button class="qmsg" onclick="setNewMsg('At the airport — lounge?')">Lounge?</button>
+            <button class="qmsg" onclick="setNewMsg('Quick drink after work?')">Drinks?</button>
+          </div>
+          <div style="display:flex;gap:8px">
+            <textarea id="newMsgText" rows="2" placeholder="Write a message…" style="flex:1;border-radius:10px" onkeydown="handleNewMsgKey(event)"></textarea>
+            <button class="btn-icon" onclick="sendNewMessage()" style="align-self:flex-end">↑</button>
+          </div>
         </div>
       </div>
+
+      <!-- Conversation view -->
       <div id="convView" class="hidden">
         <div class="card">
           <div class="conv-header">
@@ -298,44 +339,60 @@
               <div class="conv-name" id="convName"></div>
               <div class="conv-context" id="convContext"></div>
             </div>
-            <div class="conv-status" id="convStatus"></div>
+            <div class="conv-online" id="convStatus"></div>
           </div>
           <div class="messages" id="messageList"></div>
           <div class="quick-msgs" id="quickMsgs">
-            <button class="qmsg" onclick="composeMsg('Dinner tonight?')">Dinner tonight?</button>
-            <button class="qmsg" onclick="composeMsg('Coffee this week?')">Coffee?</button>
-            <button class="qmsg" onclick="composeMsg('Same city — want to catch up?')">Catch up?</button>
-            <button class="qmsg" onclick="composeMsg('At the airport — lounge?')">Lounge?</button>
+            <button class="qmsg" onclick="fillReply('Dinner tonight?')">Dinner?</button>
+            <button class="qmsg" onclick="fillReply('Coffee this week?')">Coffee?</button>
+            <button class="qmsg" onclick="fillReply('Same city — want to catch up?')">Catch up?</button>
+            <button class="qmsg" onclick="fillReply('At the airport — lounge?')">Lounge?</button>
           </div>
           <div class="compose-area">
-            <div class="compose-input" id="composeBox" contenteditable="true"
-              onkeydown="handleComposeKey(event)"
-              data-placeholder="Type a message and press Send…"
-              style="min-height:38px;cursor:text"></div>
-            <button class="btn-icon" onclick="sendMessage()">↑</button>
+            <textarea id="replyBox" rows="1" placeholder="Reply…" onkeydown="handleReplyKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="btn-icon" onclick="sendReply()">↑</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Contacts pane -->
+    <!-- ── Contacts tab ── -->
     <div id="pane-contacts" class="hidden">
       <div class="card">
-        <div class="card-label">your groups</div>
-        <div id="groupsLive"></div>
+        <div class="card-label">Your contacts</div>
+        <p class="section-desc">Add or remove contacts and assign them to groups. Import from LinkedIn or email is coming soon.</p>
+
+        <!-- Add contact inline -->
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <input type="email" id="addContactEmail" placeholder="email@example.com" style="flex:1;font-size:13px;padding:8px 12px">
+          <button class="btn-sm" onclick="addContact()" style="flex-shrink:0">Add</button>
+        </div>
+        <div style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="coming-soon">📎 LinkedIn import — coming soon</span>
+          <span class="coming-soon">✉️ Email import — coming soon</span>
+        </div>
+
+        <div id="contactsManageList"></div>
       </div>
+
+      <!-- Groups management -->
+      <div class="card" style="margin-top:10px">
+        <div class="card-label">Groups</div>
+        <p class="section-desc">Groups control who can detect you. Toggle a group off to go invisible to that group.</p>
+        <div id="groupsManageList"></div>
+        <button class="btn-ghost" style="width:100%;margin-top:8px;font-size:13px" onclick="addGroupLive()">+ add group</button>
+      </div>
+
       <div style="margin-top:10px">
-        <button class="btn-ghost" style="width:100%;font-size:13px" onclick="resetAll()">Reset Orbyt</button>
+        <button class="btn-ghost" style="width:100%;font-size:13px;color:#ff6b6b;border-color:rgba(255,107,107,.3)" onclick="resetAll()">Reset Orbyt</button>
       </div>
     </div>
   </div>
 
-  <!-- How it works — clean prose, no pills -->
-  <div class="card" style="border-color:rgba(108,92,231,.2)">
-    <div class="card-label">how orbyt works</div>
-    <p style="font-size:13px;color:var(--sub);line-height:1.8">
-      Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.
-    </p>
+  <!-- How Orbyt works — shown on setup screens only -->
+  <div class="card" id="howCard" style="border-color:rgba(108,92,231,.2)">
+    <div class="card-label">how Orbyt works</div>
+    <p style="font-size:13px;color:var(--sub);line-height:1.8">Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.</p>
   </div>
 </main>
 
@@ -343,194 +400,77 @@
 const RELAY_URL = 'wss://nearish-relay.onrender.com';
 const CITY_R = 20000, GATE_R = 700;
 
-// ── 131 airports: US (50) + Europe (81) ───────────────────────────────────
-// [code, lat, lng, display name]
 const AIRPORTS = [
-  // ── US major hubs ──
-  ['ATL',33.6407,-84.4277,'Atlanta Hartsfield-Jackson'],
-  ['LAX',33.9425,-118.4081,'Los Angeles International'],
-  ['ORD',41.9742,-87.9073,"Chicago O'Hare"],
-  ['DFW',32.8998,-97.0403,'Dallas/Fort Worth'],
-  ['DEN',39.8561,-104.6737,'Denver International'],
-  ['JFK',40.6413,-73.7781,'New York JFK'],
-  ['SFO',37.6213,-122.379,'San Francisco International'],
-  ['SEA',47.4502,-122.3088,'Seattle-Tacoma'],
-  ['LAS',36.084,-115.1537,'Las Vegas Harry Reid'],
-  ['MCO',28.4312,-81.3081,'Orlando International'],
-  ['EWR',40.6895,-74.1745,'Newark Liberty'],
-  ['MIA',25.7959,-80.287,'Miami International'],
-  ['PHX',33.4373,-112.0078,'Phoenix Sky Harbor'],
-  ['IAH',29.9902,-95.3368,'Houston George Bush'],
-  ['BOS',42.3656,-71.0096,'Boston Logan'],
-  ['MSP',44.8848,-93.2223,'Minneapolis-Saint Paul'],
-  ['FLL',26.0726,-80.1527,'Fort Lauderdale-Hollywood'],
-  ['DTW',42.2162,-83.3554,'Detroit Metropolitan'],
-  ['PHL',39.8721,-75.2411,'Philadelphia International'],
-  ['LGA',40.7769,-73.8740,'New York LaGuardia'],
-  ['CLT',35.214,-80.9431,'Charlotte Douglas'],
-  ['MDW',41.7868,-87.7522,'Chicago Midway'],
-  ['BWI',39.1754,-76.6682,'Baltimore/Washington'],
-  ['SLC',40.7884,-111.9778,'Salt Lake City'],
-  ['SAN',32.7338,-117.1933,'San Diego International'],
-  ['TPA',27.9755,-82.5332,'Tampa International'],
-  ['PDX',45.5898,-122.5951,'Portland International'],
-  ['HNL',21.3245,-157.9251,'Honolulu Daniel K. Inouye'],
-  ['DAL',32.8481,-96.8518,'Dallas Love Field'],
-  ['STL',38.7487,-90.37,'St. Louis Lambert'],
-  ['BNA',36.1245,-86.6782,'Nashville International'],
-  ['DCA',38.8512,-77.0402,'Washington Reagan'],
-  ['AUS',30.1975,-97.6664,'Austin-Bergstrom'],
-  ['MCI',39.2976,-94.7139,'Kansas City International'],
-  ['OAK',37.7213,-122.2208,'Oakland International'],
-  ['SJC',37.3626,-121.929,'San Jose International'],
-  ['RDU',35.8801,-78.7880,'Raleigh-Durham'],
-  ['SMF',38.6954,-121.5908,'Sacramento International'],
-  ['MSY',29.9934,-90.258,'New Orleans Armstrong'],
-  ['CLE',41.4117,-81.8498,'Cleveland Hopkins'],
-  ['PIT',40.4915,-80.2329,'Pittsburgh International'],
-  ['IND',39.7173,-86.2944,'Indianapolis International'],
-  ['CMH',39.998,-82.8919,'Columbus John Glenn'],
-  ['SAT',29.5337,-98.4698,'San Antonio International'],
-  ['RSW',26.5362,-81.7552,'Southwest Florida'],
-  ['BDL',41.9389,-72.6832,'Hartford Bradley'],
-  ['JAX',30.4941,-81.6879,'Jacksonville International'],
-  ['BUF',42.9405,-78.7322,'Buffalo Niagara'],
-  ['OMA',41.3032,-95.8941,'Omaha Eppley'],
-  ['RIC',37.5052,-77.3197,'Richmond International'],
-  // ── UK ──
-  ['LHR',51.4775,-0.4614,'London Heathrow'],
-  ['LGW',51.1481,-0.1903,'London Gatwick'],
-  ['LCY',51.5048,-0.0495,'London City'],
-  ['STN',51.885,0.235,'London Stansted'],
-  ['LTN',51.8747,-0.3683,'London Luton'],
-  ['MAN',53.3537,-2.2750,'Manchester'],
-  ['BHX',52.4539,-1.7480,'Birmingham'],
-  ['EDI',55.9500,-3.3725,'Edinburgh'],
-  ['GLA',55.8718,-4.4331,'Glasgow'],
-  ['BRS',51.3827,-2.7191,'Bristol'],
-  ['NCL',54.8425,-1.6911,'Newcastle'],
-  ['LBA',53.8659,-1.6606,'Leeds Bradford'],
-  // ── Germany ──
-  ['FRA',50.0379,8.5622,'Frankfurt Airport'],
-  ['MUC',48.3538,11.7861,'Munich Airport'],
-  ['DUS',51.2895,6.7668,'Düsseldorf'],
-  ['CGN',50.8658,7.1427,'Cologne Bonn'],
-  ['BER',52.3667,13.5033,'Berlin Brandenburg'],
-  ['HAM',53.6304,9.9882,'Hamburg Airport'],
-  ['STR',48.6899,9.2220,'Stuttgart Airport'],
-  ['NUE',49.4987,11.0669,'Nuremberg Airport'],
-  ['LEJ',51.4324,12.2416,'Leipzig/Halle'],
-  ['HAJ',52.4611,9.6850,'Hanover Airport'],
-  // ── France ──
-  ['CDG',49.0097,2.5479,'Paris Charles de Gaulle'],
-  ['ORY',48.7233,2.3794,'Paris Orly'],
-  ['LYS',45.7256,5.0811,'Lyon Saint-Exupéry'],
-  ['NCE',43.6584,7.2159,'Nice Côte d\'Azur'],
-  ['MRS',43.4393,5.2214,'Marseille Provence'],
-  ['TLS',43.6291,1.3678,'Toulouse-Blagnac'],
-  ['BOD',44.8283,-0.7156,'Bordeaux-Mérignac'],
-  ['NTE',47.1532,-1.6108,'Nantes Atlantique'],
-  // ── Netherlands ──
-  ['AMS',52.3086,4.7639,'Amsterdam Schiphol'],
-  ['EIN',51.4501,5.3743,'Eindhoven Airport'],
-  ['RTM',51.9569,4.4372,'Rotterdam The Hague'],
-  // ── Spain ──
-  ['MAD',40.4983,-3.5676,'Madrid Barajas'],
-  ['BCN',41.2971,2.0785,'Barcelona El Prat'],
-  ['AGP',36.6749,-4.4991,'Málaga Costa del Sol'],
-  ['PMI',39.5517,2.7388,'Palma de Mallorca'],
-  ['ALC',38.2822,-0.5582,'Alicante-Elche'],
-  ['VLC',39.4893,-0.4816,'Valencia Airport'],
-  ['SVQ',37.418,-5.8931,'Seville Airport'],
-  ['BIO',43.3011,-2.9106,'Bilbao Airport'],
-  // ── Italy ──
-  ['FCO',41.8003,12.2389,'Rome Fiumicino'],
-  ['MXP',45.6306,8.7281,'Milan Malpensa'],
-  ['LIN',45.4511,9.2768,'Milan Linate'],
-  ['NAP',40.886,14.2908,'Naples Capodichino'],
-  ['BGY',45.6739,9.7042,'Milan Bergamo Orio al Serio'],
-  ['VCE',45.5053,12.3519,'Venice Marco Polo'],
-  ['BLQ',44.5354,11.2887,'Bologna Guglielmo Marconi'],
-  ['CTA',37.4668,15.0664,'Catania Fontanarossa'],
-  ['PSA',43.6839,10.3927,'Pisa Galileo Galilei'],
-  ['TRN',45.2009,7.6497,'Turin Caselle'],
-  // ── Switzerland ──
-  ['ZRH',47.4647,8.5492,'Zurich Airport'],
-  ['GVA',46.2380,6.1089,'Geneva Airport'],
-  ['BSL',47.5896,7.5299,'Basel-Mulhouse-Freiburg'],
-  // ── Austria ──
-  ['VIE',48.1103,16.5697,'Vienna International'],
-  ['SZG',47.7933,13.0043,'Salzburg Airport'],
-  ['INN',47.2602,11.344,'Innsbruck Airport'],
-  ['GRZ',46.9911,15.4397,'Graz Airport'],
-  // ── Belgium ──
-  ['BRU',50.9014,4.4844,'Brussels Airport'],
-  ['CRL',50.4592,4.4528,'Brussels South Charleroi'],
-  ['ANR',51.1894,4.4603,'Antwerp International'],
-  // ── Nordics ──
-  ['ARN',59.6519,17.9186,'Stockholm Arlanda'],
-  ['CPH',55.6181,12.656,'Copenhagen Airport'],
-  ['OSL',60.1939,11.1004,'Oslo Gardermoen'],
-  ['HEL',60.3172,24.9633,'Helsinki-Vantaa'],
-  ['GOT',57.6628,12.2798,'Gothenburg Landvetter'],
-  ['BGO',60.2934,5.2181,'Bergen Airport Flesland'],
-  ['TRD',63.4578,10.9239,'Trondheim Værnes'],
-  ['TMP',61.4141,23.6044,'Tampere-Pirkkala'],
-  ['AAL',57.0928,9.8492,'Aalborg Airport'],
-  // ── Portugal ──
-  ['LIS',38.7756,-9.1354,'Lisbon Humberto Delgado'],
-  ['OPO',41.2481,-8.6814,'Porto Francisco Sá Carneiro'],
-  ['FAO',37.0144,-7.9659,'Faro Airport'],
-  // ── Ireland ──
-  ['DUB',53.4213,-6.2701,'Dublin Airport'],
-  ['SNN',52.7020,-8.9248,'Shannon Airport'],
-  ['ORK',51.8413,-8.4911,'Cork Airport'],
-  // ── Eastern Europe ──
-  ['WAW',52.1657,20.9671,'Warsaw Chopin'],
-  ['KRK',50.0777,19.7848,'Krakow John Paul II'],
-  ['PRG',50.1008,14.26,'Prague Václav Havel'],
-  ['BUD',47.4298,19.2611,'Budapest Ferenc Liszt'],
-  ['OTP',44.5711,26.085,'Bucharest Henri Coandă'],
-  ['SOF',42.6952,23.4063,'Sofia Airport'],
-  ['ATH',37.9364,23.9445,'Athens Eleftherios Venizelos'],
-  ['SKG',40.5197,22.9709,'Thessaloniki Macedonia'],
-  // ── Others ──
-  ['IST',41.2753,28.7519,'Istanbul Airport'],
-  ['SAW',40.8986,29.3092,'Istanbul Sabiha Gökçen'],
-  ['ADB',38.2924,27.157,'Izmir Adnan Menderes'],
-  ['LUX',49.6233,6.2044,'Luxembourg Airport'],
-  ['MLH',47.5896,7.5299,'Mulhouse-Basel EuroAirport'],
+  ['ATL',33.6407,-84.4277,'Atlanta Hartsfield-Jackson'],['LAX',33.9425,-118.4081,'Los Angeles International'],
+  ['ORD',41.9742,-87.9073,"Chicago O'Hare"],['DFW',32.8998,-97.0403,'Dallas/Fort Worth'],
+  ['DEN',39.8561,-104.6737,'Denver International'],['JFK',40.6413,-73.7781,'New York JFK'],
+  ['SFO',37.6213,-122.379,'San Francisco International'],['SEA',47.4502,-122.3088,'Seattle-Tacoma'],
+  ['LAS',36.084,-115.1537,'Las Vegas Harry Reid'],['MCO',28.4312,-81.3081,'Orlando International'],
+  ['EWR',40.6895,-74.1745,'Newark Liberty'],['MIA',25.7959,-80.287,'Miami International'],
+  ['PHX',33.4373,-112.0078,'Phoenix Sky Harbor'],['IAH',29.9902,-95.3368,'Houston George Bush'],
+  ['BOS',42.3656,-71.0096,'Boston Logan'],['MSP',44.8848,-93.2223,'Minneapolis-Saint Paul'],
+  ['FLL',26.0726,-80.1527,'Fort Lauderdale-Hollywood'],['DTW',42.2162,-83.3554,'Detroit Metropolitan'],
+  ['PHL',39.8721,-75.2411,'Philadelphia International'],['LGA',40.7769,-73.874,'New York LaGuardia'],
+  ['CLT',35.214,-80.9431,'Charlotte Douglas'],['MDW',41.7868,-87.7522,'Chicago Midway'],
+  ['BWI',39.1754,-76.6682,'Baltimore/Washington'],['SLC',40.7884,-111.9778,'Salt Lake City'],
+  ['SAN',32.7338,-117.1933,'San Diego International'],['TPA',27.9755,-82.5332,'Tampa International'],
+  ['PDX',45.5898,-122.5951,'Portland International'],['HNL',21.3245,-157.9251,'Honolulu'],
+  ['DAL',32.8481,-96.8518,'Dallas Love Field'],['STL',38.7487,-90.37,'St. Louis Lambert'],
+  ['BNA',36.1245,-86.6782,'Nashville International'],['DCA',38.8512,-77.0402,'Washington Reagan'],
+  ['AUS',30.1975,-97.6664,'Austin-Bergstrom'],['MCI',39.2976,-94.7139,'Kansas City International'],
+  ['LHR',51.4775,-0.4614,'London Heathrow'],['LGW',51.1481,-0.1903,'London Gatwick'],
+  ['LCY',51.5048,-0.0495,'London City'],['STN',51.885,0.235,'London Stansted'],
+  ['LTN',51.8747,-0.3683,'London Luton'],['MAN',53.3537,-2.275,'Manchester'],
+  ['BHX',52.4539,-1.748,'Birmingham'],['EDI',55.95,-3.3725,'Edinburgh'],
+  ['FRA',50.0379,8.5622,'Frankfurt Airport'],['MUC',48.3538,11.7861,'Munich Airport'],
+  ['DUS',51.2895,6.7668,'Düsseldorf'],['CGN',50.8658,7.1427,'Cologne Bonn'],
+  ['BER',52.3667,13.5033,'Berlin Brandenburg'],['HAM',53.6304,9.9882,'Hamburg Airport'],
+  ['STR',48.6899,9.222,'Stuttgart Airport'],['NUE',49.4987,11.0669,'Nuremberg Airport'],
+  ['CDG',49.0097,2.5479,'Paris Charles de Gaulle'],['ORY',48.7233,2.3794,'Paris Orly'],
+  ['AMS',52.3086,4.7639,'Amsterdam Schiphol'],['MAD',40.4983,-3.5676,'Madrid Barajas'],
+  ['BCN',41.2971,2.0785,'Barcelona El Prat'],['FCO',41.8003,12.2389,'Rome Fiumicino'],
+  ['MXP',45.6306,8.7281,'Milan Malpensa'],['ZRH',47.4647,8.5492,'Zurich Airport'],
+  ['VIE',48.1103,16.5697,'Vienna International'],['BRU',50.9014,4.4844,'Brussels Airport'],
+  ['ARN',59.6519,17.9186,'Stockholm Arlanda'],['CPH',55.6181,12.656,'Copenhagen Airport'],
+  ['OSL',60.1939,11.1004,'Oslo Gardermoen'],['HEL',60.3172,24.9633,'Helsinki-Vantaa'],
+  ['LIS',38.7756,-9.1354,'Lisbon Airport'],['OPO',41.2481,-8.6814,'Porto Airport'],
+  ['DUB',53.4213,-6.2701,'Dublin Airport'],['IST',41.2753,28.7519,'Istanbul Airport'],
+  ['SIN',1.3644,103.9915,'Singapore Changi'],['DXB',25.2532,55.3657,'Dubai International'],
+  ['WAW',52.1657,20.9671,'Warsaw Chopin'],['PRG',50.1008,14.26,'Prague Václav Havel'],
+  ['BUD',47.4298,19.2611,'Budapest Ferenc Liszt'],['ATH',37.9364,23.9445,'Athens International'],
 ];
 
-const SUGGESTED_GROUPS = [
-  {name:'Work colleagues',modes:['orbit','gate']},
-  {name:'Customers / clients',modes:['orbit']},
-  {name:'Former colleagues',modes:['orbit','gate']},
-  {name:'Friends',modes:['orbit','gate']},
-  {name:'Family',modes:['orbit','gate']},
-];
+const SUGGESTED_GROUPS = ['Work colleagues','Customers / clients','Former colleagues','Friends','Family'];
 
 const S = {
   name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,
-  contacts:[],groups:[],
+  email:'',
+  contacts:[],  // {name, email, group}
+  groups:[],    // {name, active:bool}
   orbitSet:new Set(),gateSet:new Set(),
-  active:false,notifs:false,
+  active:true,notifs:true,
   pollInterval:null,lastPos:null,ws:null,wsReady:false,
   currentCity:null,currentAirport:null,
   threads:{},activeThread:null,
 };
+const TEST = { simContacts:{} };
 
 const $=id=>document.getElementById(id);
 function hav(a,b,c,d){const R=6371000,dL=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,e=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(e),Math.sqrt(1-e))}
 function nearestAirport(lat,lng){for(const[c,al,ag,lb]of AIRPORTS)if(hav(lat,lng,al,ag)<=GATE_R)return{code:c,label:lb};return null}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
 
+// ── Navigation ─────────────────────────────────────────────────────────────
 function showStep(n){
-  ['step1','step2','step3'].forEach((id,i)=>{
+  ['step1','step2','step2b','step3'].forEach((id,i)=>{
     $(id).classList.toggle('hidden',i+1!==n);
-    const el=$('s'+(i+1));
-    el.classList.toggle('done',i+1<n);el.classList.toggle('active',i+1===n);
+    if(i<3){const el=$('s'+(i===3?3:i+1));if(el){el.classList.toggle('done',i+1<n);el.classList.toggle('active',i+1===n);}}
   });
+  $('howCard').classList.toggle('hidden', n===4); // hide on step 3 (app)
 }
+
 function setPill(id,m,l){const e=$(id);e.className=`pill ${m}`;e.innerHTML=`<span class="dot"></span> ${l}`}
 
 function showTab(t){
@@ -538,7 +478,8 @@ function showTab(t){
     $(`tab-${k}`).classList.toggle('active',k===t);
     $(`pane-${k}`).classList.toggle('hidden',k!==t);
   });
-  if(t==='messages')updateUnread(true);
+  if(t==='messages'){updateUnread(true);populateNewMsgTarget();}
+  if(t==='contacts'){renderContactsTab();}
 }
 function updateUnread(clear=false){
   const n=Object.values(S.threads).filter(t=>t.unread).length;
@@ -547,59 +488,79 @@ function updateUnread(clear=false){
   el.classList.toggle('hidden',n===0);el.textContent=n;
 }
 
-// ── Step 1 ─────────────────────────────────────────────────────────────────
+// ── Step 1: Identity ────────────────────────────────────────────────────────
 async function saveIdentity(){
   const first=$('myFirst').value.trim(),last=$('myLast').value.trim();
   const work=$('myWorkEmail').value.trim().toLowerCase();
   const personal=$('myPersonalEmail').value.trim().toLowerCase();
   if(!first||!work.includes('@')){alert('Please enter your name and work email.');return}
-  S.name=first+(last?' '+last:'');
-  S.workEmail=work; S.personalEmail=personal;
-  S.phone=$('myPhone').value.trim();
-  S.homeCity=$('myCity').value.trim();
-  S.email=work;
-  // Geocode home city to coordinates using OpenStreetMap Nominatim
+  S.name=first+(last?' '+last:'');S.workEmail=work;S.personalEmail=personal;
+  S.phone=$('myPhone').value.trim();S.homeCity=$('myCity').value.trim();S.email=work;
   if(S.homeCity){
     try{
       const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,{headers:{'Accept-Language':'en'}});
       const d=await r.json();
       if(d&&d[0]){S.homeLat=parseFloat(d[0].lat);S.homeLng=parseFloat(d[0].lon);}
-    }catch(e){console.warn('Geocode failed',e);}
+    }catch(e){console.warn('Geocode failed',e)}
   }
   localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
+  S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
   renderGroupSetup();showStep(2);
 }
 
-// ── Step 2 ─────────────────────────────────────────────────────────────────
+// ── Step 2: Groups setup ────────────────────────────────────────────────────
 function renderGroupSetup(){
-  S.groups=SUGGESTED_GROUPS.map(g=>({...g}));
   $('groupSetupList').innerHTML=S.groups.map((g,i)=>`
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px">
-      <input type="text" value="${g.name}" onchange="S.groups[${i}].name=this.value"
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:10px">
+      <input type="text" value="${esc(g.name)}" onchange="S.groups[${i}].name=this.value"
         style="flex:1;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;outline:none;padding:0">
-      <span class="mode-chip ${g.modes.includes('orbit')?'active':''}" title="City alerts" onclick="toggleMode(${i},'orbit',this)">🏙</span>
-      <span class="mode-chip ${g.modes.includes('gate')?'active':''}" title="Airport alerts" onclick="toggleMode(${i},'gate',this)">✈</span>
+      <label class="toggle" title="Enable this group">
+        <input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked">
+        <span class="slider"></span>
+      </label>
+      <button style="background:transparent;border:none;color:var(--muted);font-size:16px;padding:0;cursor:pointer;line-height:1" onclick="removeGroup(${i})">×</button>
     </div>`).join('');
 }
-function toggleMode(i,m,el){const g=S.groups[i],x=g.modes.indexOf(m);x>-1?g.modes.splice(x,1):g.modes.push(m);el.classList.toggle('active',g.modes.includes(m))}
-function addGroup(){S.groups.push({name:'New group',modes:['orbit','gate']});renderGroupSetup()}
+function addGroup(){S.groups.push({name:'New group',active:true});renderGroupSetup()}
+function removeGroup(i){S.groups.splice(i,1);renderGroupSetup()}
 
 function saveContacts(){
   const raw=$('contactsRaw').value;
   const emails=raw.split(/[\n,;]+/).map(e=>e.trim().toLowerCase())
     .filter(e=>e.includes('@')&&e!==S.workEmail&&e!==S.personalEmail);
+  if(!emails.length){alert('Add at least one contact email.');return}
   S.contacts=emails.map(e=>({
     name:e.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
     email:e,
     group:S.groups[0]?.name||'Contacts',
   }));
-  if(!S.contacts.length){alert('Add at least one contact email.');return}
-  localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
   localStorage.setItem('orbyt_groups',JSON.stringify(S.groups));
-  renderGroupsLive();showStep(3);showTab('orbit');
+  renderAssignList();showStep(3); // step2b is index 3
 }
 
-// ── WebSocket ──────────────────────────────────────────────────────────────
+// ── Step 2b: Assign contacts to groups ─────────────────────────────────────
+function renderAssignList(){
+  $('assignList').innerHTML=S.contacts.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div class="cc-avatar" style="width:32px;height:32px;font-size:12px">${initials(c.name)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500">${esc(c.name)}</div>
+        <div style="font-size:11px;color:var(--sub);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.email)}</div>
+      </div>
+      <select onchange="S.contacts[${i}].group=this.value" style="width:auto;font-size:12px;padding:5px 8px;border-radius:6px">
+        ${S.groups.map(g=>`<option value="${esc(g.name)}" ${c.group===g.name?'selected':''}>${esc(g.name)}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function saveAssignments(){
+  localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
+  renderContactsTab();showStep(4);showTab('orbit');
+  startProximity();
+  if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
+}
+
+// ── WebSocket ───────────────────────────────────────────────────────────────
 function connectWS(){
   if(S.ws){try{S.ws.close()}catch{}S.ws=null}
   setPill('wsPill','warn','connecting…');
@@ -623,7 +584,7 @@ function ping(){
   if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail,...base});
 }
 
-// ── Nearby ─────────────────────────────────────────────────────────────────
+// ── Nearby handling ─────────────────────────────────────────────────────────
 function handleNearby(nearby){
   const prev=new Set(S.orbitSet);
   S.orbitSet=new Set(nearby.filter(n=>n.distM>GATE_R).map(n=>n.email));
@@ -631,7 +592,7 @@ function handleNearby(nearby){
   for(const n of nearby){
     if(!prev.has(n.email)){
       const isGate=n.distM<=GATE_R;
-      const apt=isGate?nearestAirport(S.lastPos.lat,S.lastPos.lng):null;
+      const apt=isGate?nearestAirport(S.lastPos?.lat,S.lastPos?.lng):null;
       const ctx=isGate?(apt?.label||'the airport'):(S.currentCity||'your city');
       if(!S.threads[n.email])S.threads[n.email]={contact:{name:n.name||n.email,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
       else{S.threads[n.email].isOnline=true;S.threads[n.email].context=ctx}
@@ -640,11 +601,11 @@ function handleNearby(nearby){
     }
   }
   for(const e of prev)if(!S.orbitSet.has(e)&&!S.gateSet.has(e)&&S.threads[e])S.threads[e].isOnline=false;
-  renderGroupsLive();renderThreadList();
+  renderContactsTab();renderThreadList();
 }
 
 function handleIncoming(msg){
-  const {from,fromName,message}=msg;
+  const{from,fromName,message}=msg;
   if(!S.threads[from])S.threads[from]={contact:{name:fromName||from,email:from},messages:[],context:'in orbit',unread:false,isOnline:true};
   S.threads[from].messages.push({text:message,sent:false,time:Date.now()});
   if(S.activeThread===from)renderMessages(from);
@@ -653,7 +614,7 @@ function handleIncoming(msg){
   if(S.notifs&&Notification.permission==='granted')new Notification(`Orbyt — ${fromName}`,{body:message});
 }
 
-// ── Notices ────────────────────────────────────────────────────────────────
+// ── Orbit notices ────────────────────────────────────────────────────────────
 function addOrbitNotice(name,isGate,airport,email){
   const feed=$('noticesFeed');
   if(feed.querySelector('.empty-state'))feed.innerHTML='';
@@ -662,9 +623,9 @@ function addOrbitNotice(name,isGate,airport,email){
   const where=isGate?(airport?.label||'the airport'):(S.currentCity||'your city');
   div.innerHTML=`<div class="notice-icon">${isGate?'✈️':'🏙'}</div>
     <div class="notice-body">
-      <div class="notice-primary">${name} — ${where} <span class="badge ${isGate?'gate':'orbit'}">${isGate?'at the gate':'in orbit'}</span></div>
+      <div class="notice-primary">${esc(name)} — ${esc(where)} <span class="badge ${isGate?'gate':'orbit'}">${isGate?'at the gate':'in orbit'}</span></div>
       <div class="notice-secondary">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
-      <div class="notice-actions"><button class="btn-ping" onclick="openThread('${email}','${name}')">Message in Orbyt →</button></div>
+      <div class="notice-actions"><button class="btn-ping" onclick="openThread('${email}','${esc(name)}')">Message →</button></div>
     </div>`;
   feed.prepend(div);
 }
@@ -672,35 +633,60 @@ function addSysNotice(icon,text){
   const feed=$('noticesFeed');
   if(feed.querySelector('.empty-state'))feed.innerHTML='';
   const div=document.createElement('div');div.className='notice';
-  div.innerHTML=`<div class="notice-icon" style="font-size:14px">${icon}</div><div class="notice-body"><div class="notice-primary" style="font-size:13px;font-weight:400">${text}</div></div>`;
+  div.innerHTML=`<div class="notice-icon" style="font-size:14px">${icon}</div><div class="notice-body"><div class="notice-primary" style="font-size:13px;font-weight:400">${esc(text)}</div></div>`;
   feed.prepend(div);
 }
 
-// ── Messaging ──────────────────────────────────────────────────────────────
+// ── Messaging ────────────────────────────────────────────────────────────────
+function populateNewMsgTarget(){
+  const sel=$('newMsgTarget');const cur=sel.value;
+  sel.innerHTML='<option value="">— choose a contact —</option>';
+  S.contacts.forEach(c=>{
+    const inO=S.orbitSet.has(c.email),atG=S.gateSet.has(c.email);
+    const badge=atG?' ✈':inO?' 🏙':'';
+    const opt=document.createElement('option');
+    opt.value=c.email;opt.textContent=c.name+badge;
+    if(c.email===cur)opt.selected=true;
+    sel.appendChild(opt);
+  });
+}
+function setNewMsg(t){$('newMsgText').value=t;$('newMsgText').focus()}
+function handleNewMsgKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendNewMessage()}}
+function sendNewMessage(){
+  const to=$('newMsgTarget').value,text=$('newMsgText').value.trim();
+  if(!to){alert('Choose a contact to message.');return}
+  if(!text){alert('Write a message first.');return}
+  sendMsg(to,text);
+  $('newMsgText').value='';
+  // Open the thread
+  const c=S.contacts.find(c=>c.email===to);
+  openThread(to,c?.name||to);
+}
+
 function openThread(email,name){
   if(!S.threads[email]){
-    const c=S.contacts.find(c=>c.email===email);
-    S.threads[email]={contact:{name:name||c?.name||email,email},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:true};
+    S.threads[email]={contact:{name:name||email,email},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:true};
   }
   S.threads[email].unread=false;S.activeThread=email;
   const t=S.threads[email];
   $('convName').textContent=t.contact.name;
   $('convContext').textContent=t.context;
   $('convStatus').textContent=t.isOnline?'● in orbit':'○ not in orbit';
-  $('convStatus').className='conv-status '+(t.isOnline?'online':'offline');
+  $('convStatus').className='conv-online '+(t.isOnline?'on':'off');
+  $('replyBox').value='';
   renderMessages(email);
   $('threadListView').classList.add('hidden');$('convView').classList.remove('hidden');
   showTab('messages');updateUnread();
+  setTimeout(()=>$('replyBox').focus(),100);
 }
 function closeConv(){
   S.activeThread=null;
   $('convView').classList.add('hidden');$('threadListView').classList.remove('hidden');
-  $('composeBox').textContent='';$('quickMsgs').classList.remove('hidden');
   renderThreadList();
 }
 function renderMessages(email){
   const t=S.threads[email];const el=$('messageList');
-  if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state" style="font-size:12px">Say hello to ${t?.contact.name||'this contact'}</div>`;return}
+  if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state" style="font-size:12px">Say hello to ${esc(t?.contact.name||'this contact')}</div>`;return}
   el.innerHTML=t.messages.map(m=>`<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
@@ -710,62 +696,110 @@ function renderThreadList(){
   if(!ts.length){el.innerHTML='<div class="empty-state">No messages yet</div>';return}
   el.innerHTML=ts.map(t=>{
     const last=t.messages[t.messages.length-1];
-    const ini=t.contact.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    return `<div class="thread-item ${t.unread?'unread':''}" onclick="openThread('${t.contact.email}','${t.contact.name}')">
-      <div class="thread-avatar">${ini}</div>
-      <div class="thread-info">
-        <div class="thread-name">${t.contact.name}</div>
-        <div class="thread-preview">${last?esc(last.text):'Say hello →'}</div>
-        <div class="thread-context">${t.context}</div>
+    const ini=initials(t.contact.name);
+    return `<div class="thread-item ${t.unread?'unread':''}" onclick="openThread('${t.contact.email}','${esc(t.contact.name)}')">
+      <div class="t-avatar">${ini}</div>
+      <div class="t-info"><div class="t-name">${esc(t.contact.name)}</div>
+        <div class="t-preview">${last?esc(last.text):'Tap to say hello'}</div>
+        <div class="t-context">${esc(t.context)}</div>
       </div>
-      <div class="thread-meta">
-        ${last?`<div class="thread-time">${new Date(last.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`:''}
+      <div class="t-meta">
+        ${last?`<div class="t-time">${new Date(last.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>`:''}
         ${t.unread?'<div class="unread-dot"></div>':''}
       </div>
     </div>`;
   }).join('');
 }
-function composeMsg(text){$('composeBox').textContent=text;$('quickMsgs').classList.add('hidden');$('composeBox').focus();const r=document.createRange(),s=window.getSelection();r.selectNodeContents($('composeBox'));r.collapse(false);s.removeAllRanges();s.addRange(r)}
-function handleComposeKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}}
-function sendMessage(){
-  const box=$('composeBox'),text=box.textContent.trim();
+function fillReply(t){$('replyBox').value=t;$('quickMsgs').classList.add('hidden');$('replyBox').focus()}
+function handleReplyKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendReply()}}
+function sendReply(){
+  const box=$('replyBox'),text=box.value.trim();
   if(!text||!S.activeThread)return;
-  if(!S.wsReady){alert('Enable Orbyt first.');return}
-  wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to:S.activeThread,message:text});
+  sendMsg(S.activeThread,text);
   S.threads[S.activeThread].messages.push({text,sent:true,time:Date.now()});
-  box.textContent='';$('quickMsgs').classList.add('hidden');
+  box.value='';box.style.height='auto';
+  $('quickMsgs').classList.add('hidden');
   renderMessages(S.activeThread);renderThreadList();
 }
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-// ── Groups live ────────────────────────────────────────────────────────────
-function renderGroupsLive(){
-  const el=$('groupsLive'),g={};
-  S.contacts.forEach(c=>{if(!g[c.group])g[c.group]=[];g[c.group].push(c)});
-  el.innerHTML=Object.entries(g).map(([gname,cs])=>`
-    <div class="group-block">
-      <div class="group-header"><div class="group-name-text">${gname}</div><div class="group-count">${cs.length}</div></div>
-      <div class="group-contacts">${cs.map(c=>{
-        const inO=S.orbitSet.has(c.email),atG=S.gateSet.has(c.email);
-        const ini=c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-        const badge=atG?'<span class="badge gate">✈</span>':inO?'<span class="badge orbit">🏙</span>':'';
-        const btn=(inO||atG)?`<button class="btn-ping" onclick="openThread('${c.email}','${c.name}')">Message</button>`:'';
-        return `<div class="contact-row"><div class="avatar">${ini}</div><div class="contact-info"><div class="contact-name-t">${c.name}</div><div class="contact-meta-t">${c.email}</div></div>${badge}${btn}</div>`;
-      }).join('')}</div>
-    </div>`).join('')||'<div class="empty-state">No contacts yet</div>';
+function sendMsg(to,text){
+  if(!S.wsReady){addSysNotice('ℹ','Enable Orbyt to send messages.');return}
+  wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to,message:text});
 }
 
-// ── Geolocation ────────────────────────────────────────────────────────────
+// ── Contacts tab management ──────────────────────────────────────────────────
+function renderContactsTab(){
+  // Contacts list
+  const el=$('contactsManageList');
+  if(!S.contacts.length){el.innerHTML='<div class="empty-state">No contacts yet — add one above</div>';return}
+  el.innerHTML=S.contacts.map((c,i)=>`
+    <div class="contact-card">
+      <div class="contact-card-top">
+        <div class="cc-avatar">${initials(c.name)}</div>
+        <div class="cc-info">
+          <div class="cc-name">${esc(c.name)}</div>
+          <div class="cc-email">${esc(c.email)}</div>
+        </div>
+        <button class="btn-danger" onclick="deleteContact(${i})">Remove</button>
+      </div>
+      <div class="cc-group-row">
+        <div class="cc-group-label">Group:</div>
+        <select class="cc-group-select" onchange="S.contacts[${i}].group=this.value;saveData()">
+          ${S.groups.map(g=>`<option value="${esc(g.name)}" ${c.group===g.name?'selected':''}>${esc(g.name)}</option>`).join('')}
+        </select>
+      </div>
+    </div>`).join('');
+
+  // Groups list
+  const gel=$('groupsManageList');
+  gel.innerHTML=S.groups.map((g,i)=>`
+    <div class="group-item">
+      <div class="group-item-name">${esc(g.name)}</div>
+      <div class="group-item-count">${S.contacts.filter(c=>c.group===g.name).length} contacts</div>
+      <label class="toggle">
+        <input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked;saveData()">
+        <span class="slider"></span>
+      </label>
+    </div>`).join('');
+}
+
+function addContact(){
+  const emailEl=$('addContactEmail');
+  const email=emailEl.value.trim().toLowerCase();
+  if(!email.includes('@')){alert('Please enter a valid email address.');return}
+  if(S.contacts.find(c=>c.email===email)){alert('That contact is already in your list.');return}
+  const name=email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  S.contacts.push({name,email,group:S.groups[0]?.name||'Contacts'});
+  emailEl.value='';
+  saveData();renderContactsTab();
+}
+
+function deleteContact(i){
+  if(!confirm(`Remove ${S.contacts[i].name} from your Orbyt?`))return;
+  S.contacts.splice(i,1);saveData();renderContactsTab();
+}
+
+function addGroupLive(){
+  S.groups.push({name:'New group',active:true});
+  saveData();renderContactsTab();
+}
+
+function saveData(){
+  localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
+  localStorage.setItem('orbyt_groups',JSON.stringify(S.groups));
+}
+
+// ── Geolocation ──────────────────────────────────────────────────────────────
 function startProximity(){
-  if(!navigator.geolocation){addSysNotice('⚠','Geolocation not supported.');return}
-  connectWS();getPos();S.pollInterval=setInterval(getPos,90000);
+  if(!navigator.geolocation){addSysNotice('⚠','Geolocation not supported in this browser.');return}
+  connectWS();getPos();
+  S.pollInterval=setInterval(getPos,90000);
 }
 function stopProximity(){
   clearInterval(S.pollInterval);S.pollInterval=null;
   if(S.ws){try{wsSend({type:'bye',email:S.workEmail});S.ws.close()}catch{}S.ws=null}
   S.wsReady=false;S.orbitSet=new Set();S.gateSet=new Set();
   setPill('wsPill','off','disconnected');setPill('locPill','off','no location');
-  renderGroupsLive();
+  renderContactsTab();
 }
 function getPos(){
   navigator.geolocation.getCurrentPosition(pos=>{
@@ -774,140 +808,103 @@ function getPos(){
     const apt=nearestAirport(S.lastPos.lat,S.lastPos.lng);
     S.currentAirport=apt;
     if(apt){S.currentCity=apt.label;$('cityName').textContent=apt.label;$('citySubtitle').textContent='at the airport';}
-    else{S.currentCity=S.homeCity?`Away from ${S.homeCity}`:'Travelling';$('cityName').textContent=S.homeCity||'Travelling';$('citySubtitle').textContent='your current location';}
+    else{S.currentCity=S.homeCity||'Travelling';$('cityName').textContent=S.homeCity||'Travelling';$('citySubtitle').textContent='your current location';}
     ping();
   },err=>{
     setPill('locPill','warn','blocked');
-    addSysNotice('⚠', 'Location access is off. On iPhone: go to Settings → Privacy & Security → Location Services → Safari → set to <em>While Using</em>. Then return here and tap Force check.');
+    addSysNotice('⚠','Location access is off. On iPhone: Settings → Privacy & Security → Location Services → Safari → set to "While Using". Then return here and tap Force check.');
   },{enableHighAccuracy:false,timeout:10000,maximumAge:60000});
 }
 function forcePing(){if(!S.active){addSysNotice('ℹ','Enable Orbyt first.');return}getPos()}
 function toggleActive(){S.active=$('activeToggle').checked;S.active?startProximity():stopProximity()}
 async function toggleNotifs(){
   if(!$('notifToggle').checked){S.notifs=false;return}
-  if(!('Notification'in window)){alert('Not supported.');$('notifToggle').checked=false;return}
+  if(!('Notification'in window)){alert('Notifications not supported in this browser.');$('notifToggle').checked=false;return}
   const p=await Notification.requestPermission();
-  if(p!=='granted'){alert('Blocked — enable in browser settings.');$('notifToggle').checked=false;return}
+  if(p!=='granted'){alert('Notifications blocked.\nOn iPhone: Settings → Notifications → Safari → Allow Notifications.');$('notifToggle').checked=false;return}
   S.notifs=true;
 }
-function resetAll(){
-  if(!confirm('Clear all Orbyt data?'))return;
-  stopProximity();
-  ['orbyt_id','orbyt_contacts','orbyt_groups'].forEach(k=>localStorage.removeItem(k));
-  Object.assign(S,{name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',email:'',contacts:[],groups:[],orbitSet:new Set(),gateSet:new Set(),active:false,notifs:false,pollInterval:null,lastPos:null,ws:null,wsReady:false,threads:{},activeThread:null});
-  $('activeToggle').checked=false;$('notifToggle').checked=false;
-  showStep(1);
-}
 
-// ── Test mode ──────────────────────────────────────────────────────────────
-const TEST = {
-  simContacts: {}, // email -> {name, mode, city?}
-};
-
+// ── Test mode ────────────────────────────────────────────────────────────────
 function toggleTest(){
-  const body = $('testBody'), chev = $('testChevron');
-  const open = body.classList.toggle('open');
-  chev.classList.toggle('open', open);
-  if(open) renderTestContacts();
+  const body=$('testBody'),chev=$('testChevron');
+  const open=body.classList.toggle('open');
+  chev.classList.toggle('open',open);
+  if(open)renderTestContacts();
 }
-
-
-
 function renderTestContacts(){
-  const el = $('testContactList');
-  if(!S.contacts.length){
-    el.innerHTML = '<div style="font-size:12px;color:#5a4200;padding:8px 0">Add contacts in step 2 first.</div>';
-    return;
-  }
-  el.innerHTML = S.contacts.map(c => {
-    const sim = TEST.simContacts[c.email];
-    const initials = c.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    return `<div class="test-contact-row" style="flex-direction:column;align-items:flex-start;gap:8px;padding:10px 0">
-      <div style="display:flex;align-items:center;gap:8px;width:100%">
-        <div style="width:26px;height:26px;border-radius:50%;background:#2a1e00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#f0b429;flex-shrink:0">${initials}</div>
-        <div class="test-contact-name">${c.name}</div>
-        ${sim ? `<span class="test-contact-city">${sim.mode==='true-location'?'📍 true location':'🏙 simulated arrival'}</span>` : ''}
-        ${sim ? `<button class="btn-test" style="margin-left:auto" onclick="removeSimContact('${c.email}')">Clear</button>` : ''}
+  const el=$('testContactList');
+  if(!S.contacts.length){el.innerHTML='<div style="font-size:12px;color:#5a4200;padding:8px 0">Add contacts first.</div>';return}
+  el.innerHTML=S.contacts.map(c=>{
+    const sim=TEST.simContacts[c.email];
+    const ini=initials(c.name);
+    return `<div class="test-contact-row">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${sim?0:8}px">
+        <div style="width:26px;height:26px;border-radius:50%;background:#2a1e00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#f0b429;flex-shrink:0">${ini}</div>
+        <div class="test-contact-name">${esc(c.name)}</div>
+        ${sim?`<span style="font-size:11px;font-family:var(--mono);color:#7a5c00;margin-left:auto">${sim.mode==='true-location'?'📍 true location':'🏙 simulated arrival'}</span>`:''}
+        ${sim?`<button class="btn-test" onclick="removeSimContact('${c.email}')">Clear</button>`:''}
       </div>
-      ${!sim ? `
-      <div style="display:flex;gap:6px;padding-left:34px;flex-wrap:wrap">
-        <button class="btn-test" onclick="showTrueLocation('${c.email}','${c.name}')"
-          title="Reveal where this contact actually is right now, even if neither of you is travelling">
-          📍 Reveal true location
-        </button>
-        <button class="btn-test" onclick="simulateArrival('${c.email}','${c.name}')"
-          title="Pretend this contact just arrived in your current city">
-          🏙 Simulate arrival in my city
-        </button>
+      ${!sim?`<div style="display:flex;gap:6px;padding-left:34px;flex-wrap:wrap;margin-bottom:4px">
+        <button class="btn-test" onclick="showTrueLocation('${c.email}','${esc(c.name)}')">📍 Reveal true location</button>
+        <button class="btn-test" onclick="simulateArrival('${c.email}','${esc(c.name)}')">🏙 Simulate arrival in my city</button>
       </div>
       <div style="padding-left:34px;font-size:11px;color:#5a4200;line-height:1.5">
-        <strong style="color:#7a5c00">📍 Reveal</strong> — shows their real location regardless of home suppression.<br>
-        <strong style="color:#7a5c00">🏙 Simulate</strong> — fires an Orbyt Notice as if they just entered your city.
-      </div>` : ''}
+        <strong style="color:#7a5c00">📍 Reveal</strong> — shows their real location, bypassing home suppression.<br>
+        <strong style="color:#7a5c00">🏙 Simulate</strong> — fires an Orbyt Notice as if they just arrived in your city.
+      </div>`:''}
     </div>`;
   }).join('');
 }
-
-// Test mode case 1 — reveal true location
-// Asks the relay for the contact's actual current position.
-// Works even if neither party is travelling (bypasses home suppression client-side).
-function showTrueLocation(email, name){
-  TEST.simContacts[email] = {name, mode:'true-location'};
-  // We inject a nearby event using a small distance — this represents
-  // "we found each other" without specifying coordinates.
-  // In a production build with a richer API, this would fetch the
-  // contact's actual city from the server. For now it confirms relay
-  // connectivity and fires the full notice + messaging flow.
-  const fakeNearby = [{ email, name, distM: 3000 }];
-  handleNearby(fakeNearby);
+function showTrueLocation(email,name){
+  TEST.simContacts[email]={name,mode:'true-location'};
+  handleNearby([{email,name,distM:3000}]);
   renderTestContacts();
 }
-
-// Test mode case 2 — simulate arrival in my city
-// Pretends the contact just entered the user's current city.
-// No city selection needed — Orbyt uses the user's actual detected location.
-function simulateArrival(email, name){
-  if(!S.currentCity){
-    alert('Enable Orbyt first so your current city is detected, then try again.');
-    return;
-  }
-  TEST.simContacts[email] = {name, mode:'simulated-arrival', city: S.currentCity};
-  // distM=8000 — clearly in city range, not at airport threshold
-  const fakeNearby = [{ email, name, distM: 8000 }];
-  handleNearby(fakeNearby);
+function simulateArrival(email,name){
+  if(!S.currentCity){alert('Enable Orbyt first so your city is detected, then try again.');return}
+  TEST.simContacts[email]={name,mode:'simulated-arrival',city:S.currentCity};
+  handleNearby([{email,name,distM:8000}]);
   renderTestContacts();
 }
-
 function removeSimContact(email){
   delete TEST.simContacts[email];
-  S.orbitSet.delete(email);
-  S.gateSet.delete(email);
-  if(S.threads[email]) S.threads[email].isOnline = false;
-  renderGroupsLive();
-  renderThreadList();
-  renderTestContacts();
+  S.orbitSet.delete(email);S.gateSet.delete(email);
+  if(S.threads[email])S.threads[email].isOnline=false;
+  renderContactsTab();renderThreadList();renderTestContacts();
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function resetAll(){
+  if(!confirm('Clear all Orbyt data and start over?'))return;
+  stopProximity();
+  ['orbyt_id','orbyt_contacts','orbyt_groups'].forEach(k=>localStorage.removeItem(k));
+  Object.assign(S,{name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,email:'',contacts:[],groups:[],orbitSet:new Set(),gateSet:new Set(),active:true,notifs:true,pollInterval:null,lastPos:null,ws:null,wsReady:false,threads:{},activeThread:null});
+  TEST.simContacts={};
+  $('activeToggle').checked=true;$('notifToggle').checked=true;
+  showStep(1);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 (function init(){
   const id=localStorage.getItem('orbyt_id');
   const con=localStorage.getItem('orbyt_contacts');
   const grp=localStorage.getItem('orbyt_groups');
   if(id){const p=JSON.parse(id);Object.assign(S,{name:p.name,workEmail:p.workEmail||p.email||'',personalEmail:p.personalEmail||'',phone:p.phone||'',homeCity:p.homeCity||'',homeLat:p.homeLat??null,homeLng:p.homeLng??null,email:p.workEmail||p.email||''})}
-  if(con)S.contacts=JSON.parse(con);
   if(grp)S.groups=JSON.parse(grp);
+  else S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
+  if(con)S.contacts=JSON.parse(con);
   if(id&&con){
-    renderGroupsLive();renderThreadList();showStep(3);showTab('orbit');
-    // Start active by default
-    S.active=true; S.notifs=true;
+    renderContactsTab();renderThreadList();
+    showStep(4);showTab('orbit');
     startProximity();
-    // Request notification permission quietly
-    if('Notification'in window&&Notification.permission==='default'){
-      Notification.requestPermission();
-    }
+    if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
+  } else if(id){
+    S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
+    renderGroupSetup();showStep(2);
+  } else {
+    showStep(1);
   }
-  else if(id){renderGroupSetup();showStep(2)}
-  else showStep(1);
 })();
 </script>
 </body>
