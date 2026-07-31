@@ -14,8 +14,9 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 :root{
-  --bg:#0c0c12;--surface:#15151f;--border:#252535;--muted:#3a3a52;
-  --text:#e8e8f2;--sub:#7878a0;--accent:#6c5ce7;--accent2:#a29bfe;
+  --bg:#0c0c14;--surface:#1a1a28;--border:#2e2e45;--muted:#4a4a6a;
+  --text:#f0f0fa;--sub:#a0a0c8;--label:#c8c8e8;--placeholder:#6060a0;
+  --accent:#7c6ff7;--accent2:#b8b0ff;
   --green:#4dfa9a;--yellow:#fad64d;--radius:12px;
   --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
 }
@@ -24,7 +25,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15
 header{width:100%;max-width:480px;padding:40px 0 4px;display:flex;align-items:baseline;gap:10px}
 .wordmark{font-size:24px;font-weight:600;letter-spacing:-.5px}
 .wordmark em{color:var(--accent);font-style:normal}
-.tagline{font-size:12px;color:var(--sub);font-family:var(--mono);letter-spacing:.05em}
+.tagline{font-size:12px;color:var(--accent2);font-family:var(--mono);letter-spacing:.05em}
 main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;margin-top:20px}
 /* Steps */
 .steps{display:flex;gap:5px;margin-bottom:20px}
@@ -32,19 +33,20 @@ main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;marg
 .step.done{background:var(--accent)}.step.active{background:var(--accent2)}
 /* Nav */
 .nav{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:4px}
-.nav-tab{flex:1;padding:8px 4px;border-radius:7px;border:none;background:transparent;color:var(--sub);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.nav-tab{flex:1;padding:8px 4px;border-radius:7px;border:none;background:transparent;color:var(--label);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
 .nav-tab.active{background:var(--accent);color:#fff}
 .nav-tab .ub{background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 5px;border-radius:20px;min-width:16px;text-align:center}
 /* Cards */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px}
-.card-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.card-label{font-size:11px;font-family:var(--mono);color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;font-weight:500}
 /* Inputs */
 input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;appearance:none}
+input::placeholder,textarea::placeholder{color:var(--placeholder);opacity:1}
 input:focus,textarea:focus,select:focus{border-color:var(--accent)}
 textarea{resize:none;line-height:1.5}
-label{display:block;font-size:12px;color:var(--sub);margin-bottom:5px}
+label{display:block;font-size:12px;color:var(--label);margin-bottom:5px;font-weight:500}
 .field{margin-bottom:14px}.field-row{display:flex;gap:10px}.field-row .field{flex:1}
-.field-hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+.field-hint{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5}
 /* Buttons */
 button{cursor:pointer;font-family:var(--font);font-weight:500;border:none;border-radius:8px;transition:opacity .15s,transform .1s}
 button:active{transform:scale(.97)}
@@ -77,7 +79,7 @@ button:active{transform:scale(.97)}
 .notice-icon{font-size:20px;flex-shrink:0;line-height:1.4}
 .notice-body{flex:1}
 .notice-primary{font-size:14px;font-weight:500;margin-bottom:2px}
-.notice-secondary{font-size:12px;color:var(--sub)}
+.notice-secondary{font-size:12px;color:var(--label)}
 .notice-actions{display:flex;gap:6px;margin-top:8px}
 /* Threads */
 .thread-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s;margin-bottom:6px}
@@ -86,7 +88,7 @@ button:active{transform:scale(.97)}
 .t-avatar{width:38px;height:38px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
 .t-info{flex:1;min-width:0}
 .t-name{font-size:14px;font-weight:500}
-.t-preview{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.t-preview{font-size:12px;color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
 .t-context{font-size:11px;font-family:var(--mono);color:var(--accent2);margin-top:2px}
 .t-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
 .t-time{font-size:11px;color:var(--sub);font-family:var(--mono)}
@@ -97,7 +99,7 @@ button:active{transform:scale(.97)}
 .conv-back:hover{color:var(--text)}
 .conv-meta{flex:1}
 .conv-name{font-size:15px;font-weight:500}
-.conv-context{font-size:12px;color:var(--sub);font-family:var(--mono)}
+.conv-context{font-size:12px;color:var(--label);font-family:var(--mono)}
 .conv-online{font-size:11px;font-family:var(--mono)}
 .conv-online.on{color:var(--green)}.conv-online.off{color:var(--sub)}
 .messages{display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:340px;overflow-y:auto;padding-bottom:4px}
@@ -119,14 +121,14 @@ button:active{transform:scale(.97)}
 .cc-avatar{width:36px;height:36px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
 .cc-info{flex:1;min-width:0}
 .cc-name{font-size:14px;font-weight:500}
-.cc-email{font-size:11px;color:var(--sub);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-email{font-size:11px;color:var(--label);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cc-group-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
 .cc-group-label{font-size:12px;color:var(--sub);flex:0 0 auto}
 .cc-group-select{flex:1;font-size:13px;padding:5px 10px;border-radius:6px}
 /* Group management */
 .group-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
 .group-item-name{flex:1;font-size:14px;font-weight:500}
-.group-item-count{font-size:12px;color:var(--sub);font-family:var(--mono)}
+.group-item-count{font-size:12px;color:var(--label);font-family:var(--mono)}
 /* Toggle */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .toggle{position:relative;width:40px;height:22px;flex-shrink:0}
@@ -140,9 +142,9 @@ button:active{transform:scale(.97)}
 .city-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite;flex-shrink:0}
 /* Email section in step 1 */
 .email-section{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px}
-.email-section-label{font-size:11px;font-family:var(--mono);color:var(--sub);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.email-section-label{font-size:11px;font-family:var(--mono);color:var(--accent2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;font-weight:500}
 /* Import coming soon badge */
-.coming-soon{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--sub);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;margin-right:5px}
+.coming-soon{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--label);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;margin-right:5px}
 /* Test mode */
 .test-banner{background:#1a1200;border:1px solid #7a5c00;border-radius:var(--radius);padding:0;overflow:hidden}
 .test-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none}
@@ -162,10 +164,10 @@ button:active{transform:scale(.97)}
 hr{border:none;border-top:1px solid var(--border);margin:6px 0}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 .hidden{display:none!important}
-.note{font-size:12px;color:var(--sub);background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.15);border-radius:8px;padding:10px 13px;line-height:1.6;margin-top:10px}
-.empty-state{text-align:center;color:var(--muted);font-size:13px;padding:24px 0}
+.note{font-size:12px;color:var(--label);background:rgba(124,111,247,.08);border:1px solid rgba(124,111,247,.2);border-radius:8px;padding:10px 13px;line-height:1.6;margin-top:10px}
+.empty-state{text-align:center;color:var(--sub);font-size:14px;padding:28px 0;font-weight:500}
 #statusBar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.section-desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:14px}
+.section-desc{font-size:13px;color:var(--label);line-height:1.6;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -266,7 +268,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
           <div class="city-dot"></div>
           <div>
             <div style="font-size:14px;font-weight:500" id="cityName">Detecting…</div>
-            <div style="font-size:11px;color:var(--sub)" id="citySubtitle">your current location</div>
+            <div style="font-size:11px;color:var(--label)" id="citySubtitle">your current location</div>
           </div>
         </div>
         <div class="toggle-row"><span style="font-size:14px">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
@@ -392,7 +394,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
   <!-- How Orbyt works — shown on setup screens only -->
   <div class="card" id="howCard" style="border-color:rgba(108,92,231,.2)">
     <div class="card-label">how Orbyt works</div>
-    <p style="font-size:13px;color:var(--sub);line-height:1.8">Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.</p>
+    <p style="font-size:13px;color:var(--label);line-height:1.8">Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.</p>
   </div>
 </main>
 
@@ -496,12 +498,30 @@ async function saveIdentity(){
   if(!first||!work.includes('@')){alert('Please enter your name and work email.');return}
   S.name=first+(last?' '+last:'');S.workEmail=work;S.personalEmail=personal;
   S.phone=$('myPhone').value.trim();S.homeCity=$('myCity').value.trim();S.email=work;
+  // Geocode home city — await before proceeding so homeLat is ready before first ping
   if(S.homeCity){
+    const btn=document.querySelector('#step1 .btn-primary');
+    if(btn){btn.textContent='Locating home city…';btn.disabled=true;}
     try{
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,{headers:{'Accept-Language':'en'}});
+      const controller=new AbortController();
+      const timeout=setTimeout(()=>controller.abort(),5000); // 5s timeout
+      const r=await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,
+        {headers:{'Accept-Language':'en'},signal:controller.signal}
+      );
+      clearTimeout(timeout);
       const d=await r.json();
-      if(d&&d[0]){S.homeLat=parseFloat(d[0].lat);S.homeLng=parseFloat(d[0].lon);}
-    }catch(e){console.warn('Geocode failed',e)}
+      if(d&&d[0]){
+        S.homeLat=parseFloat(d[0].lat);
+        S.homeLng=parseFloat(d[0].lon);
+        console.log(`[Orbyt] Home geocoded: ${S.homeCity} → ${S.homeLat}, ${S.homeLng}`);
+      } else {
+        console.warn('[Orbyt] Geocode returned no results for:',S.homeCity);
+      }
+    }catch(e){
+      console.warn('[Orbyt] Geocode failed:',e.message);
+    }
+    if(btn){btn.textContent='Continue →';btn.disabled=false;}
   }
   localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
   S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
@@ -577,6 +597,7 @@ function connectWS(){
 function wsSend(o){if(S.wsReady)S.ws.send(JSON.stringify(o))}
 function ping(){
   if(!S.wsReady||!S.lastPos)return;
+  if(S.homeLat==null)console.warn('[Orbyt] homeLat is null — home suppression will not work. Check that home city geocoding completed.');
   const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
     contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
     homeLat:S.homeLat??null,homeLng:S.homeLng??null};
@@ -591,13 +612,16 @@ function handleNearby(nearby){
   S.gateSet=new Set(nearby.filter(n=>n.distM<=GATE_R).map(n=>n.email));
   for(const n of nearby){
     if(!prev.has(n.email)){
+      // Resolve name: prefer relay-provided name, fall back to local contacts, then email prefix
+      const localContact=S.contacts.find(c=>c.email===n.email);
+      const resolvedName=n.name||localContact?.name||n.email.split('@')[0].replace(/[._]/g,' ').replace(/\w/g,c=>c.toUpperCase());
       const isGate=n.distM<=GATE_R;
       const apt=isGate?nearestAirport(S.lastPos?.lat,S.lastPos?.lng):null;
       const ctx=isGate?(apt?.label||'the airport'):(S.currentCity||'your city');
-      if(!S.threads[n.email])S.threads[n.email]={contact:{name:n.name||n.email,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
+      if(!S.threads[n.email])S.threads[n.email]={contact:{name:resolvedName,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
       else{S.threads[n.email].isOnline=true;S.threads[n.email].context=ctx}
-      addOrbitNotice(n.name||n.email,isGate,apt,n.email);
-      if(S.notifs&&Notification.permission==='granted')new Notification('Orbyt',{body:`${n.name} is in ${ctx}`});
+      addOrbitNotice(resolvedName,isGate,apt,n.email);
+      if(S.notifs&&Notification.permission==='granted')new Notification('Orbyt',{body:`${resolvedName} is in ${ctx}`});
     }
   }
   for(const e of prev)if(!S.orbitSet.has(e)&&!S.gateSet.has(e)&&S.threads[e])S.threads[e].isOnline=false;
@@ -621,9 +645,10 @@ function addOrbitNotice(name,isGate,airport,email){
   const div=document.createElement('div');
   div.className='notice'+(isGate?' gate':'');
   const where=isGate?(airport?.label||'the airport'):(S.currentCity||'your city');
+  const safeName=name&&name!=='undefined'?name:'Contact';
   div.innerHTML=`<div class="notice-icon">${isGate?'✈️':'🏙'}</div>
     <div class="notice-body">
-      <div class="notice-primary">${esc(name)} — ${esc(where)} <span class="badge ${isGate?'gate':'orbit'}">${isGate?'at the gate':'in orbit'}</span></div>
+      <div class="notice-primary">${esc(safeName)} — ${esc(where)} <span class="badge ${isGate?'gate':'orbit'}">${isGate?'at the gate':'in orbit'}</span></div>
       <div class="notice-secondary">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
       <div class="notice-actions"><button class="btn-ping" onclick="openThread('${email}','${esc(name)}')">Message →</button></div>
     </div>`;
