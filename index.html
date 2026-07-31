@@ -22,7 +22,7 @@
   --border2:#305a90;
   --text:#ffffff;
   --sub:#a8c8e8;
-  --muted:#ffffff;
+  --muted:#e8f0f8;
   --placeholder:#5a80a0;
   --accent:#2563eb;
   --accent-light:#1a3050;
@@ -82,7 +82,7 @@ textarea{resize:none;line-height:1.5}
 .field{margin-bottom:14px}
 .field-row{display:flex;gap:10px}
 .field-row .field{flex:1}
-.field-hint{font-size:12px;color:#ffffff;margin-top:5px;line-height:1.5}
+.field-hint{font-size:12px;color:#e8f0f8;margin-top:5px;line-height:1.5}
 .email-section{background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:14px}
 .email-section-label{font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;font-weight:500}
 
@@ -159,8 +159,8 @@ button:active{transform:scale(.97)}
 .compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)}
 .compose-area textarea{flex:1;border-radius:20px;padding:9px 16px;font-size:14px;min-height:40px;max-height:120px;line-height:1.4}
 .quick-msgs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.qmsg{font-size:12px;padding:5px 11px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--border2);border-radius:20px;font-family:var(--font);cursor:pointer;font-weight:500}
-.qmsg:hover{background:var(--accent);color:#fff}
+.qmsg{font-size:12px;padding:5px 11px;background:var(--surface2);color:#90c4ff;border:1.5px solid #305a90;border-radius:20px;font-family:var(--font);cursor:pointer;font-weight:500}
+.qmsg:hover{background:var(--accent);color:#ffffff}
 
 /* ── Contact cards ── */
 .contact-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px}
@@ -176,7 +176,7 @@ button:active{transform:scale(.97)}
 /* ── Groups ── */
 .group-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px}
 .group-item-name{flex:1;font-size:14px;font-weight:500;color:#ffffff}
-.group-item-count{font-size:12px;color:#ffffff;font-family:var(--mono)}
+.group-item-count{font-size:12px;color:#e8f0f8;font-family:var(--mono)}
 
 /* ── Group setup ── */
 .group-setup-row{background:var(--surface);border:1.5px solid var(--border2);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:10px}
@@ -603,11 +603,22 @@ function connectWS(){
   if(S.ws){try{S.ws.close()}catch{}S.ws=null}
   setPill('wsPill','warn','connecting…');
   const ws=new WebSocket(RELAY_URL);S.ws=ws;
-  ws.onopen=()=>{S.wsReady=true;setPill('wsPill','on','connected');if(S.active)ping()};
+  ws.onopen=()=>{S.wsReady=true;setPill('wsPill','on','connected');if(S.active)ping();deliverQueued();};
   ws.onmessage=evt=>{let m;try{m=JSON.parse(evt.data)}catch{return}
     if(m.type==='nearby')handleNearby(m.nearby||[]);
     if(m.type==='incoming_nudge')handleIncoming(m);
-    if(m.type==='nudge_result'&&!m.success)addSysNotice('⚠️',`Message failed: ${m.reason}`);
+    if(m.type==='nudge_result'){
+      if(m.success){
+        // Mark matching queued message as delivered
+        Object.values(S.threads).forEach(t=>{
+          t.messages.forEach(msg=>{if(msg.id===m.msgId)msg.queued=false;});
+        });
+        saveThreads();
+        if(S.activeThread)renderMessages(S.activeThread);
+      } else {
+        addSysNotice('⚠️',`Message failed: ${m.reason}`);
+      }
+    }
   };
   ws.onclose=()=>{S.wsReady=false;setPill('wsPill','off','disconnected');if(S.active)setTimeout(connectWS,5000)};
   ws.onerror=()=>setPill('wsPill','warn','error');
@@ -648,6 +659,7 @@ function handleIncoming(msg){
   const{from,fromName,message}=msg;
   if(!S.threads[from])S.threads[from]={contact:{name:fromName||from,email:from},messages:[],context:'in orbit',unread:false,isOnline:true};
   S.threads[from].messages.push({text:message,sent:false,time:Date.now()});
+  saveThreads();
   if(S.activeThread===from)renderMessages(from);
   else{S.threads[from].unread=true;updateUnread()}
   renderThreadList();
@@ -696,7 +708,16 @@ function sendNewMessage(){
   const to=$('newMsgTarget').value,text=$('newMsgText').value.trim();
   if(!to){alert('Choose a contact to message.');return}
   if(!text){alert('Write a message first.');return}
-  sendMsg(to,text);$('newMsgText').value='';
+  if(!S.threads[to]){
+    const c=S.contacts.find(c=>c.email===to);
+    S.threads[to]={contact:{name:c?.name||to,email:to},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:false};
+  }
+  const msgId='msg_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+  const queued=!S.wsReady;
+  S.threads[to].messages.push({text,sent:true,queued,id:msgId,time:Date.now()});
+  saveThreads();
+  sendMsg(to,text,msgId);
+  $('newMsgText').value='';
   const c=S.contacts.find(c=>c.email===to);
   openThread(to,c?.name||to);
 }
@@ -722,7 +743,7 @@ function closeConv(){
 function renderMessages(email){
   const t=S.threads[email];const el=$('messageList');
   if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state">Say hello to ${esc(t?.contact.name||'this contact')}</div>`;return}
-  el.innerHTML=t.messages.map(m=>`<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
+  el.innerHTML=t.messages.map(m=>`<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${m.queued?' · <span style="opacity:.6">pending</span>':''}</div></div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
 function renderThreadList(){
@@ -750,15 +771,21 @@ function handleReplyKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();s
 function sendReply(){
   const box=$('replyBox'),text=box.value.trim();
   if(!text||!S.activeThread)return;
-  sendMsg(S.activeThread,text);
-  S.threads[S.activeThread].messages.push({text,sent:true,time:Date.now()});
+  sendMsg(S.activeThread,text,rMsgId);
+  const rMsgId='msg_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+  const rQueued=!S.wsReady;
+  S.threads[S.activeThread].messages.push({text,sent:true,queued:rQueued,id:rMsgId,time:Date.now()});
+  saveThreads();
   box.value='';box.style.height='auto';
   $('quickMsgs').classList.remove('hidden');
   renderMessages(S.activeThread);renderThreadList();
 }
-function sendMsg(to,text){
-  if(!S.wsReady){addSysNotice('ℹ️','Enable Orbyt to send messages.');return}
-  wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to,message:text});
+function sendMsg(to,text,msgId){
+  if(!S.wsReady){
+    addSysNotice('ℹ️','Message saved locally. It will be delivered once your contact has Orbyt enabled.');
+    return; // message already stored locally with queued:true by caller
+  }
+  wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to,message:text,msgId:msgId||null});
 }
 
 // ── Contacts tab ──────────────────────────────────────────────────────────
@@ -803,6 +830,30 @@ function addGroupLive(){S.groups.push({name:'New group',active:true});saveData()
 function saveData(){
   localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
   localStorage.setItem('orbyt_groups',JSON.stringify(S.groups));
+}
+function deliverQueued(){
+  if(!S.wsReady)return;
+  Object.values(S.threads).forEach(t=>{
+    t.messages.forEach(m=>{
+      if(m.sent&&m.queued){
+        wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to:t.contact.email,message:m.text,msgId:m.id});
+      }
+    });
+  });
+}
+
+function saveThreads(){
+  const toStore={};
+  Object.entries(S.threads).forEach(([k,t])=>{
+    toStore[k]={contact:t.contact,messages:t.messages,context:t.context,unread:false,isOnline:false};
+  });
+  try{localStorage.setItem('orbyt_threads',JSON.stringify(toStore));}catch(e){console.warn('Thread save failed',e);}
+}
+function loadThreads(){
+  try{
+    const raw=localStorage.getItem('orbyt_threads');
+    if(raw)Object.assign(S.threads,JSON.parse(raw));
+  }catch(e){console.warn('Thread load failed',e);}
 }
 
 // ── Location ──────────────────────────────────────────────────────────────
@@ -902,6 +953,7 @@ function resetAll(){
   if(grp)S.groups=JSON.parse(grp);else S.groups=SUGGESTED_GROUPS.map(n=>({name:n,active:true}));
   if(con)S.contacts=JSON.parse(con);
   if(id&&con){
+    loadThreads();
     renderContactsTab();renderThreadList();
     showStep(4);showTab('orbit');
     startProximity();
