@@ -8,166 +8,228 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Orbyt">
 <meta name="mobile-web-app-capable" content="yes">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
 :root{
-  --bg:#0c0c14;--surface:#1a1a28;--border:#2e2e45;--muted:#4a4a6a;
-  --text:#f0f0fa;--sub:#a0a0c8;--label:#c8c8e8;--placeholder:#6060a0;
-  --accent:#7c6ff7;--accent2:#b8b0ff;
-  --green:#4dfa9a;--yellow:#fad64d;--radius:12px;
-  --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --bg:#f5f4ff;
+  --surface:#ffffff;
+  --surface2:#f0effe;
+  --border:#dddaf5;
+  --border2:#c8c3f0;
+  --text:#1a1830;
+  --sub:#5a5680;
+  --muted:#8884aa;
+  --placeholder:#aaa8cc;
+  --accent:#6c5ce7;
+  --accent-light:#ede9ff;
+  --accent-dark:#5347c4;
+  --accent2:#8b7ff0;
+  --green:#00a86b;
+  --green-light:#e6f7f1;
+  --yellow:#d4900a;
+  --yellow-light:#fff8e6;
+  --red:#c0392b;
+  --red-light:#fdf0ee;
+  --radius:12px;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+  --shadow:0 1px 4px rgba(108,92,231,.1),0 4px 16px rgba(108,92,231,.06);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:0 16px 80px}
-header{width:100%;max-width:480px;padding:40px 0 4px;display:flex;align-items:baseline;gap:10px}
-.wordmark{font-size:24px;font-weight:600;letter-spacing:-.5px}
+
+/* ── Header ── */
+header{width:100%;max-width:480px;padding:36px 0 6px;display:flex;align-items:baseline;gap:10px}
+.wordmark{font-size:26px;font-weight:600;letter-spacing:-.5px;color:var(--text)}
 .wordmark em{color:var(--accent);font-style:normal}
-.tagline{font-size:12px;color:var(--accent2);font-family:var(--mono);letter-spacing:.05em}
-main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;margin-top:20px}
-/* Steps */
-.steps{display:flex;gap:5px;margin-bottom:20px}
-.step{flex:1;height:2px;border-radius:2px;background:var(--border);transition:background .3s}
-.step.done{background:var(--accent)}.step.active{background:var(--accent2)}
-/* Nav */
-.nav{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:4px}
-.nav-tab{flex:1;padding:8px 4px;border-radius:7px;border:none;background:transparent;color:var(--label);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
-.nav-tab.active{background:var(--accent);color:#fff}
-.nav-tab .ub{background:rgba(255,255,255,.25);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 5px;border-radius:20px;min-width:16px;text-align:center}
-/* Cards */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:0 2px 12px rgba(0,0,0,.3)}
-.card-label{font-size:11px;font-family:var(--mono);color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;font-weight:500}
-/* Inputs */
-input[type=text],input[type=email],input[type=tel],textarea,select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s;appearance:none}
-input::placeholder,textarea::placeholder{color:var(--placeholder);opacity:1}
-input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+.tagline{font-size:12px;color:var(--accent2);font-family:var(--mono);letter-spacing:.04em}
+
+main{width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px;margin-top:18px}
+
+/* ── Steps ── */
+.steps{display:flex;gap:5px;margin-bottom:18px}
+.step{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.step.done{background:var(--accent)}
+.step.active{background:var(--accent2)}
+
+/* ── Nav ── */
+.nav{display:flex;gap:3px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;box-shadow:var(--shadow-sm);margin-bottom:6px}
+.nav-tab{flex:1;padding:9px 4px;border-radius:9px;border:none;background:transparent;color:var(--sub);font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.nav-tab.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(108,92,231,.35)}
+.nav-tab:not(.active):hover{background:var(--accent-light);color:var(--accent)}
+.nav-tab .ub{background:rgba(255,255,255,.3);color:#fff;font-size:10px;font-family:var(--mono);padding:1px 5px;border-radius:20px}
+
+/* ── Cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+.card-label{font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;font-weight:500}
+
+/* ── Form elements ── */
+label{display:block;font-size:13px;color:var(--sub);margin-bottom:5px;font-weight:500}
+input[type=text],input[type=email],input[type=tel],textarea,select{
+  width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:var(--font);font-size:14px;padding:10px 14px;
+  outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(108,92,231,.12)}
+input::placeholder,textarea::placeholder{color:var(--placeholder)}
 textarea{resize:none;line-height:1.5}
-label{display:block;font-size:12px;color:var(--label);margin-bottom:5px;font-weight:500}
-.field{margin-bottom:14px}.field-row{display:flex;gap:10px}.field-row .field{flex:1}
-.field-hint{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5}
-/* Buttons */
-button{cursor:pointer;font-family:var(--font);font-weight:500;border:none;border-radius:8px;transition:opacity .15s,transform .1s}
+.field{margin-bottom:14px}
+.field-row{display:flex;gap:10px}
+.field-row .field{flex:1}
+.field-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+.email-section{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.email-section-label{font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;font-weight:500}
+
+/* ── Buttons ── */
+button{cursor:pointer;font-family:var(--font);font-weight:500;border:none;border-radius:8px;transition:all .15s}
 button:active{transform:scale(.97)}
-.btn-primary{background:var(--accent);color:#fff;width:100%;padding:12px;font-size:15px}
-.btn-primary:hover{opacity:.88}
-.btn-sm{background:var(--border);color:var(--text);font-size:13px;padding:7px 14px}
-.btn-sm:hover{background:var(--muted)}
-.btn-ghost{background:transparent;color:var(--sub);font-size:13px;padding:7px 14px;border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:transparent;color:#ff6b6b;font-size:12px;padding:4px 8px;border:1px solid rgba(255,107,107,.3);border-radius:6px}
-.btn-danger:hover{background:rgba(255,107,107,.1)}
-.btn-ping{background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.25);font-size:12px;padding:4px 12px;border-radius:20px}
-.btn-ping:hover{background:rgba(108,92,231,.22)}
-.btn-icon{background:var(--accent);color:#fff;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;padding:0;line-height:1}
-/* Pills */
-.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);padding:3px 9px;border-radius:20px;border:1px solid var(--border);color:var(--sub)}
-.pill.on{border-color:var(--green);color:var(--green)}
-.pill.off{border-color:var(--muted);color:var(--muted)}
-.pill.warn{border-color:var(--yellow);color:var(--yellow)}
+.btn-primary{background:var(--accent);color:#fff;width:100%;padding:13px;font-size:15px;font-weight:600;box-shadow:0 4px 14px rgba(108,92,231,.4)}
+.btn-primary:hover{background:var(--accent-dark);box-shadow:0 4px 18px rgba(108,92,231,.5)}
+.btn-sm{background:var(--surface2);color:var(--accent);font-size:13px;padding:7px 14px;border:1.5px solid var(--border2)}
+.btn-sm:hover{background:var(--accent-light);border-color:var(--accent)}
+.btn-ghost{background:transparent;color:var(--sub);font-size:13px;padding:8px 14px;border:1.5px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.btn-danger{background:transparent;color:var(--red);font-size:12px;padding:5px 10px;border:1.5px solid rgba(192,57,43,.25);border-radius:7px}
+.btn-danger:hover{background:var(--red-light);border-color:var(--red)}
+.btn-ping{background:var(--accent-light);color:var(--accent);border:1.5px solid var(--border2);font-size:12px;padding:5px 13px;border-radius:20px;font-weight:500}
+.btn-ping:hover{background:var(--accent);color:#fff}
+.btn-icon{background:var(--accent);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;padding:0;box-shadow:0 2px 8px rgba(108,92,231,.4)}
+.btn-icon:hover{background:var(--accent-dark)}
+
+/* ── Status pills ── */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-family:var(--mono);padding:4px 10px;border-radius:20px;font-weight:500}
+.pill.on{background:var(--green-light);color:var(--green);border:1.5px solid rgba(0,168,107,.25)}
+.pill.off{background:var(--surface2);color:var(--muted);border:1.5px solid var(--border)}
+.pill.warn{background:var(--yellow-light);color:var(--yellow);border:1.5px solid rgba(212,144,10,.25)}
 .pill .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
 .pill.on .dot{animation:blink 1.8s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
-.badge{font-size:11px;font-family:var(--mono);border-radius:20px;padding:2px 8px;flex-shrink:0}
-.badge.orbit{color:var(--accent2);background:rgba(162,155,254,.08);border:1px solid rgba(162,155,254,.2)}
-.badge.gate{color:var(--yellow);background:rgba(250,214,77,.08);border:1px solid rgba(250,214,77,.2)}
-/* Notices */
-.notice{display:flex;gap:12px;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--border);animation:sIn .3s ease;margin-bottom:8px}
-.notice.gate{border-color:rgba(250,214,77,.25);background:rgba(250,214,77,.03)}
-@keyframes sIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-.notice-icon{font-size:20px;flex-shrink:0;line-height:1.4}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Badges ── */
+.badge{font-size:11px;font-family:var(--mono);border-radius:20px;padding:2px 9px;font-weight:500}
+.badge.orbit{color:var(--accent-dark);background:var(--accent-light);border:1px solid var(--border2)}
+.badge.gate{color:var(--yellow);background:var(--yellow-light);border:1px solid rgba(212,144,10,.25)}
+
+/* ── Orbit notices ── */
+.notice{display:flex;gap:12px;padding:14px 16px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);margin-bottom:8px;animation:sIn .3s ease}
+.notice.gate{background:var(--yellow-light);border-color:rgba(212,144,10,.3)}
+@keyframes sIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.notice-icon{font-size:22px;flex-shrink:0;line-height:1.3}
 .notice-body{flex:1}
-.notice-primary{font-size:14px;font-weight:500;margin-bottom:2px}
-.notice-secondary{font-size:12px;color:var(--label)}
+.notice-primary{font-size:14px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.notice-secondary{font-size:12px;color:var(--sub)}
 .notice-actions{display:flex;gap:6px;margin-top:8px}
-/* Threads */
-.thread-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s;margin-bottom:6px}
-.thread-item:hover,.thread-item:active{border-color:var(--accent)}
-.thread-item.unread{border-color:rgba(108,92,231,.35);background:rgba(108,92,231,.04)}
-.t-avatar{width:38px;height:38px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
+
+/* ── Thread list ── */
+.thread-item{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:6px}
+.thread-item:hover{border-color:var(--accent);background:var(--accent-light)}
+.thread-item.unread{border-color:var(--accent2);background:var(--accent-light)}
+.t-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-light);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--accent);flex-shrink:0}
 .t-info{flex:1;min-width:0}
-.t-name{font-size:14px;font-weight:500}
-.t-preview{font-size:12px;color:var(--label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.t-context{font-size:11px;font-family:var(--mono);color:var(--accent2);margin-top:2px}
+.t-name{font-size:14px;font-weight:600;color:var(--text)}
+.t-preview{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.t-context{font-size:11px;font-family:var(--mono);color:var(--accent2);margin-top:2px;font-weight:500}
 .t-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
-.t-time{font-size:11px;color:var(--sub);font-family:var(--mono)}
-.unread-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
-/* Conversation */
-.conv-header{display:flex;align-items:center;gap:10px;padding:0 0 14px;border-bottom:1px solid var(--border);margin-bottom:14px}
-.conv-back{background:transparent;border:none;color:var(--sub);font-size:24px;padding:0;cursor:pointer;line-height:1;width:32px}
-.conv-back:hover{color:var(--text)}
+.t-time{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.unread-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+
+/* ── Conversation ── */
+.conv-header{display:flex;align-items:center;gap:10px;padding:0 0 14px;border-bottom:1.5px solid var(--border);margin-bottom:14px}
+.conv-back{background:var(--surface2);border:1.5px solid var(--border);color:var(--accent);font-size:18px;padding:0;cursor:pointer;line-height:1;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-weight:600}
+.conv-back:hover{background:var(--accent-light)}
 .conv-meta{flex:1}
-.conv-name{font-size:15px;font-weight:500}
-.conv-context{font-size:12px;color:var(--label);font-family:var(--mono)}
-.conv-online{font-size:11px;font-family:var(--mono)}
-.conv-online.on{color:var(--green)}.conv-online.off{color:var(--sub)}
+.conv-name{font-size:15px;font-weight:600;color:var(--text)}
+.conv-context{font-size:12px;color:var(--sub);font-family:var(--mono)}
+.conv-online{font-size:12px;font-family:var(--mono);font-weight:500}
+.conv-online.on{color:var(--green)}.conv-online.off{color:var(--muted)}
 .messages{display:flex;flex-direction:column;gap:8px;min-height:200px;max-height:340px;overflow-y:auto;padding-bottom:4px}
 .msg{display:flex;flex-direction:column;max-width:80%}
 .msg.sent{align-self:flex-end;align-items:flex-end}
 .msg.recv{align-self:flex-start;align-items:flex-start}
-.msg-bubble{padding:9px 13px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
+.msg-bubble{padding:9px 14px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word}
 .msg.sent .msg-bubble{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
-.msg.recv .msg-bubble{background:var(--surface);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
-.msg-time{font-size:10px;color:var(--sub);font-family:var(--mono);margin-top:3px;padding:0 4px}
-.compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.compose-area textarea{flex:1;border-radius:20px;padding:9px 16px;font-size:14px;min-height:40px;max-height:120px;line-height:1.4;overflow-y:auto}
+.msg.recv .msg-bubble{background:var(--surface2);border:1.5px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;padding:0 4px}
+.compose-area{display:flex;align-items:flex-end;gap:8px;margin-top:12px;padding-top:12px;border-top:1.5px solid var(--border)}
+.compose-area textarea{flex:1;border-radius:20px;padding:9px 16px;font-size:14px;min-height:40px;max-height:120px;line-height:1.4}
 .quick-msgs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.qmsg{font-size:12px;padding:5px 10px;background:var(--surface);color:var(--sub);border:1px solid var(--border);border-radius:20px;font-family:var(--font);cursor:pointer}
-.qmsg:hover{border-color:var(--accent);color:var(--accent2)}
-/* Contact cards — Contacts tab */
-.contact-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.qmsg{font-size:12px;padding:5px 11px;background:var(--accent-light);color:var(--accent);border:1.5px solid var(--border2);border-radius:20px;font-family:var(--font);cursor:pointer;font-weight:500}
+.qmsg:hover{background:var(--accent);color:#fff}
+
+/* ── Contact cards ── */
+.contact-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px}
 .contact-card-top{display:flex;align-items:center;gap:10px}
-.cc-avatar{width:36px;height:36px;border-radius:50%;background:var(--muted);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent2);flex-shrink:0}
+.cc-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent-light);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--accent);flex-shrink:0}
 .cc-info{flex:1;min-width:0}
-.cc-name{font-size:14px;font-weight:500}
-.cc-email{font-size:11px;color:var(--label);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-name{font-size:14px;font-weight:600;color:var(--text)}
+.cc-email{font-size:12px;color:var(--sub);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cc-group-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--border)}
-.cc-group-label{font-size:12px;color:var(--sub);flex:0 0 auto}
-.cc-group-select{flex:1;font-size:13px;padding:5px 10px;border-radius:6px}
-/* Group management */
-.group-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
-.group-item-name{flex:1;font-size:14px;font-weight:500}
-.group-item-count{font-size:12px;color:var(--label);font-family:var(--mono)}
-/* Toggle */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.toggle{position:relative;width:40px;height:22px;flex-shrink:0}
+.cc-group-label{font-size:12px;color:var(--sub);font-weight:500;flex-shrink:0}
+.cc-group-select{flex:1;font-size:13px;padding:5px 10px;border-radius:7px;color:var(--text);font-weight:500}
+
+/* ── Groups ── */
+.group-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px}
+.group-item-name{flex:1;font-size:14px;font-weight:500;color:var(--text)}
+.group-item-count{font-size:12px;color:var(--muted);font-family:var(--mono)}
+
+/* ── Group setup ── */
+.group-setup-row{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:10px}
+.group-setup-row input[type=text]{background:transparent;border:none;font-size:13px;padding:0;box-shadow:none}
+.group-setup-row input[type=text]:focus{box-shadow:none;border:none}
+
+/* ── Toggle ── */
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.slider{position:absolute;inset:0;background:var(--border);border-radius:11px;cursor:pointer;transition:background .2s}
-.slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--sub);border-radius:50%;transition:transform .2s,background .2s}
-.toggle input:checked+.slider{background:rgba(108,92,231,.3)}
-.toggle input:checked+.slider::before{transform:translateX(18px);background:var(--accent)}
-/* City status */
-.city-status{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:12px}
-.city-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite;flex-shrink:0}
-/* Email section in step 1 */
-.email-section{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:14px}
-.email-section-label{font-size:11px;font-family:var(--mono);color:var(--accent2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;font-weight:500}
-/* Import coming soon badge */
-.coming-soon{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:var(--mono);color:var(--label);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:3px 10px;margin-right:5px}
-/* Test mode */
-.test-banner{background:#1a1200;border:1px solid #7a5c00;border-radius:var(--radius);padding:0;overflow:hidden}
-.test-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none}
-.test-dot{width:7px;height:7px;border-radius:50%;background:#f0b429;flex-shrink:0;animation:blink 2s infinite}
-.test-title{font-size:12px;font-family:var(--mono);color:#f0b429;letter-spacing:.08em;text-transform:uppercase;flex:1}
-.test-chevron{font-size:14px;color:#7a5c00;transition:transform .2s}
+.slider{position:absolute;inset:0;background:var(--border);border-radius:12px;cursor:pointer;transition:background .2s;border:1.5px solid var(--border2)}
+.slider::before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked+.slider{background:var(--accent);border-color:var(--accent-dark)}
+.toggle input:checked+.slider::before{transform:translateX(20px)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-label{font-size:14px;font-weight:500;color:var(--text)}
+
+/* ── City status ── */
+.city-status{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:14px}
+.city-dot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:blink 1.8s infinite;flex-shrink:0;box-shadow:0 0 0 3px var(--green-light)}
+.city-name-text{font-size:15px;font-weight:600;color:var(--text)}
+.city-sub-text{font-size:12px;color:var(--sub)}
+
+/* ── Note / hint boxes ── */
+.note{font-size:13px;color:var(--sub);background:var(--accent-light);border:1.5px solid var(--border2);border-radius:9px;padding:11px 14px;line-height:1.6;margin-top:10px}
+.section-desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:14px;font-weight:400}
+.coming-soon{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-family:var(--mono);color:var(--accent2);background:var(--accent-light);border:1.5px solid var(--border2);border-radius:20px;padding:3px 10px;margin-right:4px;font-weight:500}
+
+/* ── Empty state ── */
+.empty-state{text-align:center;color:var(--muted);font-size:14px;padding:28px 0;font-weight:500}
+
+/* ── Test mode ── */
+.test-banner{background:#fffbf0;border:1.5px solid #e8c84a;border-radius:var(--radius);overflow:hidden}
+.test-header{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;user-select:none;background:#fffbf0}
+.test-dot{width:7px;height:7px;border-radius:50%;background:#d4900a;flex-shrink:0;animation:blink 2s infinite}
+.test-title{font-size:12px;font-family:var(--mono);color:#8a6000;letter-spacing:.08em;text-transform:uppercase;flex:1;font-weight:500}
+.test-chevron{font-size:14px;color:#c0a000;transition:transform .2s}
 .test-chevron.open{transform:rotate(180deg)}
-.test-body{padding:0 14px 14px;display:none}
+.test-body{padding:0 14px 14px;display:none;background:#fffbf0}
 .test-body.open{display:block}
-.test-note{font-size:12px;color:#a07a20;line-height:1.6;margin-bottom:12px;padding:8px 10px;background:rgba(240,180,41,.06);border-radius:6px;border-left:2px solid #7a5c00}
-.test-section-label{font-size:11px;font-family:var(--mono);color:#7a5c00;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;margin-top:12px}
-.test-contact-row{padding:10px 0;border-top:1px solid #2a1e00}
-.test-contact-name{font-size:13px;color:#c9960f;font-weight:500;margin-bottom:6px}
-.btn-test{background:#2a1e00;color:#f0b429;border:1px solid #7a5c00;font-size:12px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:var(--font)}
-.btn-test:hover{background:#3a2a00}
-.sim-badge{font-size:10px;font-family:var(--mono);color:#f0b429;background:#2a1e00;border:1px solid #5a4200;border-radius:20px;padding:1px 7px;margin-left:4px}
-hr{border:none;border-top:1px solid var(--border);margin:6px 0}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.test-note{font-size:12px;color:#6a5000;line-height:1.6;margin-bottom:12px;padding:9px 11px;background:#fff8dc;border-radius:7px;border-left:3px solid #e8c84a}
+.test-section-label{font-size:11px;font-family:var(--mono);color:#8a6000;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;margin-top:12px;font-weight:500}
+.test-contact-row{padding:10px 0;border-top:1px solid #e8e0c0}
+.test-contact-name{font-size:13px;color:#3a2800;font-weight:600;margin-bottom:6px}
+.btn-test{background:#fff8dc;color:#8a6000;border:1.5px solid #e8c84a;font-size:12px;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:var(--font);font-weight:500}
+.btn-test:hover{background:#e8c84a;color:#3a2800}
+.sim-badge{font-size:10px;font-family:var(--mono);color:#8a6000;background:#fff8dc;border:1px solid #e8c84a;border-radius:20px;padding:1px 7px}
+
+hr{border:none;border-top:1.5px solid var(--border);margin:6px 0}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 .hidden{display:none!important}
-.note{font-size:12px;color:var(--label);background:rgba(124,111,247,.08);border:1px solid rgba(124,111,247,.2);border-radius:8px;padding:10px 13px;line-height:1.6;margin-top:10px}
-.empty-state{text-align:center;color:var(--sub);font-size:14px;padding:28px 0;font-weight:500}
 #statusBar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.section-desc{font-size:13px;color:var(--label);line-height:1.6;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -182,7 +244,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
     <div class="step" id="s3"></div>
   </div>
 
-  <!-- ── STEP 1: Identity ── -->
+  <!-- ── STEP 1 ── -->
   <div class="card" id="step1">
     <div class="card-label">01 — about you</div>
     <div class="field-row">
@@ -197,13 +259,13 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
         <div class="field-hint">Used by colleagues and professional contacts to find you</div>
       </div>
       <div class="field" style="margin-bottom:0">
-        <label>Personal email <span style="color:var(--sub);font-size:11px">optional</span></label>
+        <label>Personal email <span style="color:var(--muted);font-size:11px;font-weight:400">optional</span></label>
         <input type="email" id="myPersonalEmail" placeholder="joe.doe@gmail.com">
         <div class="field-hint">Used by friends and family who don't have your work email</div>
       </div>
     </div>
     <div class="field">
-      <label>Phone <span style="color:var(--sub);font-size:11px">optional — shown to mutual contacts</span></label>
+      <label>Phone <span style="color:var(--muted);font-size:11px;font-weight:400">optional — shown to mutual contacts</span></label>
       <input type="tel" id="myPhone" placeholder="+1 555 000 0000">
     </div>
     <div class="field">
@@ -212,39 +274,36 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
       <div class="field-hint">Any city or town — Orbyt uses this to know when you're away from home</div>
     </div>
     <button class="btn-primary" onclick="saveIdentity()">Continue →</button>
-    <div class="note">Orbyt detects which city you're in automatically. No need to announce travel plans or check in on arrival.</div>
+    <div class="note">Orbyt detects your city automatically. No need to announce travel plans or check in on arrival.</div>
   </div>
 
-  <!-- ── STEP 2: Contacts & Groups ── -->
+  <!-- ── STEP 2 ── -->
   <div class="card hidden" id="step2">
     <div class="card-label">02 — contacts & groups</div>
-    <p class="section-desc">Add contacts by email — work or personal. Then assign each one to a group. Groups let you control who can detect you.</p>
-
+    <p class="section-desc">Add contacts by email — work or personal. Groups let you control who can detect you and when.</p>
     <div class="field">
-      <label>Contact emails (one per line)</label>
+      <label>Contact emails <span style="color:var(--muted);font-size:11px;font-weight:400">one per line</span></label>
       <textarea id="contactsRaw" rows="5" placeholder="colleague@mckinsey.com&#10;client@company.com&#10;friend@gmail.com&#10;sister@hotmail.com"></textarea>
-      <div class="field-hint" style="margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <div class="field-hint" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
         <span class="coming-soon">📎 LinkedIn import — coming soon</span>
         <span class="coming-soon">✉️ Email import — coming soon</span>
       </div>
     </div>
-
     <div class="field">
-      <label>Your groups <span style="color:var(--sub);font-size:11px">— tap a name to rename, toggle to enable/disable</span></label>
+      <label>Groups <span style="color:var(--muted);font-size:11px;font-weight:400">tap name to rename · toggle to enable/disable</span></label>
       <div id="groupSetupList" style="display:flex;flex-direction:column;gap:6px"></div>
       <button class="btn-ghost" style="margin-top:8px;width:100%;font-size:13px" onclick="addGroup()">+ add group</button>
     </div>
-
-    <div class="note" style="margin-bottom:14px">After adding emails, you'll assign each contact to a group on the next screen.</div>
+    <div class="note" style="margin-bottom:14px">You'll assign each contact to a group on the next screen.</div>
     <button class="btn-primary" onclick="saveContacts()">Continue →</button>
   </div>
 
-  <!-- ── STEP 2b: Assign contacts to groups ── -->
+  <!-- ── STEP 2b: Assign ── -->
   <div class="card hidden" id="step2b">
-    <div class="card-label">03 — assign contacts to groups</div>
-    <p class="section-desc">Assign each contact to a group. This controls when they can detect you and vice versa.</p>
+    <div class="card-label">03 — assign to groups</div>
+    <p class="section-desc">Assign each contact to a group. You can change this later in the Contacts tab.</p>
     <div id="assignList"></div>
-    <button class="btn-primary" style="margin-top:8px" onclick="saveAssignments()">Set up Orbyt →</button>
+    <button class="btn-primary" style="margin-top:12px" onclick="saveAssignments()">Set up Orbyt →</button>
   </div>
 
   <!-- ── STEP 3: App ── -->
@@ -257,7 +316,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
       <button class="nav-tab" id="tab-contacts" onclick="showTab('contacts')">👥 Contacts</button>
     </div>
 
-    <!-- ── Orbyt tab ── -->
+    <!-- Orbyt pane -->
     <div id="pane-orbit">
       <div class="card">
         <div id="statusBar">
@@ -267,24 +326,24 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
         <div class="city-status">
           <div class="city-dot"></div>
           <div>
-            <div style="font-size:14px;font-weight:500" id="cityName">Detecting…</div>
-            <div style="font-size:11px;color:var(--label)" id="citySubtitle">your current location</div>
+            <div class="city-name-text" id="cityName">Detecting…</div>
+            <div class="city-sub-text" id="citySubtitle">your current location</div>
           </div>
         </div>
-        <div class="toggle-row"><span style="font-size:14px">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
-        <div class="toggle-row"><span style="font-size:14px">Notifications</span><label class="toggle"><input type="checkbox" id="notifToggle" onchange="toggleNotifs()" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span class="toggle-label">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span class="toggle-label">Notifications</span><label class="toggle"><input type="checkbox" id="notifToggle" onchange="toggleNotifs()" checked><span class="slider"></span></label></div>
       </div>
 
-      <div class="card" style="margin-top:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card" style="margin-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div class="card-label" style="margin:0">Orbyt Notices</div>
-          <button class="btn-sm" style="font-size:11px;padding:3px 10px" onclick="forcePing()">Force check</button>
+          <button class="btn-sm" style="font-size:12px;padding:5px 12px" onclick="forcePing()">Force check</button>
         </div>
         <div id="noticesFeed"><div class="empty-state">No one in your orbit yet</div></div>
       </div>
 
       <!-- Test mode -->
-      <div class="test-banner" style="margin-top:10px">
+      <div class="test-banner" style="margin-top:12px">
         <div class="test-header" onclick="toggleTest()">
           <div class="test-dot"></div>
           <div class="test-title">Test mode — beta only</div>
@@ -293,7 +352,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
         <div class="test-body" id="testBody">
           <div class="test-note">
             This panel is only in the test build of Orbyt to verify that the engineering works correctly. It will not appear in the public version.<br><br>
-            In the production app, Orbyt only notifies when two contacts share a city <strong style="color:#f0b429">and at least one of them is away from home</strong>. The simulations below bypass that rule.
+            In the production app, Orbyt only notifies when two contacts share a city <strong>and at least one is away from home</strong>. The simulations below bypass that rule.
           </div>
           <div class="test-section-label">Test your contacts</div>
           <div id="testContactList"></div>
@@ -301,22 +360,19 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
       </div>
     </div>
 
-    <!-- ── Messages tab ── -->
+    <!-- Messages pane -->
     <div id="pane-messages" class="hidden">
       <div id="threadListView">
         <div class="card">
           <div class="card-label">Messages</div>
-          <p class="section-desc">Message any contact directly — no need to switch to another app. When someone enters your orbit, tap their notice to start a conversation here.</p>
+          <p class="section-desc">Message any contact directly — no need to leave Orbyt. Tap a thread or send a new message below.</p>
           <div id="threadList"><div class="empty-state">No messages yet</div></div>
         </div>
-        <!-- New message button -->
-        <div class="card" style="margin-top:10px">
+        <div class="card" style="margin-top:12px">
           <div class="card-label">New message</div>
           <div class="field">
             <label>Send to</label>
-            <select id="newMsgTarget">
-              <option value="">— choose a contact —</option>
-            </select>
+            <select id="newMsgTarget"><option value="">— choose a contact —</option></select>
           </div>
           <div class="quick-msgs">
             <button class="qmsg" onclick="setNewMsg('Dinner tonight?')">Dinner tonight?</button>
@@ -331,8 +387,6 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
           </div>
         </div>
       </div>
-
-      <!-- Conversation view -->
       <div id="convView" class="hidden">
         <div class="card">
           <div class="conv-header">
@@ -347,7 +401,7 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
           <div class="quick-msgs" id="quickMsgs">
             <button class="qmsg" onclick="fillReply('Dinner tonight?')">Dinner?</button>
             <button class="qmsg" onclick="fillReply('Coffee this week?')">Coffee?</button>
-            <button class="qmsg" onclick="fillReply('Same city — want to catch up?')">Catch up?</button>
+            <button class="qmsg" onclick="fillReply('Same city — catch up?')">Catch up?</button>
             <button class="qmsg" onclick="fillReply('At the airport — lounge?')">Lounge?</button>
           </div>
           <div class="compose-area">
@@ -358,51 +412,44 @@ hr{border:none;border-top:1px solid var(--border);margin:6px 0}
       </div>
     </div>
 
-    <!-- ── Contacts tab ── -->
+    <!-- Contacts pane -->
     <div id="pane-contacts" class="hidden">
       <div class="card">
         <div class="card-label">Your contacts</div>
         <p class="section-desc">Add or remove contacts and assign them to groups. Import from LinkedIn or email is coming soon.</p>
-
-        <!-- Add contact inline -->
-        <div style="display:flex;gap:8px;margin-bottom:14px">
-          <input type="email" id="addContactEmail" placeholder="email@example.com" style="flex:1;font-size:13px;padding:8px 12px">
-          <button class="btn-sm" onclick="addContact()" style="flex-shrink:0">Add</button>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="email" id="addContactEmail" placeholder="email@example.com" style="flex:1;font-size:13px;padding:9px 13px">
+          <button class="btn-sm" onclick="addContact()">Add</button>
         </div>
-        <div style="margin-bottom:16px;display:flex;gap:6px;flex-wrap:wrap">
+        <div style="margin-bottom:14px;display:flex;gap:6px;flex-wrap:wrap">
           <span class="coming-soon">📎 LinkedIn import — coming soon</span>
           <span class="coming-soon">✉️ Email import — coming soon</span>
         </div>
-
         <div id="contactsManageList"></div>
       </div>
-
-      <!-- Groups management -->
-      <div class="card" style="margin-top:10px">
+      <div class="card" style="margin-top:12px">
         <div class="card-label">Groups</div>
-        <p class="section-desc">Groups control who can detect you. Toggle a group off to go invisible to that group.</p>
+        <p class="section-desc">Toggle a group off to become invisible to those contacts.</p>
         <div id="groupsManageList"></div>
         <button class="btn-ghost" style="width:100%;margin-top:8px;font-size:13px" onclick="addGroupLive()">+ add group</button>
       </div>
-
-      <div style="margin-top:10px">
-        <button class="btn-ghost" style="width:100%;font-size:13px;color:#ff6b6b;border-color:rgba(255,107,107,.3)" onclick="resetAll()">Reset Orbyt</button>
+      <div style="margin-top:12px">
+        <button class="btn-ghost" style="width:100%;font-size:13px;color:var(--red);border-color:rgba(192,57,43,.3)" onclick="resetAll()">Reset Orbyt</button>
       </div>
     </div>
   </div>
 
-  <!-- How Orbyt works — shown on setup screens only -->
-  <div class="card" id="howCard" style="border-color:rgba(108,92,231,.2)">
+  <!-- How it works -->
+  <div class="card" id="howCard" style="border-color:var(--border2)">
     <div class="card-label">how Orbyt works</div>
-    <p style="font-size:13px;color:var(--label);line-height:1.8">Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.</p>
+    <p style="font-size:13px;color:var(--sub);line-height:1.8">Orbyt detects when you or a contact are travelling — in a city that isn't your home town, or at an airport. When you're both in the same place, you each get an Orbyt Notice and can message each other directly in the app. Your exact location is never visible to anyone. Contacts can only detect you if you have each other in your lists.</p>
   </div>
 </main>
 
 <script>
-const RELAY_URL = 'wss://nearish-relay.onrender.com';
-const CITY_R = 20000, GATE_R = 700;
-
-const AIRPORTS = [
+const RELAY_URL='wss://nearish-relay.onrender.com';
+const CITY_R=20000,GATE_R=700;
+const AIRPORTS=[
   ['ATL',33.6407,-84.4277,'Atlanta Hartsfield-Jackson'],['LAX',33.9425,-118.4081,'Los Angeles International'],
   ['ORD',41.9742,-87.9073,"Chicago O'Hare"],['DFW',32.8998,-97.0403,'Dallas/Fort Worth'],
   ['DEN',39.8561,-104.6737,'Denver International'],['JFK',40.6413,-73.7781,'New York JFK'],
@@ -441,47 +488,42 @@ const AIRPORTS = [
   ['WAW',52.1657,20.9671,'Warsaw Chopin'],['PRG',50.1008,14.26,'Prague Václav Havel'],
   ['BUD',47.4298,19.2611,'Budapest Ferenc Liszt'],['ATH',37.9364,23.9445,'Athens International'],
 ];
-
-const SUGGESTED_GROUPS = ['Work colleagues','Customers / clients','Former colleagues','Friends','Family'];
-
-const S = {
-  name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,
-  email:'',
-  contacts:[],  // {name, email, group}
-  groups:[],    // {name, active:bool}
-  orbitSet:new Set(),gateSet:new Set(),
-  active:true,notifs:true,
-  pollInterval:null,lastPos:null,ws:null,wsReady:false,
-  currentCity:null,currentAirport:null,
-  threads:{},activeThread:null,
+const SUGGESTED_GROUPS=['Work colleagues','Customers / clients','Former colleagues','Friends','Family'];
+const S={
+  name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,email:'',
+  contacts:[],groups:[],orbitSet:new Set(),gateSet:new Set(),
+  active:true,notifs:true,pollInterval:null,lastPos:null,ws:null,wsReady:false,
+  currentCity:null,threads:{},activeThread:null,
 };
-const TEST = { simContacts:{} };
+const TEST={simContacts:{}};
 
 const $=id=>document.getElementById(id);
 function hav(a,b,c,d){const R=6371000,dL=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,e=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(e),Math.sqrt(1-e))}
-function nearestAirport(lat,lng){for(const[c,al,ag,lb]of AIRPORTS)if(hav(lat,lng,al,ag)<=GATE_R)return{code:c,label:lb};return null}
-function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+function nearestAirport(lat,lng){if(lat==null)return null;for(const[c,al,ag,lb]of AIRPORTS)if(hav(lat,lng,al,ag)<=GATE_R)return{code:c,label:lb};return null}
+function initials(name){return(name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
 function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
 
-// ── Navigation ─────────────────────────────────────────────────────────────
 function showStep(n){
   ['step1','step2','step2b','step3'].forEach((id,i)=>{
     $(id).classList.toggle('hidden',i+1!==n);
-    if(i<3){const el=$('s'+(i===3?3:i+1));if(el){el.classList.toggle('done',i+1<n);el.classList.toggle('active',i+1===n);}}
   });
-  $('howCard').classList.toggle('hidden', n===4); // hide on step 3 (app)
+  // Update step indicators (only 3 shown)
+  [1,2,3].forEach(i=>{
+    const el=$('s'+i);if(!el)return;
+    el.classList.toggle('done',i<(n===4?3:n));
+    el.classList.toggle('active',i===(n===4?3:n));
+  });
+  $('howCard').classList.toggle('hidden',n===4);
 }
-
 function setPill(id,m,l){const e=$(id);e.className=`pill ${m}`;e.innerHTML=`<span class="dot"></span> ${l}`}
-
 function showTab(t){
   ['orbit','messages','contacts'].forEach(k=>{
     $(`tab-${k}`).classList.toggle('active',k===t);
     $(`pane-${k}`).classList.toggle('hidden',k!==t);
   });
   if(t==='messages'){updateUnread(true);populateNewMsgTarget();}
-  if(t==='contacts'){renderContactsTab();}
+  if(t==='contacts')renderContactsTab();
 }
 function updateUnread(clear=false){
   const n=Object.values(S.threads).filter(t=>t.unread).length;
@@ -490,7 +532,7 @@ function updateUnread(clear=false){
   el.classList.toggle('hidden',n===0);el.textContent=n;
 }
 
-// ── Step 1: Identity ────────────────────────────────────────────────────────
+// ── Step 1 ────────────────────────────────────────────────────────────────
 async function saveIdentity(){
   const first=$('myFirst').value.trim(),last=$('myLast').value.trim();
   const work=$('myWorkEmail').value.trim().toLowerCase();
@@ -498,29 +540,17 @@ async function saveIdentity(){
   if(!first||!work.includes('@')){alert('Please enter your name and work email.');return}
   S.name=first+(last?' '+last:'');S.workEmail=work;S.personalEmail=personal;
   S.phone=$('myPhone').value.trim();S.homeCity=$('myCity').value.trim();S.email=work;
-  // Geocode home city — await before proceeding so homeLat is ready before first ping
   if(S.homeCity){
     const btn=document.querySelector('#step1 .btn-primary');
     if(btn){btn.textContent='Locating home city…';btn.disabled=true;}
     try{
-      const controller=new AbortController();
-      const timeout=setTimeout(()=>controller.abort(),5000); // 5s timeout
-      const r=await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,
-        {headers:{'Accept-Language':'en'},signal:controller.signal}
-      );
-      clearTimeout(timeout);
+      const ctrl=new AbortController();
+      setTimeout(()=>ctrl.abort(),5000);
+      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,{headers:{'Accept-Language':'en'},signal:ctrl.signal});
       const d=await r.json();
-      if(d&&d[0]){
-        S.homeLat=parseFloat(d[0].lat);
-        S.homeLng=parseFloat(d[0].lon);
-        console.log(`[Orbyt] Home geocoded: ${S.homeCity} → ${S.homeLat}, ${S.homeLng}`);
-      } else {
-        console.warn('[Orbyt] Geocode returned no results for:',S.homeCity);
-      }
-    }catch(e){
-      console.warn('[Orbyt] Geocode failed:',e.message);
-    }
+      if(d&&d[0]){S.homeLat=parseFloat(d[0].lat);S.homeLng=parseFloat(d[0].lon);console.log(`[Orbyt] Home: ${S.homeCity} → ${S.homeLat},${S.homeLng}`);}
+      else console.warn('[Orbyt] Geocode: no results for',S.homeCity);
+    }catch(e){console.warn('[Orbyt] Geocode failed:',e.message);}
     if(btn){btn.textContent='Continue →';btn.disabled=false;}
   }
   localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
@@ -528,51 +558,39 @@ async function saveIdentity(){
   renderGroupSetup();showStep(2);
 }
 
-// ── Step 2: Groups setup ────────────────────────────────────────────────────
+// ── Step 2 ────────────────────────────────────────────────────────────────
 function renderGroupSetup(){
   $('groupSetupList').innerHTML=S.groups.map((g,i)=>`
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:10px">
-      <input type="text" value="${esc(g.name)}" onchange="S.groups[${i}].name=this.value"
-        style="flex:1;background:transparent;border:none;color:var(--text);font-family:var(--font);font-size:13px;outline:none;padding:0">
-      <label class="toggle" title="Enable this group">
-        <input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked">
-        <span class="slider"></span>
-      </label>
-      <button style="background:transparent;border:none;color:var(--muted);font-size:16px;padding:0;cursor:pointer;line-height:1" onclick="removeGroup(${i})">×</button>
+    <div class="group-setup-row">
+      <input type="text" value="${esc(g.name)}" onchange="S.groups[${i}].name=this.value" style="flex:1">
+      <label class="toggle"><input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked"><span class="slider"></span></label>
+      <button style="background:transparent;border:none;color:var(--muted);font-size:18px;padding:0 0 0 4px;cursor:pointer;line-height:1" onclick="removeGroup(${i})">×</button>
     </div>`).join('');
 }
 function addGroup(){S.groups.push({name:'New group',active:true});renderGroupSetup()}
 function removeGroup(i){S.groups.splice(i,1);renderGroupSetup()}
 
 function saveContacts(){
-  const raw=$('contactsRaw').value;
-  const emails=raw.split(/[\n,;]+/).map(e=>e.trim().toLowerCase())
+  const emails=$('contactsRaw').value.split(/[\n,;]+/).map(e=>e.trim().toLowerCase())
     .filter(e=>e.includes('@')&&e!==S.workEmail&&e!==S.personalEmail);
   if(!emails.length){alert('Add at least one contact email.');return}
-  S.contacts=emails.map(e=>({
-    name:e.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-    email:e,
-    group:S.groups[0]?.name||'Contacts',
-  }));
+  S.contacts=emails.map(e=>({name:e.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),email:e,group:S.groups[0]?.name||'Contacts'}));
   localStorage.setItem('orbyt_groups',JSON.stringify(S.groups));
-  renderAssignList();showStep(3); // step2b is index 3
+  renderAssignList();showStep(3);
 }
-
-// ── Step 2b: Assign contacts to groups ─────────────────────────────────────
 function renderAssignList(){
   $('assignList').innerHTML=S.contacts.map((c,i)=>`
     <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
-      <div class="cc-avatar" style="width:32px;height:32px;font-size:12px">${initials(c.name)}</div>
+      <div class="cc-avatar" style="width:34px;height:34px;font-size:12px">${initials(c.name)}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:500">${esc(c.name)}</div>
-        <div style="font-size:11px;color:var(--sub);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.email)}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text)">${esc(c.name)}</div>
+        <div style="font-size:11px;color:var(--sub);font-family:var(--mono)">${esc(c.email)}</div>
       </div>
-      <select onchange="S.contacts[${i}].group=this.value" style="width:auto;font-size:12px;padding:5px 8px;border-radius:6px">
+      <select onchange="S.contacts[${i}].group=this.value" style="width:auto;font-size:12px;padding:6px 10px;border-radius:7px;color:var(--text);font-weight:500">
         ${S.groups.map(g=>`<option value="${esc(g.name)}" ${c.group===g.name?'selected':''}>${esc(g.name)}</option>`).join('')}
       </select>
     </div>`).join('');
 }
-
 function saveAssignments(){
   localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
   renderContactsTab();showStep(4);showTab('orbit');
@@ -580,7 +598,7 @@ function saveAssignments(){
   if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
 }
 
-// ── WebSocket ───────────────────────────────────────────────────────────────
+// ── WebSocket ─────────────────────────────────────────────────────────────
 function connectWS(){
   if(S.ws){try{S.ws.close()}catch{}S.ws=null}
   setPill('wsPill','warn','connecting…');
@@ -589,7 +607,7 @@ function connectWS(){
   ws.onmessage=evt=>{let m;try{m=JSON.parse(evt.data)}catch{return}
     if(m.type==='nearby')handleNearby(m.nearby||[]);
     if(m.type==='incoming_nudge')handleIncoming(m);
-    if(m.type==='nudge_result'&&!m.success)addSysNotice('⚠',`Message failed: ${m.reason}`);
+    if(m.type==='nudge_result'&&!m.success)addSysNotice('⚠️',`Message failed: ${m.reason}`);
   };
   ws.onclose=()=>{S.wsReady=false;setPill('wsPill','off','disconnected');if(S.active)setTimeout(connectWS,5000)};
   ws.onerror=()=>setPill('wsPill','warn','error');
@@ -597,7 +615,7 @@ function connectWS(){
 function wsSend(o){if(S.wsReady)S.ws.send(JSON.stringify(o))}
 function ping(){
   if(!S.wsReady||!S.lastPos)return;
-  if(S.homeLat==null)console.warn('[Orbyt] homeLat is null — home suppression will not work. Check that home city geocoding completed.');
+  if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive');
   const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
     contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
     homeLat:S.homeLat??null,homeLng:S.homeLng??null};
@@ -605,29 +623,27 @@ function ping(){
   if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail,...base});
 }
 
-// ── Nearby handling ─────────────────────────────────────────────────────────
+// ── Nearby ────────────────────────────────────────────────────────────────
 function handleNearby(nearby){
   const prev=new Set(S.orbitSet);
   S.orbitSet=new Set(nearby.filter(n=>n.distM>GATE_R).map(n=>n.email));
   S.gateSet=new Set(nearby.filter(n=>n.distM<=GATE_R).map(n=>n.email));
   for(const n of nearby){
     if(!prev.has(n.email)){
-      // Resolve name: prefer relay-provided name, fall back to local contacts, then email prefix
-      const localContact=S.contacts.find(c=>c.email===n.email);
-      const resolvedName=n.name||localContact?.name||n.email.split('@')[0].replace(/[._]/g,' ').replace(/\w/g,c=>c.toUpperCase());
+      const local=S.contacts.find(c=>c.email===n.email);
+      const name=n.name&&n.name!=='undefined'?n.name:local?.name||n.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
       const isGate=n.distM<=GATE_R;
       const apt=isGate?nearestAirport(S.lastPos?.lat,S.lastPos?.lng):null;
       const ctx=isGate?(apt?.label||'the airport'):(S.currentCity||'your city');
-      if(!S.threads[n.email])S.threads[n.email]={contact:{name:resolvedName,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
+      if(!S.threads[n.email])S.threads[n.email]={contact:{name,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
       else{S.threads[n.email].isOnline=true;S.threads[n.email].context=ctx}
-      addOrbitNotice(resolvedName,isGate,apt,n.email);
-      if(S.notifs&&Notification.permission==='granted')new Notification('Orbyt',{body:`${resolvedName} is in ${ctx}`});
+      addOrbitNotice(name,isGate,apt,n.email);
+      if(S.notifs&&Notification.permission==='granted')new Notification('Orbyt',{body:`${name} is in ${ctx}`});
     }
   }
   for(const e of prev)if(!S.orbitSet.has(e)&&!S.gateSet.has(e)&&S.threads[e])S.threads[e].isOnline=false;
   renderContactsTab();renderThreadList();
 }
-
 function handleIncoming(msg){
   const{from,fromName,message}=msg;
   if(!S.threads[from])S.threads[from]={contact:{name:fromName||from,email:from},messages:[],context:'in orbit',unread:false,isOnline:true};
@@ -638,19 +654,19 @@ function handleIncoming(msg){
   if(S.notifs&&Notification.permission==='granted')new Notification(`Orbyt — ${fromName}`,{body:message});
 }
 
-// ── Orbit notices ────────────────────────────────────────────────────────────
+// ── Notices ───────────────────────────────────────────────────────────────
 function addOrbitNotice(name,isGate,airport,email){
   const feed=$('noticesFeed');
   if(feed.querySelector('.empty-state'))feed.innerHTML='';
   const div=document.createElement('div');
   div.className='notice'+(isGate?' gate':'');
-  const where=isGate?(airport?.label||'the airport'):(S.currentCity||'your city');
   const safeName=name&&name!=='undefined'?name:'Contact';
-  div.innerHTML=`<div class="notice-icon">${isGate?'✈️':'🏙'}</div>
+  const where=isGate?(airport?.label||'the airport'):(S.currentCity||'your city');
+  div.innerHTML=`<div class="notice-icon">${isGate?'✈️':'🏙️'}</div>
     <div class="notice-body">
       <div class="notice-primary">${esc(safeName)} — ${esc(where)} <span class="badge ${isGate?'gate':'orbit'}">${isGate?'at the gate':'in orbit'}</span></div>
       <div class="notice-secondary">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
-      <div class="notice-actions"><button class="btn-ping" onclick="openThread('${email}','${esc(name)}')">Message →</button></div>
+      <div class="notice-actions"><button class="btn-ping" onclick="openThread('${email}','${esc(safeName)}')">Message →</button></div>
     </div>`;
   feed.prepend(div);
 }
@@ -658,19 +674,18 @@ function addSysNotice(icon,text){
   const feed=$('noticesFeed');
   if(feed.querySelector('.empty-state'))feed.innerHTML='';
   const div=document.createElement('div');div.className='notice';
-  div.innerHTML=`<div class="notice-icon" style="font-size:14px">${icon}</div><div class="notice-body"><div class="notice-primary" style="font-size:13px;font-weight:400">${esc(text)}</div></div>`;
+  div.innerHTML=`<div class="notice-icon" style="font-size:16px">${icon}</div><div class="notice-body"><div class="notice-primary" style="font-size:13px;font-weight:500">${esc(text)}</div></div>`;
   feed.prepend(div);
 }
 
-// ── Messaging ────────────────────────────────────────────────────────────────
+// ── Messaging ─────────────────────────────────────────────────────────────
 function populateNewMsgTarget(){
   const sel=$('newMsgTarget');const cur=sel.value;
   sel.innerHTML='<option value="">— choose a contact —</option>';
   S.contacts.forEach(c=>{
     const inO=S.orbitSet.has(c.email),atG=S.gateSet.has(c.email);
-    const badge=atG?' ✈':inO?' 🏙':'';
     const opt=document.createElement('option');
-    opt.value=c.email;opt.textContent=c.name+badge;
+    opt.value=c.email;opt.textContent=c.name+(atG?' ✈':inO?' 🏙':'');
     if(c.email===cur)opt.selected=true;
     sel.appendChild(opt);
   });
@@ -681,17 +696,12 @@ function sendNewMessage(){
   const to=$('newMsgTarget').value,text=$('newMsgText').value.trim();
   if(!to){alert('Choose a contact to message.');return}
   if(!text){alert('Write a message first.');return}
-  sendMsg(to,text);
-  $('newMsgText').value='';
-  // Open the thread
+  sendMsg(to,text);$('newMsgText').value='';
   const c=S.contacts.find(c=>c.email===to);
   openThread(to,c?.name||to);
 }
-
 function openThread(email,name){
-  if(!S.threads[email]){
-    S.threads[email]={contact:{name:name||email,email},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:true};
-  }
+  if(!S.threads[email])S.threads[email]={contact:{name:name||email,email},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:true};
   S.threads[email].unread=false;S.activeThread=email;
   const t=S.threads[email];
   $('convName').textContent=t.contact.name;
@@ -711,7 +721,7 @@ function closeConv(){
 }
 function renderMessages(email){
   const t=S.threads[email];const el=$('messageList');
-  if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state" style="font-size:12px">Say hello to ${esc(t?.contact.name||'this contact')}</div>`;return}
+  if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state">Say hello to ${esc(t?.contact.name||'this contact')}</div>`;return}
   el.innerHTML=t.messages.map(m=>`<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div></div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
@@ -721,10 +731,10 @@ function renderThreadList(){
   if(!ts.length){el.innerHTML='<div class="empty-state">No messages yet</div>';return}
   el.innerHTML=ts.map(t=>{
     const last=t.messages[t.messages.length-1];
-    const ini=initials(t.contact.name);
     return `<div class="thread-item ${t.unread?'unread':''}" onclick="openThread('${t.contact.email}','${esc(t.contact.name)}')">
-      <div class="t-avatar">${ini}</div>
-      <div class="t-info"><div class="t-name">${esc(t.contact.name)}</div>
+      <div class="t-avatar">${initials(t.contact.name)}</div>
+      <div class="t-info">
+        <div class="t-name">${esc(t.contact.name)}</div>
         <div class="t-preview">${last?esc(last.text):'Tap to say hello'}</div>
         <div class="t-context">${esc(t.context)}</div>
       </div>
@@ -743,27 +753,23 @@ function sendReply(){
   sendMsg(S.activeThread,text);
   S.threads[S.activeThread].messages.push({text,sent:true,time:Date.now()});
   box.value='';box.style.height='auto';
-  $('quickMsgs').classList.add('hidden');
+  $('quickMsgs').classList.remove('hidden');
   renderMessages(S.activeThread);renderThreadList();
 }
 function sendMsg(to,text){
-  if(!S.wsReady){addSysNotice('ℹ','Enable Orbyt to send messages.');return}
+  if(!S.wsReady){addSysNotice('ℹ️','Enable Orbyt to send messages.');return}
   wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to,message:text});
 }
 
-// ── Contacts tab management ──────────────────────────────────────────────────
+// ── Contacts tab ──────────────────────────────────────────────────────────
 function renderContactsTab(){
-  // Contacts list
   const el=$('contactsManageList');
   if(!S.contacts.length){el.innerHTML='<div class="empty-state">No contacts yet — add one above</div>';return}
   el.innerHTML=S.contacts.map((c,i)=>`
     <div class="contact-card">
       <div class="contact-card-top">
         <div class="cc-avatar">${initials(c.name)}</div>
-        <div class="cc-info">
-          <div class="cc-name">${esc(c.name)}</div>
-          <div class="cc-email">${esc(c.email)}</div>
-        </div>
+        <div class="cc-info"><div class="cc-name">${esc(c.name)}</div><div class="cc-email">${esc(c.email)}</div></div>
         <button class="btn-danger" onclick="deleteContact(${i})">Remove</button>
       </div>
       <div class="cc-group-row">
@@ -773,51 +779,36 @@ function renderContactsTab(){
         </select>
       </div>
     </div>`).join('');
-
-  // Groups list
   const gel=$('groupsManageList');
   gel.innerHTML=S.groups.map((g,i)=>`
     <div class="group-item">
       <div class="group-item-name">${esc(g.name)}</div>
       <div class="group-item-count">${S.contacts.filter(c=>c.group===g.name).length} contacts</div>
-      <label class="toggle">
-        <input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked;saveData()">
-        <span class="slider"></span>
-      </label>
+      <label class="toggle"><input type="checkbox" ${g.active?'checked':''} onchange="S.groups[${i}].active=this.checked;saveData()"><span class="slider"></span></label>
     </div>`).join('');
 }
-
 function addContact(){
-  const emailEl=$('addContactEmail');
-  const email=emailEl.value.trim().toLowerCase();
+  const el=$('addContactEmail');const email=el.value.trim().toLowerCase();
   if(!email.includes('@')){alert('Please enter a valid email address.');return}
   if(S.contacts.find(c=>c.email===email)){alert('That contact is already in your list.');return}
   const name=email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
   S.contacts.push({name,email,group:S.groups[0]?.name||'Contacts'});
-  emailEl.value='';
-  saveData();renderContactsTab();
+  el.value='';saveData();renderContactsTab();
 }
-
 function deleteContact(i){
-  if(!confirm(`Remove ${S.contacts[i].name} from your Orbyt?`))return;
+  if(!confirm(`Remove ${S.contacts[i].name}?`))return;
   S.contacts.splice(i,1);saveData();renderContactsTab();
 }
-
-function addGroupLive(){
-  S.groups.push({name:'New group',active:true});
-  saveData();renderContactsTab();
-}
-
+function addGroupLive(){S.groups.push({name:'New group',active:true});saveData();renderContactsTab()}
 function saveData(){
   localStorage.setItem('orbyt_contacts',JSON.stringify(S.contacts));
   localStorage.setItem('orbyt_groups',JSON.stringify(S.groups));
 }
 
-// ── Geolocation ──────────────────────────────────────────────────────────────
+// ── Location ──────────────────────────────────────────────────────────────
 function startProximity(){
-  if(!navigator.geolocation){addSysNotice('⚠','Geolocation not supported in this browser.');return}
-  connectWS();getPos();
-  S.pollInterval=setInterval(getPos,90000);
+  if(!navigator.geolocation){addSysNotice('⚠️','Geolocation not supported.');return}
+  connectWS();getPos();S.pollInterval=setInterval(getPos,90000);
 }
 function stopProximity(){
   clearInterval(S.pollInterval);S.pollInterval=null;
@@ -831,66 +822,58 @@ function getPos(){
     S.lastPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
     setPill('locPill','on','location ✓');
     const apt=nearestAirport(S.lastPos.lat,S.lastPos.lng);
-    S.currentAirport=apt;
     if(apt){S.currentCity=apt.label;$('cityName').textContent=apt.label;$('citySubtitle').textContent='at the airport';}
     else{S.currentCity=S.homeCity||'Travelling';$('cityName').textContent=S.homeCity||'Travelling';$('citySubtitle').textContent='your current location';}
     ping();
   },err=>{
     setPill('locPill','warn','blocked');
-    addSysNotice('⚠','Location access is off. On iPhone: Settings → Privacy & Security → Location Services → Safari → set to "While Using". Then return here and tap Force check.');
+    addSysNotice('⚠️',`Location access is off. On iPhone: Settings → Privacy & Security → Location Services → Safari → set to "While Using". Then tap Force check.`);
   },{enableHighAccuracy:false,timeout:10000,maximumAge:60000});
 }
-function forcePing(){if(!S.active){addSysNotice('ℹ','Enable Orbyt first.');return}getPos()}
+function forcePing(){if(!S.active){addSysNotice('ℹ️','Enable Orbyt first.');return}getPos()}
 function toggleActive(){S.active=$('activeToggle').checked;S.active?startProximity():stopProximity()}
 async function toggleNotifs(){
   if(!$('notifToggle').checked){S.notifs=false;return}
-  if(!('Notification'in window)){alert('Notifications not supported in this browser.');$('notifToggle').checked=false;return}
+  if(!('Notification'in window)){alert('Notifications not supported.');$('notifToggle').checked=false;return}
   const p=await Notification.requestPermission();
   if(p!=='granted'){alert('Notifications blocked.\nOn iPhone: Settings → Notifications → Safari → Allow Notifications.');$('notifToggle').checked=false;return}
   S.notifs=true;
 }
 
-// ── Test mode ────────────────────────────────────────────────────────────────
+// ── Test mode ─────────────────────────────────────────────────────────────
 function toggleTest(){
   const body=$('testBody'),chev=$('testChevron');
-  const open=body.classList.toggle('open');
-  chev.classList.toggle('open',open);
-  if(open)renderTestContacts();
+  chev.classList.toggle('open',body.classList.toggle('open'));
+  if(body.classList.contains('open'))renderTestContacts();
 }
 function renderTestContacts(){
   const el=$('testContactList');
-  if(!S.contacts.length){el.innerHTML='<div style="font-size:12px;color:#5a4200;padding:8px 0">Add contacts first.</div>';return}
+  if(!S.contacts.length){el.innerHTML='<div style="font-size:12px;color:#8a6000;padding:8px 0">Add contacts first.</div>';return}
   el.innerHTML=S.contacts.map(c=>{
     const sim=TEST.simContacts[c.email];
-    const ini=initials(c.name);
     return `<div class="test-contact-row">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${sim?0:8}px">
-        <div style="width:26px;height:26px;border-radius:50%;background:#2a1e00;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#f0b429;flex-shrink:0">${ini}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:${sim?2:8}px">
+        <div style="width:26px;height:26px;border-radius:50%;background:#fff8dc;border:1px solid #e8c84a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#8a6000">${initials(c.name)}</div>
         <div class="test-contact-name">${esc(c.name)}</div>
-        ${sim?`<span style="font-size:11px;font-family:var(--mono);color:#7a5c00;margin-left:auto">${sim.mode==='true-location'?'📍 true location':'🏙 simulated arrival'}</span>`:''}
+        ${sim?`<span class="sim-badge" style="margin-left:auto">${sim.mode==='true-location'?'📍 true location':'🏙 simulated'}</span>`:''}
         ${sim?`<button class="btn-test" onclick="removeSimContact('${c.email}')">Clear</button>`:''}
       </div>
       ${!sim?`<div style="display:flex;gap:6px;padding-left:34px;flex-wrap:wrap;margin-bottom:4px">
         <button class="btn-test" onclick="showTrueLocation('${c.email}','${esc(c.name)}')">📍 Reveal true location</button>
         <button class="btn-test" onclick="simulateArrival('${c.email}','${esc(c.name)}')">🏙 Simulate arrival in my city</button>
       </div>
-      <div style="padding-left:34px;font-size:11px;color:#5a4200;line-height:1.5">
-        <strong style="color:#7a5c00">📍 Reveal</strong> — shows their real location, bypassing home suppression.<br>
-        <strong style="color:#7a5c00">🏙 Simulate</strong> — fires an Orbyt Notice as if they just arrived in your city.
+      <div style="padding-left:34px;font-size:11px;color:#8a6000;line-height:1.5">
+        <strong>📍 Reveal</strong> — shows real location, bypasses home suppression.<br>
+        <strong>🏙 Simulate</strong> — fires a notice as if they just arrived in your city.
       </div>`:''}
     </div>`;
   }).join('');
 }
-function showTrueLocation(email,name){
-  TEST.simContacts[email]={name,mode:'true-location'};
-  handleNearby([{email,name,distM:3000}]);
-  renderTestContacts();
-}
+function showTrueLocation(email,name){TEST.simContacts[email]={name,mode:'true-location'};handleNearby([{email,name,distM:3000}]);renderTestContacts()}
 function simulateArrival(email,name){
   if(!S.currentCity){alert('Enable Orbyt first so your city is detected, then try again.');return}
   TEST.simContacts[email]={name,mode:'simulated-arrival',city:S.currentCity};
-  handleNearby([{email,name,distM:8000}]);
-  renderTestContacts();
+  handleNearby([{email,name,distM:8000}]);renderTestContacts();
 }
 function removeSimContact(email){
   delete TEST.simContacts[email];
@@ -899,7 +882,7 @@ function removeSimContact(email){
   renderContactsTab();renderThreadList();renderTestContacts();
 }
 
-// ── Reset ─────────────────────────────────────────────────────────────────────
+// ── Reset ─────────────────────────────────────────────────────────────────
 function resetAll(){
   if(!confirm('Clear all Orbyt data and start over?'))return;
   stopProximity();
@@ -910,26 +893,21 @@ function resetAll(){
   showStep(1);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────
 (function init(){
   const id=localStorage.getItem('orbyt_id');
   const con=localStorage.getItem('orbyt_contacts');
   const grp=localStorage.getItem('orbyt_groups');
   if(id){const p=JSON.parse(id);Object.assign(S,{name:p.name,workEmail:p.workEmail||p.email||'',personalEmail:p.personalEmail||'',phone:p.phone||'',homeCity:p.homeCity||'',homeLat:p.homeLat??null,homeLng:p.homeLng??null,email:p.workEmail||p.email||''})}
-  if(grp)S.groups=JSON.parse(grp);
-  else S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
+  if(grp)S.groups=JSON.parse(grp);else S.groups=SUGGESTED_GROUPS.map(n=>({name:n,active:true}));
   if(con)S.contacts=JSON.parse(con);
   if(id&&con){
     renderContactsTab();renderThreadList();
     showStep(4);showTab('orbit');
     startProximity();
     if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
-  } else if(id){
-    S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
-    renderGroupSetup();showStep(2);
-  } else {
-    showStep(1);
-  }
+  }else if(id){S.groups=SUGGESTED_GROUPS.map(n=>({name:n,active:true}));renderGroupSetup();showStep(2);}
+  else showStep(1);
 })();
 </script>
 </body>
