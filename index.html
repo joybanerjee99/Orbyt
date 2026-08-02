@@ -626,12 +626,17 @@ function connectWS(){
       if(m.success){
         // Mark matching queued message as delivered
         Object.values(S.threads).forEach(t=>{
-          t.messages.forEach(msg=>{if(msg.id===m.msgId)msg.queued=false;});
+          t.messages.forEach(msg=>{if(msg.id===m.msgId){msg.queued=false;msg.delivered=true;}});
         });
         saveThreads();
         if(S.activeThread)renderMessages(S.activeThread);
+        renderThreadList();
       } else {
-        addSysNotice('⚠️',`Message failed: ${m.reason}`);
+        // Show failure prominently — switch to messages tab so user sees it
+        addSysNotice('⚠️',`Message not delivered: ${m.reason}. Check that both you and your contact have each other's correct email address.`);
+        alert(`Message not delivered: ${m.reason}.
+
+Check that the email address you entered for this contact exactly matches the email they used to set up Orbyt.`);
       }
     }
   };
@@ -646,8 +651,8 @@ function ping(){
   const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
     contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
     homeLat:S.homeLat??null,homeLng:S.homeLng??null};
-  wsSend({type:'ping',email:S.workEmail,...base});
-  if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail,...base});
+  wsSend({type:'ping',email:S.workEmail.toLowerCase().trim(),...base});
+  if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail.toLowerCase().trim(),...base});
 }
 
 // ── Nearby ────────────────────────────────────────────────────────────────
@@ -762,7 +767,14 @@ function closeConv(){
 function renderMessages(email){
   const t=S.threads[email];const el=$('messageList');
   if(!t||!t.messages.length){el.innerHTML=`<div class="empty-state">Say hello to ${esc(t?.contact.name||'this contact')}</div>`;return}
-  el.innerHTML=t.messages.map(m=>`<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${m.queued?' · <span style="opacity:.6">pending</span>':''}</div></div>`).join('');
+  el.innerHTML=t.messages.map(m=>{
+    let status='';
+    if(m.sent){
+      if(m.queued)status='<span style="opacity:.55"> · pending</span>';
+      else if(m.delivered)status='<span style="opacity:.7"> · ✓</span>';
+    }
+    return `<div class="msg ${m.sent?'sent':'recv'}"><div class="msg-bubble">${esc(m.text)}</div><div class="msg-time">${new Date(m.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}${status}</div></div>`;
+  }).join('');
   el.scrollTop=el.scrollHeight;
 }
 function renderThreadList(){
@@ -802,9 +814,11 @@ function sendReply(){
 function sendMsg(to,text,msgId){
   if(!S.wsReady){
     addSysNotice('ℹ️','Message saved locally. It will be delivered once your contact has Orbyt enabled.');
-    return; // message already stored locally with queued:true by caller
+    return;
   }
-  wsSend({type:'nudge',from:S.workEmail,fromName:S.name,to,message:text,msgId:msgId||null});
+  const safeTo = to.toLowerCase().trim();
+  console.log(`[Orbyt] Sending message from ${S.workEmail} to ${safeTo}`);
+  wsSend({type:'nudge',from:S.workEmail.toLowerCase().trim(),fromName:S.name,to:safeTo,message:text,msgId:msgId||null});
 }
 
 // ── Contacts tab ──────────────────────────────────────────────────────────
