@@ -730,19 +730,24 @@ function setNewMsg(t){$('newMsgText').value=t;$('newMsgText').focus()}
 function handleNewMsgKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendNewMessage()}}
 function sendNewMessage(){
   const to=$('newMsgTarget').value,text=$('newMsgText').value.trim();
-  if(!to){alert('Choose a contact to message.');return}
+  if(!to){alert('Choose a contact first.');return}
   if(!text){alert('Write a message first.');return}
+  // Ensure thread exists
   if(!S.threads[to]){
     const c=S.contacts.find(c=>c.email===to);
     S.threads[to]={contact:{name:c?.name||to,email:to},messages:[],context:S.currentCity||'in orbit',unread:false,isOnline:false};
   }
+  // Store locally first — message appears immediately regardless of connection
   const msgId='msg_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
   const queued=!S.wsReady;
   S.threads[to].messages.push({text,sent:true,queued,id:msgId,time:Date.now()});
   saveThreads();
+  // Attempt delivery
   sendMsg(to,text,msgId);
+  // Clear input and open conversation
   $('newMsgText').value='';
   const c=S.contacts.find(c=>c.email===to);
+  // Open the thread so user can see the sent message
   openThread(to,c?.name||to);
 }
 function openThread(email,name){
@@ -802,11 +807,12 @@ function handleReplyKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();s
 function sendReply(){
   const box=$('replyBox'),text=box.value.trim();
   if(!text||!S.activeThread)return;
-  sendMsg(S.activeThread,text,rMsgId);
+  // Declare msgId BEFORE using it
   const rMsgId='msg_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
   const rQueued=!S.wsReady;
   S.threads[S.activeThread].messages.push({text,sent:true,queued:rQueued,id:rMsgId,time:Date.now()});
   saveThreads();
+  sendMsg(S.activeThread,text,rMsgId);
   box.value='';box.style.height='auto';
   $('quickMsgs').classList.remove('hidden');
   renderMessages(S.activeThread);renderThreadList();
@@ -817,8 +823,14 @@ function sendMsg(to,text,msgId){
     return;
   }
   const safeTo = to.toLowerCase().trim();
-  console.log(`[Orbyt] Sending message from ${S.workEmail} to ${safeTo}`);
-  wsSend({type:'nudge',from:S.workEmail.toLowerCase().trim(),fromName:S.name,to:safeTo,message:text,msgId:msgId||null});
+  const safeFrom = S.workEmail.toLowerCase().trim();
+  console.log(`[Orbyt] Sending message from ${safeFrom} to ${safeTo}`);
+  try{
+    wsSend({type:'nudge',from:safeFrom,fromName:S.name,to:safeTo,message:text,msgId:msgId||null});
+  }catch(e){
+    console.error('[Orbyt] Send failed:',e);
+    addSysNotice('⚠️','Failed to send — please try again.');
+  }
 }
 
 // ── Contacts tab ──────────────────────────────────────────────────────────
