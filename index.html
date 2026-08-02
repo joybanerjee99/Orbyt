@@ -448,7 +448,7 @@ hr{border:none;border-top:1.5px solid var(--border);margin:6px 0}
 
 <script>
 const RELAY_URL='wss://nearish-relay.onrender.com';
-const CITY_R=20000,GATE_R=700;
+const CITY_R=20000,GATE_R=250;
 const AIRPORTS=[
   ['ATL',33.6407,-84.4277,'Atlanta Hartsfield-Jackson'],['LAX',33.9425,-118.4081,'Los Angeles International'],
   ['ORD',41.9742,-87.9073,"Chicago O'Hare"],['DFW',32.8998,-97.0403,'Dallas/Fort Worth'],
@@ -533,6 +533,28 @@ function updateUnread(clear=false){
 }
 
 // ── Step 1 ────────────────────────────────────────────────────────────────
+async function geocodeHomeCity(){
+  if(!S.homeCity)return;
+  try{
+    const ctrl=new AbortController();
+    setTimeout(()=>ctrl.abort(),5000);
+    const r=await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,
+      {headers:{'Accept-Language':'en'},signal:ctrl.signal}
+    );
+    const d=await r.json();
+    if(d&&d[0]){
+      S.homeLat=parseFloat(d[0].lat);
+      S.homeLng=parseFloat(d[0].lon);
+      console.log(`[Orbyt] Home geocoded: ${S.homeCity} → ${S.homeLat}, ${S.homeLng}`);
+    } else {
+      console.warn('[Orbyt] Geocode: no results for',S.homeCity);
+    }
+  }catch(e){
+    console.warn('[Orbyt] Geocode failed:',e.message);
+  }
+}
+
 async function saveIdentity(){
   const first=$('myFirst').value.trim(),last=$('myLast').value.trim();
   const work=$('myWorkEmail').value.trim().toLowerCase();
@@ -543,14 +565,7 @@ async function saveIdentity(){
   if(S.homeCity){
     const btn=document.querySelector('#step1 .btn-primary');
     if(btn){btn.textContent='Locating home city…';btn.disabled=true;}
-    try{
-      const ctrl=new AbortController();
-      setTimeout(()=>ctrl.abort(),5000);
-      const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,{headers:{'Accept-Language':'en'},signal:ctrl.signal});
-      const d=await r.json();
-      if(d&&d[0]){S.homeLat=parseFloat(d[0].lat);S.homeLng=parseFloat(d[0].lon);console.log(`[Orbyt] Home: ${S.homeCity} → ${S.homeLat},${S.homeLng}`);}
-      else console.warn('[Orbyt] Geocode: no results for',S.homeCity);
-    }catch(e){console.warn('[Orbyt] Geocode failed:',e.message);}
+    await geocodeHomeCity();
     if(btn){btn.textContent='Continue →';btn.disabled=false;}
   }
   localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
@@ -626,6 +641,7 @@ function connectWS(){
 function wsSend(o){if(S.wsReady)S.ws.send(JSON.stringify(o))}
 function ping(){
   if(!S.wsReady||!S.lastPos)return;
+  if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive. Check geocoding.');
   if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive');
   const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
     contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
@@ -643,8 +659,11 @@ function handleNearby(nearby){
     if(!prev.has(n.email)){
       const local=S.contacts.find(c=>c.email===n.email);
       const name=n.name&&n.name!=='undefined'?n.name:local?.name||n.email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
-      const isGate=n.distM<=GATE_R;
-      const apt=isGate?nearestAirport(S.lastPos?.lat,S.lastPos?.lng):null;
+      // Gate detection requires both: small distM AND user is physically
+      // near a known airport. Prevents false "at the gate" from stale/imprecise pings.
+      const nearAirport=nearestAirport(S.lastPos?.lat,S.lastPos?.lng);
+      const isGate=n.distM<=GATE_R && nearAirport!=null;
+      const apt=isGate?nearAirport:null;
       const ctx=isGate?(apt?.label||'the airport'):(S.currentCity||'your city');
       if(!S.threads[n.email])S.threads[n.email]={contact:{name,email:n.email},messages:[],context:ctx,unread:false,isOnline:true};
       else{S.threads[n.email].isOnline=true;S.threads[n.email].context=ctx}
@@ -924,7 +943,8 @@ function showTrueLocation(email,name){TEST.simContacts[email]={name,mode:'true-l
 function simulateArrival(email,name){
   if(!S.currentCity){alert('Enable Orbyt first so your city is detected, then try again.');return}
   TEST.simContacts[email]={name,mode:'simulated-arrival',city:S.currentCity};
-  handleNearby([{email,name,distM:8000}]);renderTestContacts();
+  // distM 15000 — clearly in city range, never mistaken for gate
+  handleNearby([{email,name,distM:15000}]);renderTestContacts();
 }
 function removeSimContact(email){
   delete TEST.simContacts[email];
@@ -956,6 +976,17 @@ function resetAll(){
     loadThreads();
     renderContactsTab();renderThreadList();
     showStep(4);showTab('orbit');
+    // If homeLat is missing (geocode failed on first setup), retry now
+    if(S.homeCity && S.homeLat==null){
+      geocodeHomeCity().then(()=>{
+        if(S.homeLat!=null){
+          const stored=JSON.parse(localStorage.getItem('orbyt_id')||'{}');
+          stored.homeLat=S.homeLat;stored.homeLng=S.homeLng;
+          localStorage.setItem('orbyt_id',JSON.stringify(stored));
+          console.log('[Orbyt] Home re-geocoded:',S.homeLat,S.homeLng);
+        }
+      });
+    }
     startProximity();
     if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
   }else if(id){S.groups=SUGGESTED_GROUPS.map(n=>({name:n,active:true}));renderGroupSetup();showStep(2);}
