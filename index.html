@@ -226,6 +226,20 @@ button:active{transform:scale(.97)}
 .sim-badge{font-size:10px;font-family:var(--mono);color:#8a6000;background:#fff8dc;border:1px solid #e8c84a;border-radius:20px;padding:1px 7px}
 
 hr{border:none;border-top:1.5px solid var(--border);margin:6px 0}
+
+/* Hourglass overlay */
+.hourglass-overlay{
+  position:fixed;inset:0;background:rgba(10,21,32,.92);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;gap:20px;backdrop-filter:blur(4px);
+}
+.hourglass-icon{font-size:48px;animation:hg-spin 1.4s ease-in-out infinite}
+@keyframes hg-spin{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
+.hourglass-title{font-size:17px;font-weight:600;color:#ffffff;text-align:center}
+.hourglass-sub{font-size:13px;color:#a8c8e8;text-align:center;line-height:1.6;max-width:260px}
+.hourglass-bar-wrap{width:200px;height:6px;background:#1e3a58;border-radius:3px;overflow:hidden}
+.hourglass-bar{height:100%;background:#2563eb;border-radius:3px;transition:width .5s linear}
+.hourglass-count{font-size:13px;font-family:var(--mono);color:#7aabcc}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;opacity:.6}
@@ -234,6 +248,15 @@ hr{border:none;border-top:1.5px solid var(--border);margin:6px 0}
 </style>
 </head>
 <body>
+<!-- Relay wake-up hourglass -->
+<div class="hourglass-overlay hidden" id="hourglassOverlay">
+  <div class="hourglass-icon">⏳</div>
+  <div class="hourglass-title">Starting up Orbyt…</div>
+  <div class="hourglass-sub">Connecting to the server for the first time. This takes up to 30 seconds.</div>
+  <div class="hourglass-bar-wrap"><div class="hourglass-bar" id="hourglassBar" style="width:0%"></div></div>
+  <div class="hourglass-count" id="hourglassCount">30s</div>
+</div>
+
 <header>
   <div class="wordmark">Orb<em>yt</em></div>
   <div class="tagline">know who's in your orbit</div>
@@ -498,6 +521,14 @@ const S={
 const TEST={simContacts:{}};
 
 const $=id=>document.getElementById(id);
+
+// Wake the relay server immediately on page load so it's ready by the
+// time the user reaches the geocode step in onboarding (30s+ later)
+const RELAY_WAKE_TIME = Date.now();
+(function wakeRelay(){
+  const httpUrl=RELAY_URL.replace('wss://','https://').replace('ws://','http://');
+  fetch(`${httpUrl}/health`).catch(()=>{});
+})();
 function hav(a,b,c,d){const R=6371000,dL=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,e=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(e),Math.sqrt(1-e))}
 function nearestAirport(lat,lng){if(lat==null)return null;for(const[c,al,ag,lb]of AIRPORTS)if(hav(lat,lng,al,ag)<=GATE_R)return{code:c,label:lb};return null}
 function initials(name){return(name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
@@ -533,25 +564,105 @@ function updateUnread(clear=false){
 }
 
 // ── Step 1 ────────────────────────────────────────────────────────────────
+function showHourglass(remainingMs, onDone){
+  const overlay=$('hourglassOverlay');
+  const bar=$('hourglassBar');
+  const count=$('hourglassCount');
+  overlay.classList.remove('hidden');
+  const total=remainingMs;
+  const start=Date.now();
+  const tick=setInterval(()=>{
+    const elapsed=Date.now()-start;
+    const left=Math.max(0,remainingMs-elapsed);
+    const pct=Math.min(100,((total-left)/total)*100);
+    bar.style.width=pct+'%';
+    count.textContent=Math.ceil(left/1000)+'s';
+    if(left<=0){
+      clearInterval(tick);
+      overlay.classList.add('hidden');
+      onDone();
+    }
+  },200);
+}
+
 async function geocodeHomeCity(){
   if(!S.homeCity)return;
-  try{
-    const ctrl=new AbortController();
-    setTimeout(()=>ctrl.abort(),5000);
+  // Strategy:
+  // 1. Try geocoding via our relay server (avoids iOS PWA fetch restrictions)
+  // 2. If relay is unavailable, try Nominatim directly (works in browser mode)
+  // 3. If both fail AND user appears to be at home, capture GPS as fallback
+  //    (with a clear warning that this only works if setup at home)
+
+  const relayGeocode=async()=>{
+    const r=await fetch(`${RELAY_URL.replace('wss://','https://').replace('ws://','http://')}/geocode?city=${encodeURIComponent(S.homeCity)}`);
+    if(!r.ok)throw new Error('relay geocode failed');
+    return r.json();
+  };
+
+  const directGeocode=async()=>{
     const r=await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(S.homeCity)}&format=json&limit=1`,
-      {headers:{'Accept-Language':'en'},signal:ctrl.signal}
+      {headers:{'Accept-Language':'en'}}
     );
     const d=await r.json();
-    if(d&&d[0]){
-      S.homeLat=parseFloat(d[0].lat);
-      S.homeLng=parseFloat(d[0].lon);
+    if(!d||!d[0])throw new Error('no results');
+    return {lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};
+  };
+
+  // Try relay first, then direct
+  for(const attempt of [relayGeocode, directGeocode]){
+    try{
+      const result=await Promise.race([
+        attempt(),
+        new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),6000))
+      ]);
+      S.homeLat=result.lat;
+      S.homeLng=result.lng;
       console.log(`[Orbyt] Home geocoded: ${S.homeCity} → ${S.homeLat}, ${S.homeLng}`);
-    } else {
-      console.warn('[Orbyt] Geocode: no results for',S.homeCity);
+      return;
+    }catch(e){
+      console.warn('[Orbyt] Geocode attempt failed:',e.message);
     }
-  }catch(e){
-    console.warn('[Orbyt] Geocode failed:',e.message);
+  }
+
+  // Last resort: GPS capture — only accurate if user is at home right now
+  console.warn('[Orbyt] Falling back to GPS for home location');
+
+  // Warn the user — GPS fallback is only correct if they are at home
+  const btn=document.querySelector('#step1 .btn-primary');
+  const noteEl=document.querySelector('#step1 .note');
+  const originalNote=noteEl?noteEl.innerHTML:'';
+  if(noteEl){
+    noteEl.style.background='rgba(245,158,11,.12)';
+    noteEl.style.borderColor='rgba(245,158,11,.4)';
+    noteEl.innerHTML='⚠️ Could not locate "'+S.homeCity+'" automatically. Your current GPS position is being used as your home location instead. <strong>Only continue from home</strong> — if you are currently travelling, please try again when you are at home, or check your internet connection.';
+  }
+
+  if(navigator.geolocation){
+    await new Promise(resolve=>{
+      navigator.geolocation.getCurrentPosition(
+        pos=>{
+          S.homeLat=pos.coords.latitude;
+          S.homeLng=pos.coords.longitude;
+          console.log(`[Orbyt] Home set from GPS (fallback): ${S.homeLat}, ${S.homeLng}`);
+          // Restore note styling after 4 seconds
+          setTimeout(()=>{
+            if(noteEl){noteEl.style.background='';noteEl.style.borderColor='';noteEl.innerHTML=originalNote;}
+          },4000);
+          resolve();
+        },
+        err=>{
+          console.warn('[Orbyt] GPS fallback also failed:',err.message);
+          if(noteEl){
+            noteEl.style.background='rgba(239,68,68,.1)';
+            noteEl.style.borderColor='rgba(239,68,68,.4)';
+            noteEl.innerHTML='⚠️ Could not determine your home location. You can continue, but the home suppression feature will not work until you reset Orbyt and try setup again with a working internet connection.';
+          }
+          resolve();
+        },
+        {enableHighAccuracy:false,timeout:8000,maximumAge:0}
+      );
+    });
   }
 }
 
@@ -564,7 +675,15 @@ async function saveIdentity(){
   S.phone=$('myPhone').value.trim();S.homeCity=$('myCity').value.trim();S.email=work;
   if(S.homeCity){
     const btn=document.querySelector('#step1 .btn-primary');
-    if(btn){btn.textContent='Locating home city…';btn.disabled=true;}
+    if(btn){btn.textContent='Setting home location…';btn.disabled=true;}
+    // Check if relay has had at least 30s to wake up
+    const elapsed=Date.now()-RELAY_WAKE_TIME;
+    const WARM_UP_MS=30000;
+    const remaining=WARM_UP_MS-elapsed;
+    if(remaining>1000){
+      // Show hourglass for remaining time, then geocode
+      await new Promise(resolve=>showHourglass(remaining,resolve));
+    }
     await geocodeHomeCity();
     if(btn){btn.textContent='Continue →';btn.disabled=false;}
   }
