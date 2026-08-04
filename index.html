@@ -350,7 +350,7 @@ hr{border:none;border-top:1.5px solid var(--border);margin:6px 0}
           <div class="city-dot"></div>
           <div>
             <div class="city-name-text" id="cityName">Detecting…</div>
-            <div class="city-sub-text" id="citySubtitle">your current location</div>
+            <div class="city-sub-text" id="citySubtitle">starting up…</div>
           </div>
         </div>
         <div class="toggle-row"><span class="toggle-label">Orbyt active</span><label class="toggle"><input type="checkbox" id="activeToggle" onchange="toggleActive()" checked><span class="slider"></span></label></div>
@@ -515,7 +515,7 @@ const SUGGESTED_GROUPS=['Work colleagues','Customers / clients','Former colleagu
 const S={
   name:'',workEmail:'',personalEmail:'',phone:'',homeCity:'',homeLat:null,homeLng:null,email:'',
   contacts:[],groups:[],orbitSet:new Set(),gateSet:new Set(),
-  active:true,notifs:true,pollInterval:null,lastPos:null,ws:null,wsReady:false,
+  active:true,notifs:true,pollInterval:null,lastPos:null,ws:null,wsReady:false,homeCoordsReady:false,
   currentCity:null,threads:{},activeThread:null,
 };
 const TEST={simContacts:{}};
@@ -673,20 +673,9 @@ async function saveIdentity(){
   if(!first||!work.includes('@')){alert('Please enter your name and work email.');return}
   S.name=first+(last?' '+last:'');S.workEmail=work;S.personalEmail=personal;
   S.phone=$('myPhone').value.trim();S.homeCity=$('myCity').value.trim();S.email=work;
-  if(S.homeCity){
-    const btn=document.querySelector('#step1 .btn-primary');
-    if(btn){btn.textContent='Setting home location…';btn.disabled=true;}
-    // Check if relay has had at least 30s to wake up
-    const elapsed=Date.now()-RELAY_WAKE_TIME;
-    const WARM_UP_MS=30000;
-    const remaining=WARM_UP_MS-elapsed;
-    if(remaining>1000){
-      // Show hourglass for remaining time, then geocode
-      await new Promise(resolve=>showHourglass(remaining,resolve));
-    }
-    await geocodeHomeCity();
-    if(btn){btn.textContent='Continue →';btn.disabled=false;}
-  }
+  // Home city is stored as text. Coordinates are resolved lazily
+  // when the relay server connects — avoiding all client-side geocoding
+  // restrictions (iOS PWA fetch blocks, GitHub Pages permissions policy).
   localStorage.setItem('orbyt_id',JSON.stringify({name:S.name,workEmail:work,personalEmail:personal,phone:S.phone,homeCity:S.homeCity,homeLat:S.homeLat,homeLng:S.homeLng}));
   S.groups=SUGGESTED_GROUPS.map(name=>({name,active:true}));
   renderGroupSetup();showStep(2);
@@ -736,11 +725,57 @@ function saveAssignments(){
 function connectWS(){
   if(S.ws){try{S.ws.close()}catch{}S.ws=null}
   setPill('wsPill','warn','connecting…');
+  // After 5s still connecting — likely Render cold start — tell the user
+  const wakeTimer=setTimeout(()=>{
+    if(!S.wsReady){
+      setPill('wsPill','warn','waking up…');
+      addSysNotice('⏳','Server is starting up — this takes up to 30 seconds on first use. Orbyt will activate automatically.');
+    }
+  },5000);
   const ws=new WebSocket(RELAY_URL);S.ws=ws;
-  ws.onopen=()=>{S.wsReady=true;setPill('wsPill','on','connected');if(S.active)ping();deliverQueued();};
+  ws.onopen=()=>{clearTimeout(wakeTimer);
+  ws.onopen=()=>{
+    S.wsReady=true;
+    setPill('wsPill','on','connected');
+    if(S.active){
+      if(S.homeLat!=null){
+        S.homeCoordsReady=true;
+        ping();
+        deliverQueued();
+      } else if(S.homeCity){
+        setPill('locPill','warn','setting home…');
+        wsSend({type:'geocode_request',email:S.workEmail.toLowerCase().trim(),city:S.homeCity});
+      } else {
+        S.homeCoordsReady=true;
+        ping();
+        deliverQueued();
+      }
+    }
+  };;
   ws.onmessage=evt=>{let m;try{m=JSON.parse(evt.data)}catch{return}
     if(m.type==='nearby')handleNearby(m.nearby||[]);
     if(m.type==='incoming_nudge')handleIncoming(m);
+    if(m.type==='geocode_result'){
+      if(m.lat&&m.lng){
+        S.homeLat=m.lat; S.homeLng=m.lng;
+        S.homeCoordsReady=true;
+        const stored=JSON.parse(localStorage.getItem('orbyt_id')||'{}');
+        stored.homeLat=m.lat; stored.homeLng=m.lng;
+        localStorage.setItem('orbyt_id',JSON.stringify(stored));
+        console.log(`[Orbyt] Home coords received: ${m.lat}, ${m.lng} — starting proximity checks`);
+        setPill('locPill','on','location ✓');
+        // Now safe to ping — home suppression will work correctly
+        ping();
+        deliverQueued();
+      } else {
+        // Geocode failed — proceed anyway with a notice
+        S.homeCoordsReady=true;
+        console.warn('[Orbyt] Geocode returned no coords — suppression inactive');
+        addSysNotice('⚠️','Could not locate your home city. Orbyt is active but may show notices when both contacts are at home. Try resetting and re-entering your home city.');
+        ping();
+        deliverQueued();
+      }
+    }
     if(m.type==='nudge_result'){
       if(m.success){
         // Mark matching queued message as delivered
@@ -759,17 +794,18 @@ Check that the email address you entered for this contact exactly matches the em
       }
     }
   };
-  ws.onclose=()=>{S.wsReady=false;setPill('wsPill','off','disconnected');if(S.active)setTimeout(connectWS,5000)};
+  ws.onclose=()=>{S.wsReady=false;S.homeCoordsReady=false;setPill('wsPill','off','disconnected');if(S.active)setTimeout(connectWS,5000)};
   ws.onerror=()=>setPill('wsPill','warn','error');
 }
 function wsSend(o){if(S.wsReady)S.ws.send(JSON.stringify(o))}
 function ping(){
-  if(!S.wsReady||!S.lastPos)return;
-  if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive. Check geocoding.');
+  if(!S.wsReady||!S.lastPos||!S.homeCoordsReady)return;
+  if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive.');
   if(S.homeLat==null)console.warn('[Orbyt] homeLat null — home suppression inactive');
   const base={name:S.name,phone:S.phone,lat:S.lastPos.lat,lng:S.lastPos.lng,
     contacts:S.contacts.map(c=>c.email),radiusM:CITY_R,
-    homeLat:S.homeLat??null,homeLng:S.homeLng??null};
+    homeLat:S.homeLat??null,homeLng:S.homeLng??null,
+    homeCity:S.homeLat==null?S.homeCity:null}; // send city name only if coords not yet known
   wsSend({type:'ping',email:S.workEmail.toLowerCase().trim(),...base});
   if(S.personalEmail)wsSend({type:'ping',email:S.personalEmail.toLowerCase().trim(),...base});
 }
@@ -1121,17 +1157,8 @@ function resetAll(){
     loadThreads();
     renderContactsTab();renderThreadList();
     showStep(4);showTab('orbit');
-    // If homeLat is missing (geocode failed on first setup), retry now
-    if(S.homeCity && S.homeLat==null){
-      geocodeHomeCity().then(()=>{
-        if(S.homeLat!=null){
-          const stored=JSON.parse(localStorage.getItem('orbyt_id')||'{}');
-          stored.homeLat=S.homeLat;stored.homeLng=S.homeLng;
-          localStorage.setItem('orbyt_id',JSON.stringify(stored));
-          console.log('[Orbyt] Home re-geocoded:',S.homeLat,S.homeLng);
-        }
-      });
-    }
+    // If home coords already stored, mark ready — no geocode needed
+    if(S.homeLat!=null) S.homeCoordsReady=true;
     startProximity();
     if('Notification'in window&&Notification.permission==='default')Notification.requestPermission();
   }else if(id){S.groups=SUGGESTED_GROUPS.map(n=>({name:n,active:true}));renderGroupSetup();showStep(2);}
