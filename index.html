@@ -733,8 +733,8 @@ function connectWS(){
     }
   },5000);
   const ws=new WebSocket(RELAY_URL);S.ws=ws;
-  ws.onopen=()=>{clearTimeout(wakeTimer);
   ws.onopen=()=>{
+    clearTimeout(wakeTimer);
     S.wsReady=true;
     setPill('wsPill','on','connected');
     if(S.active){
