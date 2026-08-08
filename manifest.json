@@ -2,7 +2,7 @@
   "name": "Orbyt",
   "short_name": "Orbyt",
   "description": "Know who's in your orbit",
-  "start_url": "/Orbyt/",
+  "start_url": "/orbyt/",
   "display": "standalone",
   "background_color": "#0c0c12",
   "theme_color": "#6c5ce7",
