@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e85d26">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Neerly">
+<meta name="description" content="Share your live location with the people you pick, for as long as you pick. It ends itself.">
+<meta property="og:title" content="Neerly — I'm on my way.">
+<meta property="og:description" content="Live location, for a little while. Tap to watch — no app needed.">
+<title>Neerly — I'm on my way.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e85d26'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{
+  --accent:#e85d26; --accent-dark:#c94a18; --accent-soft:#fde8dd; --accent-softer:#fff3ec;
+  --bg:#fffaf6; --surface:#ffffff; --text:#2a1a12; --sub:#6b5a50; --muted:#9a8a80;
+  --border:#f0e2d8; --border-strong:#e3cfc1;
+  --red:#d63a2f; --red-soft:#fdecea; --green:#2f9e6b; --green-soft:#e5f5ed;
+  --radius:16px; --shadow:0 1px 2px rgba(80,40,20,.06),0 6px 24px rgba(80,40,20,.07);
+  --font:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+a{color:var(--accent-dark)}
+.app{max-width:480px;margin:0 auto;min-height:100%;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+.screen{display:none;animation:fade .18s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--accent)}
+.brand .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.topbar{display:flex;align-items:center;justify-content:space-between;min-height:40px;margin-bottom:20px}
+.hero{padding:40px 0 28px;text-align:center}
+.hero .brand{justify-content:center;font-size:34px}
+.hero .brand .dot{width:22px;height:22px;box-shadow:0 0 0 6px var(--accent-soft)}
+.tagline{color:var(--sub);font-size:18px;margin-top:6px}
+
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 10px}
+.lead{color:var(--sub);margin-top:6px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.center{text-align:center}
+
+/* Cards / forms */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:14px;font-weight:600;color:var(--sub);margin-bottom:6px}
+.input{width:100%;padding:13px 14px;border:1.5px solid var(--border-strong);border-radius:12px;background:#fff;font-size:16px;outline:none;transition:border-color .15s,box-shadow .15s}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.pw{position:relative}
+.pw .input{padding-right:64px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:var(--sub);padding:8px 10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:999px;font-weight:700;font-size:17px;transition:transform .08s,background .15s,opacity .15s;min-height:52px}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(232,93,38,.35)}
+.btn-primary:hover{background:var(--accent-dark)}
+.btn-ghost{background:var(--accent-softer);color:var(--accent-dark)}
+.btn-outline{border:1.5px solid var(--border-strong);background:#fff;color:var(--text)}
+.btn-danger{background:var(--red-soft);color:var(--red)}
+.btn-danger-solid{background:var(--red);color:#fff}
+.link{color:var(--accent-dark);font-weight:600;padding:8px 4px;text-decoration:none;display:inline-block}
+.link-muted{color:var(--sub);font-weight:500}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.stack>*+*{margin-top:12px}
+.err{display:none;background:var(--red-soft);color:var(--red);border-radius:12px;padding:10px 14px;font-size:14px;font-weight:500;margin-bottom:14px}
+.err.on{display:block}
+.note{background:var(--accent-softer);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--sub)}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.btn-ghost .spinner,.btn-outline .spinner{border-color:var(--accent-soft);border-top-color:var(--accent)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Segmented durations */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{padding:14px 6px;border-radius:14px;border:1.5px solid var(--border-strong);background:#fff;font-weight:700;font-size:17px;transition:all .12s}
+.seg button small{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px}
+.seg button.on{border-color:var(--accent);background:var(--accent-softer);color:var(--accent-dark);box-shadow:0 0 0 3px var(--accent-soft)}
+.seg button.on small{color:var(--accent-dark)}
+
+/* Contacts */
+.contacts{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.contact{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;text-align:left;border-bottom:1px solid var(--border)}
+.contact:last-child{border-bottom:none}
+.check{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--border-strong);display:grid;place-items:center;transition:all .12s}
+.contact.on .check{background:var(--accent);border-color:var(--accent)}
+.contact.on .check::after{content:'';width:10px;height:6px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.avatar{flex:none;width:38px;height:38px;border-radius:50%;background:var(--accent-soft);color:var(--accent-dark);display:grid;place-items:center;font-weight:700;font-size:15px}
+.who{flex:1;min-width:0}
+.who b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who span{display:block;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del{flex:none;color:var(--red);font-weight:600;font-size:14px;padding:8px 10px;border-radius:10px;background:var(--red-soft);display:none}
+.editing .del{display:block}
+.editing .check{display:none}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:15px}
+.addrow{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;color:var(--accent-dark);font-weight:600}
+.addrow .plus{width:24px;height:24px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;font-size:18px;line-height:1}
+.addform{display:none;padding:14px;border-top:1px solid var(--border);background:var(--accent-softer)}
+.addform.on{display:block}
+.section-head{display:flex;align-items:baseline;justify-content:space-between}
+.section-head button{font-size:14px;font-weight:600;color:var(--accent-dark);padding:4px}
+.sticky-cta{position:sticky;bottom:0;padding:16px 0 calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,rgba(255,250,246,0),var(--bg) 30%);margin-top:8px}
+
+/* Live */
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;background:var(--green-soft);color:var(--green);font-weight:700;font-size:14px}
+.pill .pulse{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.6s infinite}
+.pill.red{background:var(--red-soft);color:var(--red)}
+.pill.grey{background:#f2ece8;color:var(--sub)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,158,107,.5)}70%{box-shadow:0 0 0 8px rgba(47,158,107,0)}100%{box-shadow:0 0 0 0 rgba(47,158,107,0)}}
+.count{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--sub);background:#fff;border:1px solid var(--border);padding:6px 12px;border-radius:999px;font-size:14px}
+.timer{font-size:68px;font-weight:800;letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1;text-align:center;margin-top:8px;transition:color .3s}
+.timer-cap{text-align:center;color:var(--sub);margin-top:6px;min-height:22px}
+.bar{height:10px;border-radius:999px;background:var(--accent-soft);overflow:hidden;margin:16px 0}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .5s linear,background .3s}
+.urgent .timer{color:var(--red)}
+.urgent .bar{background:var(--red-soft)}
+.urgent .bar i{background:var(--red)}
+.map{height:260px;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:#efe7e0;position:relative;z-index:0}
+.map-wrap{position:relative}
+.recenter{position:absolute;right:10px;bottom:10px;z-index:500;background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:14px;box-shadow:var(--shadow);display:none}
+.map-foot{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--muted);margin-top:8px;gap:8px}
+.banner{display:none;background:#fff4e0;color:#8a5a00;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:500;margin-bottom:12px}
+.banner.on{display:block}
+.rlist{background:#fff;border:1px solid var(--border);border-radius:var(--radius)}
+.ritem{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.ritem:last-child{border-bottom:none}
+.status{flex:none;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.status.sent{background:#f2ece8;color:var(--sub)}
+.status.watching{background:var(--green-soft);color:var(--green)}
+.status.viewed{background:var(--accent-softer);color:var(--accent-dark)}
+.ext{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ext button{padding:12px 4px;border-radius:14px;background:var(--accent-softer);color:var(--accent-dark);font-weight:700}
+.ext button[disabled]{opacity:.4}
+
+/* Recipient */
+.r-head{padding:4px 0 12px}
+.r-head h1{font-size:28px}
+.r-map{height:min(52vh,420px)}
+.big-emoji{font-size:56px;text-align:center;margin:24px 0 8px}
+
+/* Modal + toast */
+.scrim{position:fixed;inset:0;background:rgba(42,26,18,.4);display:none;align-items:flex-end;justify-content:center;z-index:1000;padding:16px}
+.scrim.on{display:flex}
+.sheet{background:#fff;border-radius:22px;padding:24px 20px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:448px;animation:up .2s ease}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 18px;border-radius:999px;font-weight:600;font-size:15px;opacity:0;pointer-events:none;transition:all .25s;z-index:1100;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.menu-btn{font-weight:600;color:var(--sub);font-size:15px;padding:8px 4px}
+.hidden{display:none!important}
+.leaflet-container{font-family:var(--font)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═════════════ SIGN IN ═════════════ -->
+<section class="screen" id="s-signin">
+  <div class="hero"><div class="brand"><span class="dot"></span>Neerly</div><p class="tagline">I'm on my way.</p></div>
+  <form class="card" id="f-signin" novalidate>
+    <div class="err"></div>
+    <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+    <label class="field"><span>Password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="current-password" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <button class="btn btn-primary" type="submit">Sign in</button>
+    <p class="center" style="margin-top:10px"><a href="#" class="link link-muted" data-go="forgot">Forgot password?</a></p>
+  </form>
+  <p class="center" style="margin-top:18px">New here? <a href="#" class="link" data-go="signup">Create an account</a></p>
+</section>
+
+<!-- ═════════════ SIGN UP ═════════════ -->
+<section class="screen" id="s-signup">
+  <div class="hero" style="padding-bottom:20px"><div class="brand"><span class="dot"></span>Neerly</div><p class="tagline" id="signup-tag">Share where you are, for a little while.</p></div>
+  <form class="card" id="f-signup" novalidate>
+    <div class="err"></div>
+    <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" placeholder="What your people call you" required></label>
+    <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+    <label class="field"><span>Password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <button class="btn btn-primary" type="submit">Create account</button>
+  </form>
+  <p class="center" style="margin-top:18px">Already have one? <a href="#" class="link" data-go="signin">Sign in</a></p>
+</section>
+
+<!-- ═════════════ FORGOT ═════════════ -->
+<section class="screen" id="s-forgot">
+  <div class="topbar"><a href="#" class="link" data-go="signin">← Back</a></div>
+  <h1>Forgot your password?</h1>
+  <p class="lead">We'll email you a link to set a new one.</p>
+  <form class="card" id="f-forgot" style="margin-top:20px" novalidate>
+    <div class="err"></div>
+    <div id="forgot-form">
+      <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+      <button class="btn btn-primary" type="submit">Send me a link</button>
+    </div>
+    <div id="forgot-done" class="hidden center">
+      <div class="big-emoji" style="margin-top:4px">📬</div>
+      <p><b>Check your inbox.</b></p>
+      <p class="muted small" style="margin-top:6px">If there's a Neerly account for <b id="forgot-email"></b>, a link is on its way. It works for 15 minutes.</p>
+    </div>
+  </form>
+</section>
+
+<!-- ═════════════ RESET ═════════════ -->
+<section class="screen" id="s-reset">
+  <div class="hero" style="padding-bottom:20px"><div class="brand"><span class="dot"></span>Neerly</div></div>
+  <h1>Set a new password</h1>
+  <form class="card" id="f-reset" style="margin-top:20px" novalidate>
+    <div class="err"></div>
+    <label class="field"><span>New password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <button class="btn btn-primary" type="submit">Save and sign in</button>
+  </form>
+</section>
+
+<!-- ═════════════ SHARE (sender) ═════════════ -->
+<section class="screen" id="s-share">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Neerly</div>
+    <button class="menu-btn" id="btn-account">Hi, <span id="me-name"></span> ▾</button>
+  </div>
+  <h1>Where are you headed?</h1>
+  <p class="lead">Pick how long and who. It ends on its own.</p>
+
+  <h2>For how long</h2>
+  <div class="seg" id="durations">
+    <button data-min="15">15<small>min</small></button>
+    <button data-min="30" class="on">30<small>min</small></button>
+    <button data-min="60">1<small>hour</small></button>
+  </div>
+
+  <div class="section-head"><h2>Who can watch</h2><button id="btn-edit-contacts" class="hidden">Edit</button></div>
+  <div class="contacts" id="contacts">
+    <div id="contact-list"></div>
+    <button class="addrow" id="btn-add-toggle"><span class="plus">+</span>Add someone</button>
+    <form class="addform" id="f-add" novalidate>
+      <div class="err"></div>
+      <label class="field"><span>Email</span><input class="input" type="email" name="email" inputmode="email" autocomplete="off" placeholder="grandma@example.com" required></label>
+      <label class="field"><span>Nickname <span class="muted" style="display:inline;font-weight:400">(optional)</span></span><input class="input" name="nickname" autocomplete="off" placeholder="Grandma"></label>
+      <div class="row"><button type="button" class="btn btn-outline" id="btn-add-cancel">Cancel</button><button type="submit" class="btn btn-primary">Add</button></div>
+    </form>
+  </div>
+  <p class="muted small" style="margin-top:10px">They'll get an email with a link. No app or account needed to watch.</p>
+
+  <div class="sticky-cta">
+    <div class="err" id="share-err"></div>
+    <button class="btn btn-primary" id="btn-share">Share my location</button>
+    <p class="muted small center" id="share-hint" style="margin-top:8px"></p>
+  </div>
+</section>
+
+<!-- ═════════════ LIVE (sender) ═════════════ -->
+<section class="screen" id="s-live">
+  <div class="topbar">
+    <span class="pill"><span class="pulse"></span>Sharing live</span>
+    <span class="count" id="live-count" title="People on this share">👥 0</span>
+  </div>
+  <div id="live-clock">
+    <div class="timer" id="live-timer">--:--</div>
+    <p class="timer-cap" id="live-cap">left</p>
+    <div class="bar"><i id="live-bar" style="width:100%"></i></div>
+  </div>
+  <div class="banner" id="live-banner"></div>
+  <div class="map-wrap"><div class="map" id="live-map"></div><button class="recenter" id="live-recenter">Recenter</button></div>
+  <div class="map-foot"><span id="live-updated">Finding you…</span><span>Keep this screen open</span></div>
+
+  <div class="row" style="margin-top:16px">
+    <button class="btn btn-ghost" id="btn-copy">Copy link</button>
+    <button class="btn btn-ghost" id="btn-sharesheet">Send via…</button>
+  </div>
+
+  <h2>Who's watching</h2>
+  <div class="rlist" id="live-recipients"></div>
+
+  <h2>Need longer?</h2>
+  <div class="ext" id="live-ext">
+    <button data-min="15">+15 min</button><button data-min="30">+30 min</button><button data-min="60">+1 hour</button>
+  </div>
+  <p class="muted small" id="live-ext-note" style="margin-top:8px">A share can run up to 4 hours in total.</p>
+
+  <button class="btn btn-danger" id="btn-stop" style="margin-top:24px">Stop sharing</button>
+</section>
+
+<!-- ═════════════ ENDED (sender) ═════════════ -->
+<section class="screen" id="s-ended">
+  <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div></div>
+  <div class="big-emoji">🏁</div>
+  <h1 class="center">Your share has ended</h1>
+  <p class="lead center" id="ended-sub">Your location isn't being shared anymore — and it isn't kept.</p>
+  <button class="btn btn-primary" data-go="share" style="margin-top:28px">Share again</button>
+</section>
+
+<!-- ═════════════ RECIPIENT LIVE ═════════════ -->
+<section class="screen" id="s-rlive">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Neerly</div>
+    <span class="pill"><span class="pulse"></span>Live</span>
+  </div>
+  <div class="r-head">
+    <h1><span class="sender-name"></span> is on the way</h1>
+    <p class="lead">Sharing live · updates every 17 seconds</p>
+  </div>
+  <div class="map-wrap"><div class="map r-map" id="r-map"></div><button class="recenter" id="r-recenter">Recenter</button></div>
+  <div class="map-foot"><span id="r-updated">Loading…</span><a class="link small" id="r-directions" target="_blank" rel="noopener" style="padding:0">Open in Maps ↗</a></div>
+  <div id="r-clock" style="margin-top:14px">
+    <div class="bar" style="margin-top:0"><i id="r-bar" style="width:100%"></i></div>
+    <p class="center"><b id="r-timer" style="font-variant-numeric:tabular-nums;font-size:20px">--:--</b> <span class="muted">left in this share</span></p>
+  </div>
+  <button class="btn btn-ghost" id="btn-shareback" style="margin-top:20px">Share my location back</button>
+  <p class="muted small center" style="margin-top:14px">Neerly shares are time-limited. When this one ends, <span class="sender-name"></span>'s location disappears.</p>
+</section>
+
+<!-- ═════════════ RECIPIENT EXPIRED ═════════════ -->
+<section class="screen" id="s-rexpired">
+  <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div><span class="pill grey">Ended</span></div>
+  <div class="big-emoji" id="rx-emoji">👋</div>
+  <h1 class="center" id="rx-title"><span class="sender-name"></span> is no longer sharing their location</h1>
+  <p class="lead center" id="rx-sub">Hope they made it in one piece.</p>
+  <div id="rx-actions" style="margin-top:28px">
+    <button class="btn btn-primary" id="btn-request">Request an update</button>
+    <form class="card hidden" id="f-request" novalidate style="margin-top:4px">
+      <div class="err"></div>
+      <p class="small muted" style="margin-bottom:14px">So <span class="sender-name"></span> knows who's asking:</p>
+      <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" required></label>
+      <label class="field"><span>Your email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+      <button class="btn btn-primary" type="submit">Send request</button>
+    </form>
+  </div>
+</section>
+
+<!-- ═════════════ REQUEST SENT (+ sign-up prompt) ═════════════ -->
+<section class="screen" id="s-rsent">
+  <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div></div>
+  <div class="big-emoji">🧡</div>
+  <h1 class="center">Request sent</h1>
+  <p class="lead center" id="rsent-sub">We let <span class="sender-name"></span> know you asked. If they share again, you'll get a fresh link.</p>
+
+  <div id="rsent-signup" class="hidden">
+    <h2 style="margin-top:32px">Make it mutual</h2>
+    <p class="muted small" style="margin-bottom:14px">Create a free account and you can share yours back next time. Nobody sees your location unless you send it.</p>
+    <form class="card" id="f-rsignup" novalidate>
+      <div class="err"></div>
+      <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" required></label>
+      <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+      <label class="field"><span>Password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle-pw>Show</button></div></label>
+      <button class="btn btn-primary" type="submit">Create account</button>
+    </form>
+    <p class="center" style="margin-top:14px"><a href="#" class="link link-muted" data-go="signin">I already have an account</a></p>
+  </div>
+  <div id="rsent-signedin" class="hidden" style="margin-top:28px">
+    <button class="btn btn-ghost" data-go="share">Share my location</button>
+  </div>
+</section>
+
+</div>
+
+<!-- Modal -->
+<div class="scrim" id="modal">
+  <div class="sheet">
+    <h1 id="modal-title" style="font-size:22px"></h1>
+    <p class="lead" id="modal-body"></p>
+    <div class="stack" style="margin-top:20px" id="modal-actions"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+'use strict';
+// ─────────────────────────────────────────────────────────────────────────────
+// Config
+// ─────────────────────────────────────────────────────────────────────────────
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? `http://${location.hostname}:3999`
+  : 'https://nearish-relay.onrender.com';
+// Paste a Google Maps JavaScript API key here to switch from OpenStreetMap to Google Maps.
+const MAPS_API_KEY = '';
+const UPDATE_MS = 17000;          // sender pushes, recipients poll
+const SESSION_KEY = 'neerly_session';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tiny helpers
+// ─────────────────────────────────────────────────────────────────────────────
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+
+const S = {
+  session: null,          // { token, user }
+  contacts: [],
+  selected: new Set(),    // emails
+  minutes: 30,
+  share: null,            // sender view from server
+  offset: 0,              // serverNow - Date.now()
+  timers: [],
+  watchId: null,
+  fix: null,              // { lat, lng, accuracy, ts }
+  pushedFixTs: 0,
+  syncing: false,
+  wakeLock: null,
+  map: null,
+  editing: false,
+  recip: null,            // { token, r, viewerId, share, recipient, map }
+};
+const serverNow = () => Date.now() + S.offset;
+
+let toastTimer;
+function toast(msg, ms = 2600) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), ms);
+}
+
+function showErr(form, msg) { const e = $('.err', form); if (!e) return toast(msg); e.textContent = msg; e.classList.toggle('on', !!msg); }
+function busy(btn, on, label) {
+  if (on) { btn.dataset.label = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<span class="spinner"></span>${label ? esc(label) : ''}`; }
+  else if (btn.dataset.label != null) { btn.disabled = false; btn.innerHTML = btn.dataset.label; delete btn.dataset.label; }
+}
+
+function clearTimers() { S.timers.forEach(clearInterval); S.timers = []; }
+function every(ms, fn) { S.timers.push(setInterval(fn, ms)); }
+
+function show(id) {
+  clearTimers();
+  $$('.screen').forEach(s => s.classList.toggle('on', s.id === 's-' + id));
+  window.scrollTo(0, 0);
+}
+
+function fmtClock(ms) {
+  const t = Math.max(0, Math.ceil(ms / 1000));
+  const h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), s = t % 60;
+  const pad = n => String(n).padStart(2, '0');
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+}
+function ago(ts) {
+  const s = Math.max(0, Math.round((serverNow() - ts) / 1000));
+  if (s < 10) return 'just now';
+  if (s < 60) return `${s}s ago`;
+  const m = Math.round(s / 60);
+  return `${m} min ago`;
+}
+function displayName(c) { return c.nickname || c.email.split('@')[0]; }
+function initials(c) { const n = (c.nickname || c.email).trim(); return (n[0] || '?').toUpperCase(); }
+function listNames(names) {
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.length} people`;
+}
+function cleanUrl() { history.replaceState(null, '', location.pathname); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// API
+// ─────────────────────────────────────────────────────────────────────────────
+class ApiError extends Error { constructor(status, msg, body) { super(msg); this.status = status; this.body = body; } }
+
+async function api(method, path, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (S.session?.token) headers.Authorization = 'Bearer ' + S.session.token;
+  // The relay sleeps when idle (Render free tier). Tell people why the first call is slow.
+  const slow = setTimeout(() => toast('Waking things up… one moment', 8000), 3500);
+  let res;
+  try {
+    res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  } catch {
+    throw new ApiError(0, navigator.onLine ? 'Can’t reach Neerly right now. Try again in a moment.' : 'You’re offline.');
+  } finally {
+    clearTimeout(slow);
+    if ($('#toast').textContent.startsWith('Waking')) $('#toast').classList.remove('on');
+  }
+  const data = await res.json().catch(() => ({}));
+  if (data.serverNow) S.offset = data.serverNow - Date.now();
+  if (res.status === 401 && S.session && !path.startsWith('/neerly/auth/')) { signOutLocal(); throw new ApiError(401, 'Please sign in again'); }
+  if (!res.ok) throw new ApiError(res.status, data.error || 'Something went wrong', data);
+  return data;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Maps — OpenStreetMap (Leaflet) by default, Google Maps if MAPS_API_KEY is set
+// ─────────────────────────────────────────────────────────────────────────────
+let googleReady = null;
+function loadGoogle() {
+  if (!googleReady) googleReady = new Promise((resolve, reject) => {
+    window.__neerlyMapsReady = resolve;
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(MAPS_API_KEY)}&callback=__neerlyMapsReady&loading=async`;
+    s.async = true; s.onerror = reject; document.head.appendChild(s);
+  });
+  return googleReady;
+}
+
+async function createMap(el, recenterBtn) {
+  let follow = true;
+  const setFollow = (v) => { follow = v; if (recenterBtn) recenterBtn.style.display = v ? 'none' : 'block'; };
+  let last = null;
+
+  if (MAPS_API_KEY) {
+    try {
+      await loadGoogle();
+      const g = google.maps;
+      const map = new g.Map(el, { zoom: 15, center: { lat: 0, lng: 0 }, disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy' });
+      const marker = new g.Marker({ map, visible: false, icon: { path: g.SymbolPath.CIRCLE, scale: 9, fillColor: '#e85d26', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 3 } });
+      const circle = new g.Circle({ map, visible: false, fillColor: '#e85d26', fillOpacity: .12, strokeColor: '#e85d26', strokeOpacity: .35, strokeWeight: 1 });
+      map.addListener('dragstart', () => setFollow(false));
+      if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo(last); };
+      return {
+        set(lat, lng, acc) {
+          last = { lat, lng };
+          marker.setPosition(last); marker.setVisible(true);
+          if (acc) { circle.setCenter(last); circle.setRadius(acc); circle.setVisible(true); } else circle.setVisible(false);
+          if (follow) map.panTo(last);
+        },
+        destroy() { el.innerHTML = ''; },
+      };
+    } catch (e) { console.warn('Google Maps failed, falling back to OpenStreetMap', e); }
+  }
+
+  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, destroy() {} }; }
+  const map = L.map(el, { zoomControl: true, attributionControl: true }).setView([20, 0], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  const circle = L.circle([0, 0], { radius: 1, color: '#e85d26', weight: 1, opacity: .35, fillOpacity: .12 });
+  const dot = L.circleMarker([0, 0], { radius: 9, color: '#fff', weight: 3, fillColor: '#e85d26', fillOpacity: 1 });
+  let placed = false;
+  map.on('dragstart', () => setFollow(false));
+  if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo(last); };
+  setTimeout(() => map.invalidateSize(), 50);
+  return {
+    set(lat, lng, acc) {
+      last = [lat, lng];
+      dot.setLatLng(last); circle.setLatLng(last).setRadius(acc || 1);
+      if (!placed) { dot.addTo(map); circle.addTo(map); map.setView(last, 16); placed = true; }
+      else if (follow) map.panTo(last);
+      if (!acc) circle.setStyle({ opacity: 0, fillOpacity: 0 }); else circle.setStyle({ opacity: .35, fillOpacity: .12 });
+    },
+    destroy() { map.remove(); },
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auth screens
+// ─────────────────────────────────────────────────────────────────────────────
+function signIn(data) {
+  S.session = { token: data.token, user: data.user };
+  store.set(SESSION_KEY, S.session);
+}
+function signOutLocal() { S.session = null; store.del(SESSION_KEY); }
+
+$$('[data-toggle-pw]').forEach(b => b.addEventListener('click', () => {
+  const i = b.previousElementSibling; const on = i.type === 'password';
+  i.type = on ? 'text' : 'password'; b.textContent = on ? 'Hide' : 'Show';
+}));
+
+$$('[data-go]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); go(a.dataset.go); }));
+
+function go(where) {
+  if (where === 'signin') { cleanUrl(); show('signin'); }
+  else if (where === 'signup') { cleanUrl(); $('#signup-tag').textContent = 'Share where you are, for a little while.'; show('signup'); }
+  else if (where === 'forgot') {
+    $('#forgot-form').classList.remove('hidden'); $('#forgot-done').classList.add('hidden');
+    const em = $('#f-signin [name=email]').value; if (em) $('#f-forgot [name=email]').value = em;
+    show('forgot');
+  }
+  else if (where === 'share') { cleanUrl(); S.session ? openShare() : show('signin'); }
+}
+
+$('#f-signin').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const email = f.email.value.trim(), password = f.password.value;
+  if (!email || !password) return showErr(f, 'Add your email and password');
+  busy(btn, true);
+  try { signIn(await api('POST', '/neerly/auth/signin', { email, password })); f.reset(); await afterSignIn(); }
+  catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+$('#f-signup').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const name = f.name.value.trim(), email = f.email.value.trim(), password = f.password.value;
+  if (!name) return showErr(f, 'Add your name — it’s what people see when you share');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
+  busy(btn, true);
+  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password })); f.reset(); await afterSignIn(); }
+  catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+$('#f-forgot').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const email = f.email.value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  busy(btn, true);
+  try {
+    await api('POST', '/neerly/auth/forgot', { email });
+    $('#forgot-email').textContent = email;
+    $('#forgot-form').classList.add('hidden'); $('#forgot-done').classList.remove('hidden');
+  } catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+$('#f-reset').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const password = f.password.value;
+  if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
+  busy(btn, true);
+  try {
+    signIn(await api('POST', '/neerly/auth/reset', { token: f.dataset.token, password }));
+    cleanUrl(); toast('Password updated — you’re signed in'); await afterSignIn();
+  } catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+async function afterSignIn() {
+  // If they arrived from a recipient link (share back / request flow), land on the share screen.
+  cleanUrl();
+  const me = await api('GET', '/neerly/me');
+  S.session.user = me.user; store.set(SESSION_KEY, S.session);
+  if (me.activeShare) { S.share = me.activeShare; return goLive(); }
+  return openShare();
+}
+
+$('#btn-account').addEventListener('click', () => {
+  modal('Signed in as ' + (S.session?.user?.name || ''), S.session?.user?.email || '', [
+    { label: 'Sign out', cls: 'btn-outline', fn: async () => { try { await api('POST', '/neerly/auth/signout'); } catch {} signOutLocal(); show('signin'); } },
+    { label: 'Close', cls: 'btn-ghost' },
+  ]);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Share screen
+// ─────────────────────────────────────────────────────────────────────────────
+async function openShare() {
+  $('#me-name').textContent = S.session.user.name;
+  show('share');
+  S.editing = false; renderContacts(); updateShareHint();
+  try { const d = await api('GET', '/neerly/contacts'); S.contacts = d.contacts; renderContacts(); }
+  catch (err) { if (err.status !== 401) toast(err.message); else show('signin'); }
+}
+
+$$('#durations button').forEach(b => b.addEventListener('click', () => {
+  S.minutes = Number(b.dataset.min);
+  $$('#durations button').forEach(x => x.classList.toggle('on', x === b));
+}));
+
+function renderContacts() {
+  const list = $('#contact-list');
+  $('#contacts').classList.toggle('editing', S.editing);
+  $('#btn-edit-contacts').classList.toggle('hidden', !S.contacts.length);
+  $('#btn-edit-contacts').textContent = S.editing ? 'Done' : 'Edit';
+  // drop selections for deleted contacts
+  for (const e of [...S.selected]) if (!S.contacts.some(c => c.email === e)) S.selected.delete(e);
+  if (!S.contacts.length) { list.innerHTML = '<div class="empty">No one saved yet. Add someone below — or skip it and just send the link.</div>'; return; }
+  list.innerHTML = S.contacts.map(c => `
+    <div class="contact ${S.selected.has(c.email) ? 'on' : ''}" role="button" tabindex="0" data-email="${esc(c.email)}">
+      <span class="check"></span>
+      <span class="avatar">${esc(initials(c))}</span>
+      <span class="who"><b>${esc(displayName(c))}</b><span>${esc(c.email)}</span></span>
+      <button class="del" data-del="${c.id}">Remove</button>
+    </div>`).join('');
+}
+
+$('#contact-list').addEventListener('click', async (e) => {
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    e.stopPropagation(); busy(del, true);
+    try { S.contacts = (await api('POST', '/neerly/contacts/delete', { id: Number(del.dataset.del) })).contacts; if (!S.contacts.length) S.editing = false; renderContacts(); updateShareHint(); }
+    catch (err) { toast(err.message); busy(del, false); }
+    return;
+  }
+  const row = e.target.closest('.contact'); if (!row || S.editing) return;
+  const em = row.dataset.email;
+  S.selected.has(em) ? S.selected.delete(em) : S.selected.add(em);
+  row.classList.toggle('on', S.selected.has(em));
+  updateShareHint();
+});
+$('#contact-list').addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('contact')) { e.preventDefault(); e.target.click(); } });
+
+$('#btn-edit-contacts').addEventListener('click', () => { S.editing = !S.editing; renderContacts(); });
+$('#btn-add-toggle').addEventListener('click', () => { $('#f-add').classList.add('on'); $('#btn-add-toggle').classList.add('hidden'); $('#f-add [name=email]').focus(); });
+$('#btn-add-cancel').addEventListener('click', closeAdd);
+function closeAdd() { const f = $('#f-add'); f.reset(); showErr(f, ''); f.classList.remove('on'); $('#btn-add-toggle').classList.remove('hidden'); }
+
+$('#f-add').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const email = f.email.value.trim(), nickname = f.nickname.value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  busy(btn, true);
+  try {
+    const d = await api('POST', '/neerly/contacts', { email, nickname });
+    S.contacts = d.contacts; S.selected.add(d.contact.email);
+    closeAdd(); renderContacts(); updateShareHint();
+  } catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+function updateShareHint() {
+  const picked = S.contacts.filter(c => S.selected.has(c.email));
+  const btn = $('#btn-share');
+  if (!btn.disabled) btn.textContent = picked.length ? 'Share my location' : 'Share my location · link only';
+  $('#share-hint').textContent = picked.length
+    ? `${listNames(picked.map(displayName))} will get an email. We'll copy the link too.`
+    : 'No one picked — you’ll get a link to paste into WhatsApp, iMessage, anywhere.';
+}
+
+function getPosition() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('This browser can’t share location.'));
+    navigator.geolocation.getCurrentPosition(
+      p => resolve({ lat: p.coords.latitude, lng: p.coords.longitude, accuracy: Math.round(p.coords.accuracy), ts: Date.now() }),
+      err => reject(new Error(err.code === 1
+        ? 'Location is blocked for this site. Allow it in your browser settings, then try again.'
+        : 'Couldn’t get a GPS fix. Try again — near a window helps.')),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 15000 });
+  });
+}
+
+$('#btn-share').addEventListener('click', async () => {
+  const btn = $('#btn-share'); const errEl = $('#share-err'); errEl.classList.remove('on');
+  busy(btn, true, 'Finding you…');
+  try {
+    const pos = await getPosition();
+    S.fix = pos;
+    btn.innerHTML = '<span class="spinner"></span>Starting your share…';
+    const recipients = S.contacts.filter(c => S.selected.has(c.email)).map(c => ({ email: c.email, nickname: c.nickname }));
+    const d = await api('POST', '/neerly/shares', { minutes: S.minutes, recipients, lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy });
+    S.share = d.share; S.pushedFixTs = pos.ts;
+    const copied = await copyText(S.share.link);
+    toast(recipients.length ? (copied ? 'Shared — emails sent and link copied' : 'Shared — emails on their way') : (copied ? 'Link copied — paste it anywhere' : 'You’re live — send the link below'));
+    S.selected.clear();
+    goLive();
+  } catch (err) {
+    errEl.textContent = err.message; errEl.classList.add('on');
+  } finally { busy(btn, false); updateShareHint(); }
+});
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  try {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy'); ta.remove(); return ok;
+  } catch { return false; }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Live share (sender)
+// ─────────────────────────────────────────────────────────────────────────────
+async function goLive() {
+  show('live');
+  $('#live-banner').classList.remove('on');
+  renderLive();
+  if (S.map) { S.map.destroy(); S.map = null; }
+  S.map = await createMap($('#live-map'), $('#live-recenter'));
+  const loc = S.fix || S.share.location;
+  if (loc) S.map.set(loc.lat, loc.lng, loc.accuracy);
+
+  startWatch();
+  requestWakeLock();
+  every(500, tickLive);
+  every(UPDATE_MS, syncLive);
+  syncLive();
+}
+
+function startWatch() {
+  stopWatch();
+  if (!navigator.geolocation) return;
+  S.watchId = navigator.geolocation.watchPosition(
+    p => {
+      S.fix = { lat: p.coords.latitude, lng: p.coords.longitude, accuracy: Math.round(p.coords.accuracy), ts: Date.now() };
+      $('#live-banner').classList.remove('on');
+      if (S.map) S.map.set(S.fix.lat, S.fix.lng, S.fix.accuracy);
+    },
+    err => {
+      const b = $('#live-banner');
+      b.textContent = err.code === 1
+        ? 'Location access was turned off. People watching will see your last spot until you allow it again.'
+        : 'Having trouble getting your location. We’ll keep trying.';
+      b.classList.add('on');
+    },
+    { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+}
+function stopWatch() { if (S.watchId != null) { navigator.geolocation.clearWatch(S.watchId); S.watchId = null; } }
+
+async function requestWakeLock() {
+  try { if ('wakeLock' in navigator && document.visibilityState === 'visible') S.wakeLock = await navigator.wakeLock.request('screen'); } catch {}
+}
+function releaseWakeLock() { try { S.wakeLock?.release(); } catch {} S.wakeLock = null; }
+
+async function syncLive() {
+  if (!S.share || S.syncing) return;
+  S.syncing = true;
+  try {
+    let d;
+    const tok = encodeURIComponent(S.share.token);
+    if (S.fix && S.fix.ts > S.pushedFixTs) {
+      const fix = S.fix;
+      d = await api('POST', `/neerly/shares/${tok}/location`, { lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy });
+      S.pushedFixTs = fix.ts;
+    } else {
+      d = await api('GET', `/neerly/shares/${tok}/status`);
+    }
+    S.share = d.share;
+    if (!S.share.active) return endLive();
+    renderLive();
+  } catch (err) {
+    if (err.status === 410) { S.share = err.body?.share || S.share; return endLive(); }
+    if (err.status === 401) return;
+    // transient network error: keep going; next tick retries
+  } finally { S.syncing = false; }
+}
+
+function tickLive() {
+  if (!S.share) return;
+  const left = S.share.expiresAt - serverNow();
+  const total = S.share.expiresAt - S.share.startedAt;
+  $('#live-timer').textContent = fmtClock(left);
+  $('#live-bar').style.width = Math.max(0, Math.min(100, left / total * 100)) + '%';
+  $('#live-clock').classList.toggle('urgent', left < 60000);
+  if (S.share.location?.at) $('#live-updated').textContent = 'Location sent ' + ago(S.share.location.at);
+  if (left <= 0 && !S.syncing) syncLive();
+}
+
+function renderLive() {
+  const sh = S.share; if (!sh) return;
+  const rs = sh.recipients || [];
+  const watching = rs.filter(r => r.status === 'watching').map(displayName);
+  const linkW = sh.linkViewersWatching || 0;
+  $('#live-count').textContent = '👥 ' + rs.length + (linkW ? ` +${linkW}` : '');
+  $('#live-count').title = `${rs.length} invited by email` + (linkW ? `, ${linkW} watching via link` : '');
+
+  let cap;
+  const allWatching = watching.length + linkW;
+  if (watching.length && !linkW) cap = `${listNames(watching)} ${watching.length === 1 ? 'is' : 'are'} watching`;
+  else if (watching.length === 1 && linkW) cap = `${watching[0]} and ${linkW} other${linkW > 1 ? 's' : ''} are watching`;
+  else if (allWatching) cap = allWatching === 1 ? 'someone’s watching via your link' : `${allWatching} people are watching`;
+  else if (rs.length) cap = rs.some(r => r.status === 'viewed') ? 'no one’s looking right now' : 'no one’s opened it yet';
+  else cap = 'send the link to someone';
+  $('#live-cap').textContent = 'left — ' + cap;
+
+  const label = { sent: '📬 Sent', watching: '👁 Watching', viewed: '✓ Viewed' };
+  let html = rs.map(r => `
+    <div class="ritem">
+      <span class="avatar">${esc(initials(r))}</span>
+      <span class="who"><b>${esc(displayName(r))}</b><span>${esc(r.email)}</span></span>
+      <span class="status ${r.status}">${label[r.status]}</span>
+    </div>`).join('');
+  if (linkW) html += `<div class="ritem"><span class="avatar">🔗</span><span class="who"><b>Via your link</b><span>Opened from a shared link</span></span><span class="status watching">👁 ${linkW} watching</span></div>`;
+  if (!html) html = '<div class="empty">Just you so far. Copy the link or send it with the buttons above.</div>';
+  $('#live-recipients').innerHTML = html;
+
+  const room = sh.maxExpiresAt - sh.expiresAt;
+  $$('#live-ext button').forEach(b => b.disabled = room <= 0);
+  $('#live-ext-note').textContent = room <= 0 ? 'This share is at the 4-hour max.' : 'A share can run up to 4 hours in total.';
+}
+
+$$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
+  const added = b.textContent.replace('+', '');
+  busy(b, true);
+  try {
+    const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/extend`, { minutes: Number(b.dataset.min) });
+    S.share = d.share; renderLive(); tickLive();
+    toast(d.capped ? 'Extended to the 4-hour max' : `Added ${added}`);
+  } catch (err) { if (err.status === 410) { S.share = err.body?.share || S.share; endLive(); } else toast(err.message); }
+  finally { busy(b, false); if (S.share) renderLive(); }
+}));
+
+$('#btn-copy').addEventListener('click', async () => { toast(await copyText(S.share.link) ? 'Link copied' : 'Couldn’t copy — try “Send via…”'); });
+$('#btn-sharesheet').addEventListener('click', async () => {
+  const name = S.session?.user?.name || 'I';
+  const text = `${name} is on the way — watch live for the next ${fmtClock(S.share.expiresAt - serverNow())}:`;
+  if (navigator.share) { try { await navigator.share({ title: 'Neerly', text, url: S.share.link }); } catch {} }
+  else toast(await copyText(`${text} ${S.share.link}`) ? 'Message and link copied' : 'Couldn’t copy the link');
+});
+
+$('#btn-stop').addEventListener('click', () => {
+  modal('Stop sharing now?', 'People watching will see that your share has ended. Your location won’t be kept.', [
+    { label: 'Stop sharing', cls: 'btn-danger-solid', fn: async () => {
+      try { const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/stop`); S.share = d.share; } catch (err) { if (err.status !== 410) { toast(err.message); return; } }
+      endLive(true);
+    } },
+    { label: 'Keep sharing', cls: 'btn-ghost' },
+  ]);
+});
+
+function endLive(stopped) {
+  clearTimers(); stopWatch(); releaseWakeLock();
+  if (S.map) { S.map.destroy(); S.map = null; }
+  S.fix = null; S.pushedFixTs = 0;
+  $('#ended-sub').textContent = stopped
+    ? 'You stopped sharing. Your location isn’t being shared anymore — and it isn’t kept.'
+    : 'Time’s up. Your location isn’t being shared anymore — and it isn’t kept.';
+  S.share = null;
+  show('ended');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Recipient
+// ─────────────────────────────────────────────────────────────────────────────
+function viewerId() {
+  let v = null;
+  try { v = sessionStorage.getItem('neerly_viewer'); } catch {}
+  if (!v) { v = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); try { sessionStorage.setItem('neerly_viewer', v); } catch {} }
+  return v;
+}
+
+async function openRecipient(token, r) {
+  S.recip = { token, r, viewerId: viewerId(), share: null, recipient: null, map: null, loading: false };
+  try { await pollRecipient(true); }
+  catch (err) {
+    if (err.status === 404) { setSenderName('This share'); $('#rx-title').textContent = 'This link doesn’t match a share'; $('#rx-sub').textContent = 'Double-check the link, or ask the person to send it again.'; $('#rx-actions').classList.add('hidden'); $('#rx-emoji').textContent = '🤔'; show('rexpired'); }
+    else { $('#rx-title').textContent = 'Can’t load this share right now'; $('#rx-sub').textContent = err.message; $('#rx-actions').classList.add('hidden'); show('rexpired'); every(UPDATE_MS, () => location.reload()); }
+  }
+}
+
+function setSenderName(n) { $$('.sender-name').forEach(el => el.textContent = n); }
+
+async function pollRecipient(first) {
+  const R = S.recip; if (!R || R.loading) return;
+  R.loading = true;
+  try {
+    const qs = R.r ? `r=${encodeURIComponent(R.r)}` : `v=${encodeURIComponent(R.viewerId)}`;
+    const d = await api('GET', `/neerly/shares/${encodeURIComponent(R.token)}?${qs}`);
+    const wasActive = R.share?.active;
+    R.share = d.share; R.recipient = d.recipient;
+    setSenderName(d.share.senderName);
+    document.title = d.share.active ? `${d.share.senderName} is on the way · Neerly` : 'Neerly';
+    if (d.share.active) {
+      if (first || !wasActive) await showRecipLive();
+      renderRecipLive();
+    } else if (first || wasActive) {
+      showRecipExpired();
+    }
+  } finally { R.loading = false; }
+}
+
+async function showRecipLive() {
+  show('rlive');
+  const R = S.recip;
+  if (R.map) R.map.destroy();
+  R.map = await createMap($('#r-map'), $('#r-recenter'));
+  every(UPDATE_MS, () => pollRecipient().catch(() => {}));
+  every(500, tickRecip);
+}
+
+function renderRecipLive() {
+  const R = S.recip, sh = R.share;
+  const loc = sh.location;
+  if (loc && R.map) R.map.set(loc.lat, loc.lng, loc.accuracy);
+  $('#r-directions').href = loc ? `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}` : '#';
+  $('#r-directions').style.visibility = loc ? 'visible' : 'hidden';
+  tickRecip();
+}
+
+function tickRecip() {
+  const sh = S.recip?.share; if (!sh?.active) return;
+  const left = sh.expiresAt - serverNow();
+  const total = sh.expiresAt - sh.startedAt;
+  $('#r-timer').textContent = fmtClock(left);
+  $('#r-bar').style.width = Math.max(0, Math.min(100, left / total * 100)) + '%';
+  $('#r-clock').classList.toggle('urgent', left < 60000);
+  const at = sh.location?.at;
+  const upd = $('#r-updated');
+  if (!at) upd.textContent = 'Waiting for their first location…';
+  else {
+    const stale = serverNow() - at > 60000;
+    upd.textContent = (stale ? 'Last seen ' : 'Updated ') + ago(at) + (stale ? ' — they may be out of signal' : '');
+  }
+  if (left <= 0 && !S.recip.loading) pollRecipient().catch(() => {});
+}
+
+function showRecipExpired() {
+  const R = S.recip;
+  if (R.map) { R.map.destroy(); R.map = null; }
+  $('#rx-emoji').textContent = '👋';
+  $('#rx-sub').textContent = 'Hope they made it in one piece.';
+  $('#rx-actions').classList.remove('hidden');
+  $('#btn-request').classList.remove('hidden');
+  $('#f-request').classList.add('hidden');
+  show('rexpired');
+}
+
+$('#btn-shareback').addEventListener('click', () => {
+  if (S.session) { go('share'); return; }
+  cleanUrl();
+  $('#signup-tag').textContent = 'Create a free account to share yours back. Nobody sees it unless you send it.';
+  show('signup');
+});
+
+$('#btn-request').addEventListener('click', async () => {
+  const btn = $('#btn-request');
+  if (S.session) {
+    busy(btn, true);
+    try { await sendRequest({}); } catch (err) { toast(err.message); } finally { busy(btn, false); }
+    return;
+  }
+  // No account: collect name + email first (prefilled when we know who the link was sent to).
+  const f = $('#f-request');
+  const known = S.recip.recipient;
+  if (known) { f.email.value = known.email; if (known.nickname && !f.name.value) f.name.value = known.nickname; }
+  btn.classList.add('hidden'); f.classList.remove('hidden');
+  (f.name.value ? f.email : f.name).focus();
+});
+
+$('#f-request').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const name = f.name.value.trim(), email = f.email.value.trim();
+  if (!name) return showErr(f, 'Add your name so they know who’s asking');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  busy(btn, true);
+  try { await sendRequest({ name, email, r: S.recip.r || undefined }); }
+  catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+async function sendRequest(body) {
+  const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.recip.token)}/request-update`, body);
+  const name = S.recip.share.senderName;
+  $('#rsent-sub').textContent = d.alreadyAsked
+    ? `You already asked ${name} a few minutes ago — we’ll give them a moment.`
+    : `We let ${name} know you asked. If they share again, you’ll get a fresh link.`;
+  const signed = !!S.session;
+  $('#rsent-signup').classList.toggle('hidden', signed);
+  $('#rsent-signedin').classList.toggle('hidden', !signed);
+  if (!signed) {
+    const f = $('#f-rsignup');
+    f.name.value = body.name || ''; f.email.value = body.email || '';
+  }
+  show('rsent');
+}
+
+$('#f-rsignup').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const name = f.name.value.trim(), email = f.email.value.trim(), password = f.password.value;
+  if (!name) return showErr(f, 'Add your name');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
+  busy(btn, true);
+  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password })); toast('Welcome to Neerly'); await afterSignIn(); }
+  catch (err) {
+    if (err.status === 409) { $('#f-signin [name=email]').value = email; cleanUrl(); show('signin'); toast('You already have an account — sign in'); }
+    else showErr(f, err.message);
+  }
+  finally { busy(btn, false); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Modal
+// ─────────────────────────────────────────────────────────────────────────────
+function modal(title, body, actions) {
+  $('#modal-title').textContent = title; $('#modal-body').textContent = body;
+  const box = $('#modal-actions'); box.innerHTML = '';
+  actions.forEach(a => {
+    const b = document.createElement('button'); b.className = 'btn ' + a.cls; b.textContent = a.label;
+    b.onclick = async () => { if (a.fn) { busy(b, true); await a.fn(); } closeModal(); };
+    box.appendChild(b);
+  });
+  $('#modal').classList.add('on');
+}
+function closeModal() { $('#modal').classList.remove('on'); }
+$('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Visibility: refresh right away when people come back to the tab
+// ─────────────────────────────────────────────────────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if ($('#s-live').classList.contains('on')) { requestWakeLock(); syncLive(); }
+  if ($('#s-rlive').classList.contains('on')) pollRecipient().catch(() => {});
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Boot
+// ─────────────────────────────────────────────────────────────────────────────
+(async function boot() {
+  const p = new URLSearchParams(location.search);
+  S.session = store.get(SESSION_KEY);
+
+  const share = p.get('share');
+  if (share) return openRecipient(share, p.get('r'));
+
+  const reset = p.get('reset');
+  if (reset) { $('#f-reset').dataset.token = reset; return show('reset'); }
+
+  if (!S.session?.token) return show('signin');
+  try {
+    const me = await api('GET', '/neerly/me');
+    S.session.user = me.user; store.set(SESSION_KEY, S.session);
+    if (me.activeShare) { S.share = me.activeShare; return goLive(); }
+    openShare();
+  } catch (err) {
+    if (err.status === 401) return show('signin');
+    // Offline / server asleep: show the share screen from cache and let actions retry.
+    openShare();
+  }
+})();
+</script>
+</body>
+</html>
