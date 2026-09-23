@@ -159,6 +159,61 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 .menu-btn{font-weight:600;color:var(--sub);font-size:15px;padding:8px 4px}
 .hidden{display:none!important}
 .leaflet-container{font-family:var(--font)}
+
+/* v0.4 — Buddies */
+.buddy{display:inline-grid;place-items:center;border-radius:50%;background:#fff;flex:none}
+.buddy svg{width:82%;height:82%;display:block}
+.buddy.ring{box-shadow:0 0 0 3px var(--accent),0 4px 14px rgba(80,40,20,.15)}
+.bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bgrid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border-radius:16px;border:1.5px solid var(--border-strong);background:#fff;font-size:13px;font-weight:600;color:var(--sub);transition:all .12s}
+.bgrid button svg{width:52px;height:52px}
+.bgrid button.on{border-color:var(--accent);background:var(--accent-softer);color:var(--accent-dark);box-shadow:0 0 0 3px var(--accent-soft);transform:translateY(-2px)}
+.bgrid button:active{transform:scale(.96)}
+.me-btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--text);font-size:15px;padding:4px 12px 4px 4px;border-radius:999px;background:#fff;border:1px solid var(--border);max-width:60%}
+.me-btn .buddy{width:32px;height:32px;background:var(--accent-softer)}
+.me-btn span.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* map pin */
+.bpin-wrap{background:none;border:none}
+.bpin{width:48px;height:48px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 3px 10px rgba(80,40,20,.35);display:grid;place-items:center;animation:bob 2.4s ease-in-out infinite}
+.bpin svg{width:38px;height:38px}
+.bpin.walk{animation:waddle .5s ease-in-out 4}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes waddle{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg) translateY(-2px)}75%{transform:rotate(9deg) translateY(-2px)}}
+@media (prefers-reduced-motion:reduce){.bpin,.bpin.walk{animation:none}}
+/* username field */
+.at{position:relative}
+.at::before{content:'@';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:600}
+.at .input{padding-left:32px}
+.uhint{font-size:13px;margin-top:6px;min-height:18px;color:var(--muted)}
+.uhint.good{color:var(--green)}
+.uhint.bad{color:var(--red)}
+.uhint button{color:var(--accent-dark);font-weight:700;text-decoration:underline;font-size:13px;padding:0}
+/* profile + stats */
+.phead{text-align:center;padding:8px 0 4px}
+.phead .buddy{width:104px;height:104px;margin-bottom:14px}
+.phead .handle{color:var(--muted);font-weight:600;margin-top:2px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stile{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px}
+.stile b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stile span{display:block;font-size:13px;color:var(--sub);margin-top:4px;font-weight:500}
+.stile.wide{grid-column:1/-1;display:flex;align-items:center;gap:12px}
+.stile.wide .fire{font-size:30px}
+.alist{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.alist button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:15px 16px;border-bottom:1px solid var(--border);font-weight:600;text-align:left}
+.alist button:last-child{border-bottom:none}
+.alist button::after{content:'›';color:var(--muted);font-size:20px;line-height:1}
+.alist .danger{color:var(--red)}
+/* end-of-share summary */
+.sumcard{text-align:center;padding:24px 20px;background:linear-gradient(180deg,var(--accent-softer),#fff 70%)}
+.sumcard .buddy{width:88px;height:88px;margin-bottom:12px}
+.sumrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.sumrow div{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 4px}
+.sumrow b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.sumrow span{font-size:12px;color:var(--sub);font-weight:600}
+.sumwho{color:var(--sub);font-size:15px;margin-top:14px}
+.lifetime{margin-top:16px;font-weight:600;color:var(--accent-dark)}
+.r-title{display:flex;align-items:center;gap:12px}
+.r-title .buddy{width:48px;height:48px;background:var(--accent-softer)}
 </style>
 </head>
 <body>
@@ -184,6 +239,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <div class="err"></div>
     <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" placeholder="What your people call you" required></label>
     <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
+    <label class="field"><span>Username</span><div class="at"><input class="input" name="username" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="21" placeholder="yourname" required></div><div class="uhint" data-uhint>We'll suggest one from your email. Change it if you like.</div></label>
     <label class="field"><span>Password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle-pw>Show</button></div></label>
     <button class="btn btn-primary" type="submit">Create account</button>
   </form>
@@ -224,10 +280,10 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 <section class="screen" id="s-share">
   <div class="topbar">
     <div class="brand"><span class="dot"></span>Neerly</div>
-    <button class="menu-btn" id="btn-account">Hi, <span id="me-name"></span> ▾</button>
+    <button class="me-btn" id="btn-account" aria-label="Your profile"><span class="buddy" id="me-buddy"></span><span class="nm" id="me-name"></span></button>
   </div>
-  <h1>Where are you headed?</h1>
-  <p class="lead">Pick how long and who. It ends on its own.</p>
+  <h1>On your way?</h1>
+  <p class="lead">Pick how long and who can watch. It ends on its own.</p>
 
   <h2>For how long</h2>
   <div class="seg" id="durations">
@@ -269,7 +325,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   </div>
   <div class="banner" id="live-banner"></div>
   <div class="map-wrap"><div class="map" id="live-map"></div><button class="recenter" id="live-recenter">Recenter</button></div>
-  <div class="map-foot"><span id="live-updated">Finding you…</span><span>Keep this screen open</span></div>
+  <div class="map-foot"><span id="live-updated">Finding you…</span><span id="live-dist">Keep this screen open</span></div>
 
   <div class="row" style="margin-top:16px">
     <button class="btn btn-ghost" id="btn-copy">Copy link</button>
@@ -291,10 +347,93 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 <!-- ═════════════ ENDED (sender) ═════════════ -->
 <section class="screen" id="s-ended">
   <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div></div>
-  <div class="big-emoji">🏁</div>
-  <h1 class="center">Your share has ended</h1>
-  <p class="lead center" id="ended-sub">Your location isn't being shared anymore — and it isn't kept.</p>
-  <button class="btn btn-primary" data-go="share" style="margin-top:28px">Share again</button>
+  <div class="card sumcard">
+    <span class="buddy ring" id="sum-buddy"></span>
+    <h1>Your share has ended</h1>
+    <p class="lead" id="ended-sub">Your location isn't being shared anymore — and it isn't kept.</p>
+    <div class="sumrow" id="sum-row">
+      <div><b id="sum-time">–</b><span>shared</span></div>
+      <div><b id="sum-dist">–</b><span>traveled</span></div>
+      <div><b id="sum-watch">–</b><span id="sum-watch-l">viewers</span></div>
+    </div>
+    <p class="sumwho" id="sum-who"></p>
+    <p class="lifetime" id="sum-life"></p>
+  </div>
+  <button class="btn btn-primary" data-go="share" style="margin-top:24px">Share again</button>
+  <p class="center" style="margin-top:10px"><a href="#" class="link" data-go="profile">See your stats</a></p>
+</section>
+
+<!-- ═════════════ PICK A BUDDY ═════════════ -->
+<section class="screen" id="s-buddy">
+  <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div></div>
+  <h1>Pick your buddy</h1>
+  <p class="lead">Your buddy walks your route on the map for the people watching. You can change it anytime in your profile.</p>
+  <div class="bgrid" id="buddy-grid" style="margin-top:20px"></div>
+  <div class="sticky-cta">
+    <div class="err" id="buddy-err"></div>
+    <button class="btn btn-primary" id="btn-buddy-save" disabled>Pick one</button>
+  </div>
+</section>
+
+<!-- ═════════════ PROFILE ═════════════ -->
+<section class="screen" id="s-profile">
+  <div class="topbar"><a href="#" class="link" id="profile-back">← Back</a><button class="link" id="btn-edit-profile">Edit</button></div>
+  <div class="phead">
+    <span class="buddy ring" id="p-buddy"></span>
+    <h1 id="p-name"></h1>
+    <p class="handle" id="p-handle"></p>
+  </div>
+  <h2>Your Neerly so far</h2>
+  <div class="sgrid" id="p-stats"></div>
+  <p class="muted small" style="margin-top:10px">Counted only while you share. We keep the totals, never the places.</p>
+  <h2>Account</h2>
+  <div class="alist">
+    <button id="btn-pw">Change password</button>
+    <button id="btn-signout">Sign out</button>
+    <button id="btn-delete" class="danger">Delete account</button>
+  </div>
+  <p class="muted small center" style="margin-top:14px" id="p-email"></p>
+</section>
+
+<!-- ═════════════ EDIT PROFILE ═════════════ -->
+<section class="screen" id="s-editprofile">
+  <div class="topbar"><a href="#" class="link" data-go="profile">← Cancel</a></div>
+  <h1>Edit profile</h1>
+  <form id="f-profile" novalidate style="margin-top:18px">
+    <div class="err"></div>
+    <div class="card">
+      <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" maxlength="40" required></label>
+      <label class="field" style="margin-bottom:0"><span>Username</span><div class="at"><input class="input" name="username" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="21" required></div><div class="uhint" data-uhint></div></label>
+    </div>
+    <h2>Your buddy</h2>
+    <div class="bgrid" id="edit-buddy-grid"></div>
+    <div class="sticky-cta"><button class="btn btn-primary" type="submit">Save</button></div>
+  </form>
+</section>
+
+<!-- ═════════════ CHANGE PASSWORD ═════════════ -->
+<section class="screen" id="s-password">
+  <div class="topbar"><a href="#" class="link" data-go="profile">← Back</a></div>
+  <h1>Change password</h1>
+  <p class="lead">You'll stay signed in here. Other devices get signed out.</p>
+  <form class="card" id="f-password" style="margin-top:20px" novalidate>
+    <div class="err"></div>
+    <label class="field"><span>Current password</span><div class="pw"><input class="input" type="password" name="current" autocomplete="current-password" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <label class="field"><span>New password</span><div class="pw"><input class="input" type="password" name="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <button class="btn btn-primary" type="submit">Save new password</button>
+  </form>
+</section>
+
+<!-- ═════════════ DELETE ACCOUNT ═════════════ -->
+<section class="screen" id="s-delete">
+  <div class="topbar"><a href="#" class="link" data-go="profile">← Back</a></div>
+  <h1>Delete your account?</h1>
+  <p class="lead">This removes your profile, buddy, contacts, stats and share history for good. It can't be undone.</p>
+  <form class="card" id="f-delete" style="margin-top:20px" novalidate>
+    <div class="err"></div>
+    <label class="field"><span>Type your password to confirm</span><div class="pw"><input class="input" type="password" name="password" autocomplete="current-password" required><button type="button" data-toggle-pw>Show</button></div></label>
+    <button class="btn btn-danger-solid" type="submit">Delete my account</button>
+  </form>
 </section>
 
 <!-- ═════════════ RECIPIENT LIVE ═════════════ -->
@@ -304,7 +443,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <span class="pill"><span class="pulse"></span>Live</span>
   </div>
   <div class="r-head">
-    <h1><span class="sender-name"></span> is on the way</h1>
+    <h1 class="r-title"><span class="buddy" id="r-buddy"></span><span><span class="sender-name"></span> is on the way</span></h1>
     <p class="lead">Sharing live · updates every 17 seconds</p>
   </div>
   <div class="map-wrap"><div class="map r-map" id="r-map"></div><button class="recenter" id="r-recenter">Recenter</button></div>
@@ -344,7 +483,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 
   <div id="rsent-signup" class="hidden">
     <h2 style="margin-top:32px">Make it mutual</h2>
-    <p class="muted small" style="margin-bottom:14px">Create a free account and you can share yours back next time. Nobody sees your location unless you send it.</p>
+    <p class="muted small" style="margin-bottom:14px">Create a free account, pick your own buddy, and share yours back next time. Nobody sees your location unless you send it.</p>
     <form class="card" id="f-rsignup" novalidate>
       <div class="err"></div>
       <label class="field"><span>Your name</span><input class="input" name="name" autocomplete="given-name" required></label>
@@ -412,7 +551,10 @@ const S = {
   wakeLock: null,
   map: null,
   editing: false,
-  recip: null,            // { token, r, viewerId, share, recipient, map }
+  recip: null,            // { token, r, viewerId, share, recipient, map, trail }
+  trail: [],              // v0.4: this share's route, [[lat,lng],…] (lives only in memory)
+  stats: null,            // v0.4: lifetime totals from /me
+  pickBuddy: null, editBuddy: null,
 };
 const serverNow = () => Date.now() + S.offset;
 
@@ -460,6 +602,121 @@ function listNames(names) {
 function cleanUrl() { history.replaceState(null, '', location.pathname); }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Buddies (v0.4). Original drawings, 64×64. Ids must match AVATARS in neerly.mjs.
+// ─────────────────────────────────────────────────────────────────────────────
+const INK = '#2a1a12';
+const eyes = (y = 35, dx = 7, r = 2.8) => `<circle cx="${32 - dx}" cy="${y}" r="${r}" fill="${INK}"/><circle cx="${32 + dx}" cy="${y}" r="${r}" fill="${INK}"/><circle cx="${33 - dx}" cy="${y - 1}" r="${r / 3}" fill="#fff"/><circle cx="${33 + dx}" cy="${y - 1}" r="${r / 3}" fill="#fff"/>`;
+const blush = (y = 41, dx = 12) => `<ellipse cx="${32 - dx}" cy="${y}" rx="3.4" ry="2.1" fill="#ff7f98" opacity=".5"/><ellipse cx="${32 + dx}" cy="${y}" rx="3.4" ry="2.1" fill="#ff7f98" opacity=".5"/>`;
+const smile = (y = 42) => `<path d="M29 ${y} q3 3 6 0" stroke="${INK}" stroke-width="1.7" fill="none" stroke-linecap="round"/>`;
+const catMouth = (y = 42) => `<path d="M28.5 ${y} q1.75 2.6 3.5 0 q1.75 2.6 3.5 0" stroke="${INK}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+const BUDDIES = {
+  cat: { name: 'Cat', svg:
+    `<path d="M13 28 L16 8 L30 18 Z" fill="#8e98a6"/><path d="M51 28 L48 8 L34 18 Z" fill="#8e98a6"/><path d="M17 23 L18.5 13 L25 18 Z" fill="#ffb3c1"/><path d="M47 23 L45.5 13 L39 18 Z" fill="#ffb3c1"/>
+     <circle cx="32" cy="36" r="20" fill="#9aa4b2"/><path d="M26 18 q6 4 12 0" stroke="#7b8594" stroke-width="2" fill="none"/>
+     ${eyes()}${blush()}<path d="M30.5 39 h3 l-1.5 1.8 z" fill="#ff8fa3"/>${catMouth(41)}
+     <path d="M10 38 h9 M10 43 l9 -2 M54 38 h-9 M54 43 l-9 -2" stroke="#6f7886" stroke-width="1.2" stroke-linecap="round"/>` },
+  pup: { name: 'Pup', svg:
+    `<circle cx="32" cy="36" r="20" fill="#e2ad70"/>
+     <ellipse cx="14" cy="33" rx="6.5" ry="13" fill="#8c5b38" transform="rotate(18 14 33)"/><ellipse cx="50" cy="33" rx="6.5" ry="13" fill="#8c5b38" transform="rotate(-18 50 33)"/>
+     <circle cx="41" cy="30" r="5" fill="#c98d52" opacity=".7"/><ellipse cx="32" cy="44" rx="9.5" ry="7" fill="#f7dfbf"/>
+     ${eyes(34)}<ellipse cx="32" cy="41" rx="3.4" ry="2.4" fill="${INK}"/>${smile(45)}<ellipse cx="32" cy="49" rx="2" ry="2.5" fill="#ff8fa3"/>` },
+  bunny: { name: 'Bunny', svg:
+    `<ellipse cx="24" cy="14" rx="5.5" ry="13" fill="#f6eee9" stroke="#e3cfc1" stroke-width="1.5"/><ellipse cx="24" cy="15" rx="2.4" ry="9" fill="#ffc2cf"/>
+     <ellipse cx="40" cy="14" rx="5.5" ry="13" fill="#f6eee9" stroke="#e3cfc1" stroke-width="1.5"/><ellipse cx="40" cy="15" rx="2.4" ry="9" fill="#ffc2cf"/>
+     <circle cx="32" cy="38" r="19" fill="#f6eee9" stroke="#e3cfc1" stroke-width="1.5"/>
+     ${eyes(37)}${blush(43)}<ellipse cx="32" cy="42" rx="2" ry="1.4" fill="#ff8fa3"/>${catMouth(44)}` },
+  fox: { name: 'Fox', svg:
+    `<path d="M12 30 L14 8 L29 19 Z" fill="#ec7a35"/><path d="M52 30 L50 8 L35 19 Z" fill="#ec7a35"/><path d="M14 13 L14 8 L19 12 Z" fill="#3a2418"/><path d="M50 13 L50 8 L45 12 Z" fill="#3a2418"/>
+     <circle cx="32" cy="36" r="20" fill="#ec7a35"/>
+     <path d="M12 37 Q22 31 32 40 Q42 31 52 37 Q48 56 32 56 Q16 56 12 37 Z" fill="#fff4ea"/>
+     ${eyes(34)}<ellipse cx="32" cy="42" rx="2.8" ry="2" fill="${INK}"/>${smile(45)}` },
+  bear: { name: 'Bear', svg:
+    `<circle cx="16" cy="20" r="7.5" fill="#a36f47"/><circle cx="48" cy="20" r="7.5" fill="#a36f47"/><circle cx="16" cy="20" r="3.8" fill="#dca77c"/><circle cx="48" cy="20" r="3.8" fill="#dca77c"/>
+     <circle cx="32" cy="36" r="20" fill="#a36f47"/><ellipse cx="32" cy="43" rx="9.5" ry="7.5" fill="#e6c49f"/>
+     ${eyes(33)}${blush(40, 13)}<ellipse cx="32" cy="40" rx="3.4" ry="2.4" fill="${INK}"/>${smile(44)}` },
+  panda: { name: 'Panda', svg:
+    `<circle cx="16" cy="20" r="7.5" fill="#2e2a2b"/><circle cx="48" cy="20" r="7.5" fill="#2e2a2b"/>
+     <circle cx="32" cy="36" r="20" fill="#fbfbfb" stroke="#e0dada" stroke-width="1.5"/>
+     <ellipse cx="24" cy="35" rx="5.5" ry="7" fill="#2e2a2b" transform="rotate(-28 24 35)"/><ellipse cx="40" cy="35" rx="5.5" ry="7" fill="#2e2a2b" transform="rotate(28 40 35)"/>
+     <circle cx="24.5" cy="34.5" r="2.3" fill="#fff"/><circle cx="39.5" cy="34.5" r="2.3" fill="#fff"/><circle cx="25" cy="35" r="1.2" fill="${INK}"/><circle cx="39" cy="35" r="1.2" fill="${INK}"/>
+     ${blush(44, 13)}<ellipse cx="32" cy="42" rx="2.8" ry="2" fill="${INK}"/>${smile(45)}` },
+  owl: { name: 'Owl', svg:
+    `<path d="M14 24 L13 10 L24 18 Z" fill="#7b5aa6"/><path d="M50 24 L51 10 L40 18 Z" fill="#7b5aa6"/>
+     <circle cx="32" cy="36" r="20" fill="#8d6bb8"/><ellipse cx="32" cy="46" rx="11" ry="8" fill="#c7b2e4"/>
+     <circle cx="24" cy="33" r="7.5" fill="#fff"/><circle cx="40" cy="33" r="7.5" fill="#fff"/>
+     <circle cx="24.5" cy="33.5" r="3.6" fill="${INK}"/><circle cx="39.5" cy="33.5" r="3.6" fill="${INK}"/><circle cx="25.5" cy="32.3" r="1.2" fill="#fff"/><circle cx="40.5" cy="32.3" r="1.2" fill="#fff"/>
+     <path d="M29 40 L35 40 L32 45 Z" fill="#f6a623"/>` },
+  frog: { name: 'Frog', svg:
+    `<circle cx="21" cy="24" r="9" fill="#7cc26b"/><circle cx="43" cy="24" r="9" fill="#7cc26b"/>
+     <ellipse cx="32" cy="40" rx="23" ry="16" fill="#7cc26b"/>
+     <circle cx="21" cy="23" r="5.5" fill="#fff"/><circle cx="43" cy="23" r="5.5" fill="#fff"/><circle cx="21.5" cy="23.5" r="2.8" fill="${INK}"/><circle cx="42.5" cy="23.5" r="2.8" fill="${INK}"/>
+     ${blush(43, 15)}<path d="M22 42 q10 8 20 0" stroke="${INK}" stroke-width="1.8" fill="none" stroke-linecap="round"/>` },
+  dragon: { name: 'Dragon', svg:
+    `<path d="M20 22 L15 5 L28 17 Z" fill="#ffd166"/><path d="M44 22 L49 5 L36 17 Z" fill="#ffd166"/>
+     <path d="M27 17 L32 9 L37 17 Z" fill="#2d9483"/>
+     <circle cx="32" cy="37" r="20" fill="#3fb3a0"/><ellipse cx="32" cy="46" rx="11" ry="7.5" fill="#9fe0c9"/>
+     <path d="M12 38 l-6 -3 l3 6 Z M52 38 l6 -3 l-3 6 Z" fill="#2d9483"/>
+     ${eyes(34)}${blush(40, 13)}<circle cx="29" cy="45" r="1.2" fill="#236e62"/><circle cx="35" cy="45" r="1.2" fill="#236e62"/>${smile(48)}` },
+  unicorn: { name: 'Unicorn', svg:
+    `<circle cx="17" cy="24" r="7" fill="#ff9ecf"/><circle cx="13" cy="33" r="6" fill="#b69cff"/><circle cx="15" cy="42" r="5" fill="#8fd3ff"/>
+     <path d="M20 22 L19 12 L27 18 Z" fill="#fbf5ff" stroke="#e5d8f2" stroke-width="1.2"/><path d="M44 22 L45 12 L37 18 Z" fill="#fbf5ff" stroke="#e5d8f2" stroke-width="1.2"/>
+     <circle cx="33" cy="37" r="19" fill="#fbf5ff" stroke="#e5d8f2" stroke-width="1.5"/>
+     <path d="M33 2 L28.5 19 L37.5 19 Z" fill="#ffc94d"/><path d="M30 13 l6 -2 M29.5 16.5 l7 -2 M31 9.5 l4 -1.5" stroke="#e59f1f" stroke-width="1.1"/>
+     <circle cx="24" cy="22" r="5" fill="#ff9ecf"/>
+     ${eyes(36)}${blush(42)}${smile(43)}` },
+  ghost: { name: 'Ghost', svg:
+    `<path d="M14 32 A18 18 0 0 1 50 32 V54 q-3 4 -6 0 q-3 -4 -6 0 q-3 4 -6 0 q-3 -4 -6 0 q-3 4 -6 0 Z" fill="#fbfbff" stroke="#d6d0e6" stroke-width="1.5"/>
+     <ellipse cx="25" cy="32" rx="3" ry="4" fill="${INK}"/><ellipse cx="39" cy="32" rx="3" ry="4" fill="${INK}"/><circle cx="26" cy="30.5" r="1" fill="#fff"/><circle cx="40" cy="30.5" r="1" fill="#fff"/>
+     ${blush(39, 13)}<ellipse cx="32" cy="41" rx="2.6" ry="3" fill="${INK}"/>` },
+  robot: { name: 'Robot', svg:
+    `<path d="M32 16 V8" stroke="#6d8fb3" stroke-width="2.5"/><circle cx="32" cy="7" r="3.5" fill="#ff6b6b"/>
+     <rect x="7" y="31" width="5" height="12" rx="2" fill="#6d8fb3"/><rect x="52" y="31" width="5" height="12" rx="2" fill="#6d8fb3"/>
+     <rect x="11" y="16" width="42" height="38" rx="11" fill="#9fc0e0"/><rect x="16" y="23" width="32" height="22" rx="7" fill="#2a3a4f"/>
+     <circle cx="25" cy="33" r="3.2" fill="#7ff0ff"/><circle cx="39" cy="33" r="3.2" fill="#7ff0ff"/><path d="M28.5 38.5 q3.5 3 7 0" stroke="#7ff0ff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+     <circle cx="18" cy="50" r="1.6" fill="#6d8fb3"/><circle cx="46" cy="50" r="1.6" fill="#6d8fb3"/>` },
+};
+const DEFAULT_BUDDY = 'fox';
+function buddySvg(id) { const b = BUDDIES[id] || BUDDIES[DEFAULT_BUDDY]; return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${b.svg}</svg>`; }
+function paintBuddy(el, id) { if (el) el.innerHTML = buddySvg(id); }
+function renderBuddyGrid(box, selected, onPick) {
+  box.innerHTML = Object.entries(BUDDIES).map(([id, b]) =>
+    `<button type="button" data-buddy="${id}" class="${id === selected ? 'on' : ''}" aria-pressed="${id === selected}">${buddySvg(id)}${b.name}</button>`).join('');
+  box.onclick = (e) => {
+    const btn = e.target.closest('[data-buddy]'); if (!btn) return;
+    $$('[data-buddy]', box).forEach(x => { const on = x === btn; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    onPick(btn.dataset.buddy);
+  };
+}
+
+// Units: miles/feet where people use them, otherwise km/m.
+const IMPERIAL = /^en-(US|GB|LR|MM)$/i.test(navigator.language || '') || (navigator.language || '').toLowerCase() === 'en';
+function fmtDist(m) {
+  m = Math.max(0, m || 0);
+  if (IMPERIAL) {
+    const mi = m / 1609.344;
+    if (mi < 0.1) return `${Math.round(m * 3.28084 / 10) * 10} ft`;
+    return mi < 10 ? `${mi.toFixed(1)} mi` : `${Math.round(mi).toLocaleString()} mi`;
+  }
+  if (m < 1000) return `${Math.round(m / 10) * 10} m`;
+  return m < 10000 ? `${(m / 1000).toFixed(1)} km` : `${Math.round(m / 1000).toLocaleString()} km`;
+}
+function fmtMins(min) {
+  if (!min || min < 0.5) return '<1 min';
+  min = Math.round(min);
+  if (min < 60) return `${min} min`;
+  const h = Math.floor(min / 60), m = min % 60;
+  return m && h < 10 ? `${h} h ${m} min` : `${h} h`;
+}
+
+// Trail sync: the server sends only new points (from index `t`); a slice from 0 replaces.
+function mergeTrail(local, resp) {
+  if (!resp || !Array.isArray(resp.trail)) return { trail: local, changed: false, reset: false };
+  if (resp.trailFrom === 0) return { trail: resp.trail.slice(), changed: true, reset: true };
+  if (resp.trailFrom === local.length) return { trail: local.concat(resp.trail), changed: resp.trail.length > 0, reset: false };
+  return { trail: [], changed: false, reset: false }; // out of step: next request asks for the whole trail
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // API
 // ─────────────────────────────────────────────────────────────────────────────
 class ApiError extends Error { constructor(status, msg, body) { super(msg); this.status = status; this.body = body; } }
@@ -499,18 +756,25 @@ function loadGoogle() {
   return googleReady;
 }
 
-async function createMap(el, recenterBtn) {
+// createMap(el, recenterBtn, buddyId) → { set(lat,lng,acc), setTrail(points), destroy() }
+// The buddy is the marker; the trail is a dotted line of everywhere it has been during this share.
+const TRAIL_COLOR = '#e85d26';
+async function createMap(el, recenterBtn, buddyId) {
   let follow = true;
   const setFollow = (v) => { follow = v; if (recenterBtn) recenterBtn.style.display = v ? 'none' : 'block'; };
   let last = null;
+  const moved = (a, b) => !a || Math.abs(a.lat - b.lat) + Math.abs(a.lng - b.lng) > 0.00004;
 
   if (MAPS_API_KEY) {
     try {
       await loadGoogle();
       const g = google.maps;
       const map = new g.Map(el, { zoom: 15, center: { lat: 0, lng: 0 }, disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy' });
-      const marker = new g.Marker({ map, visible: false, icon: { path: g.SymbolPath.CIRCLE, scale: 9, fillColor: '#e85d26', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 3 } });
-      const circle = new g.Circle({ map, visible: false, fillColor: '#e85d26', fillOpacity: .12, strokeColor: '#e85d26', strokeOpacity: .35, strokeWeight: 1 });
+      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="44" fill="#fff" stroke="${TRAIL_COLOR}" stroke-width="6"/><svg x="14" y="14" width="68" height="68" viewBox="0 0 64 64">${(BUDDIES[buddyId] || BUDDIES[DEFAULT_BUDDY]).svg}</svg></svg>`;
+      const marker = new g.Marker({ map, visible: false, zIndex: 10, icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(pinSvg), scaledSize: new g.Size(48, 48), anchor: new g.Point(24, 24) } });
+      const circle = new g.Circle({ map, visible: false, fillColor: TRAIL_COLOR, fillOpacity: .12, strokeColor: TRAIL_COLOR, strokeOpacity: .35, strokeWeight: 1 });
+      const line = new g.Polyline({ map, path: [], strokeOpacity: 0, icons: [{ icon: { path: g.SymbolPath.CIRCLE, fillColor: TRAIL_COLOR, fillOpacity: .9, strokeOpacity: 0, scale: 3 }, offset: '0', repeat: '12px' }] });
+      let placed = false;
       map.addListener('dragstart', () => setFollow(false));
       if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo(last); };
       return {
@@ -518,30 +782,41 @@ async function createMap(el, recenterBtn) {
           last = { lat, lng };
           marker.setPosition(last); marker.setVisible(true);
           if (acc) { circle.setCenter(last); circle.setRadius(acc); circle.setVisible(true); } else circle.setVisible(false);
-          if (follow) map.panTo(last);
+          if (!placed) { map.setCenter(last); map.setZoom(16); placed = true; } else if (follow) map.panTo(last);
         },
+        setTrail(points) { line.setPath(points.map(([a, b]) => ({ lat: a, lng: b }))); },
         destroy() { el.innerHTML = ''; },
       };
     } catch (e) { console.warn('Google Maps failed, falling back to OpenStreetMap', e); }
   }
 
-  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, destroy() {} }; }
+  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, destroy() {} }; }
   const map = L.map(el, { zoomControl: true, attributionControl: true }).setView([20, 0], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
-  const circle = L.circle([0, 0], { radius: 1, color: '#e85d26', weight: 1, opacity: .35, fillOpacity: .12 });
-  const dot = L.circleMarker([0, 0], { radius: 9, color: '#fff', weight: 3, fillColor: '#e85d26', fillOpacity: 1 });
-  let placed = false;
+  const circle = L.circle([0, 0], { radius: 1, color: TRAIL_COLOR, weight: 1, opacity: .35, fillOpacity: .12, interactive: false });
+  // Dotted trail: zero-length dashes with round caps draw as dots.
+  const line = L.polyline([], { color: TRAIL_COLOR, weight: 6, opacity: .85, dashArray: '0 12', lineCap: 'round', interactive: false }).addTo(map);
+  const icon = L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin">${buddySvg(buddyId)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
+  const pin = L.marker([0, 0], { icon, keyboard: false, zIndexOffset: 1000 });
+  let placed = false, walkT;
   map.on('dragstart', () => setFollow(false));
-  if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo(last); };
+  if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo([last.lat, last.lng]); };
   setTimeout(() => map.invalidateSize(), 50);
   return {
     set(lat, lng, acc) {
-      last = [lat, lng];
-      dot.setLatLng(last); circle.setLatLng(last).setRadius(acc || 1);
-      if (!placed) { dot.addTo(map); circle.addTo(map); map.setView(last, 16); placed = true; }
-      else if (follow) map.panTo(last);
+      const next = { lat, lng };
+      const walking = placed && moved(last, next);
+      last = next;
+      pin.setLatLng([lat, lng]); circle.setLatLng([lat, lng]).setRadius(acc || 1);
+      if (!placed) { circle.addTo(map); pin.addTo(map); map.setView([lat, lng], 16); placed = true; }
+      else if (follow) map.panTo([lat, lng]);
       if (!acc) circle.setStyle({ opacity: 0, fillOpacity: 0 }); else circle.setStyle({ opacity: .35, fillOpacity: .12 });
+      if (walking) {  // little waddle when the buddy moves
+        const b = pin.getElement()?.querySelector('.bpin');
+        if (b) { b.classList.remove('walk'); void b.offsetWidth; b.classList.add('walk'); clearTimeout(walkT); walkT = setTimeout(() => b.classList.remove('walk'), 2100); }
+      }
     },
+    setTrail(points) { line.setLatLngs(points); },
     destroy() { map.remove(); },
   };
 }
@@ -571,6 +846,7 @@ function go(where) {
     show('forgot');
   }
   else if (where === 'share') { cleanUrl(); S.session ? openShare() : show('signin'); }
+  else if (where === 'profile') { S.session ? openProfile() : show('signin'); }
 }
 
 $('#f-signin').addEventListener('submit', async (e) => {
@@ -586,14 +862,68 @@ $('#f-signin').addEventListener('submit', async (e) => {
 $('#f-signup').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
   const name = f.name.value.trim(), email = f.email.value.trim(), password = f.password.value;
+  const username = f.username.value.trim().replace(/^@/, '');
   if (!name) return showErr(f, 'Add your name — it’s what people see when you share');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
+  if (!username) return showErr(f, 'Pick a username');
   if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
   busy(btn, true);
-  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password })); f.reset(); await afterSignIn(); }
-  catch (err) { showErr(f, err.message); }
+  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password, username })); f.reset(); f._uEdited = false; await afterSignIn(); }
+  catch (err) {
+    if (err.body?.field === 'username') usernameHint(f, err.body.suggestion ? `@${username} is taken` : err.message, 'bad', err.body.suggestion);
+    showErr(f, err.message);
+  }
   finally { busy(btn, false); }
 });
+
+// ── Username field: suggested from the email, live duplicate check, editable ──
+function usernameHint(form, text, kind, suggestion) {
+  const h = $('[data-uhint]', form);
+  h.className = 'uhint' + (kind ? ' ' + kind : '');
+  h.innerHTML = esc(text) + (suggestion ? ` — <button type="button" data-use="${esc(suggestion)}">use @${esc(suggestion)}</button>` : '');
+}
+function wireUsername(form, { fromEmail }) {
+  const input = form.username;
+  let seq = 0, timer;
+  form.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-use]'); if (!b) return;
+    input.value = b.dataset.use; form._uEdited = true; check();
+  });
+  async function check() {
+    const u = input.value.trim().replace(/^@/, '');
+    if (!u) return usernameHint(form, '', '');
+    const my = ++seq;
+    try {
+      const d = await api('GET', `/neerly/username?u=${encodeURIComponent(u)}`);
+      if (my !== seq) return;
+      if (d.available) usernameHint(form, `✓ @${d.username} is yours`, 'good');
+      else usernameHint(form, d.problem, 'bad', d.suggestion && d.suggestion !== d.username ? d.suggestion : null);
+    } catch {}
+  }
+  form._checkUsername = check;
+  input.addEventListener('input', () => {
+    form._uEdited = true;
+    input.value = input.value.toLowerCase().replace(/\s/g, '');
+    clearTimeout(timer); timer = setTimeout(check, 350);
+  });
+  if (fromEmail) {
+    const suggest = async () => {
+      const em = form.email.value.trim();
+      if (form._uEdited || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return;
+      const my = ++seq;
+      try {
+        const d = await api('GET', `/neerly/username?email=${encodeURIComponent(em)}`);
+        if (my !== seq || form._uEdited) return;
+        input.value = d.suggestion;
+        usernameHint(form, `✓ @${d.suggestion} is free. Suggested from your email; change it if you like.`, 'good');
+      } catch {}
+    };
+    let et;
+    form.email.addEventListener('input', () => { clearTimeout(et); et = setTimeout(suggest, 500); });
+    form.email.addEventListener('blur', suggest);
+  }
+}
+wireUsername($('#f-signup'), { fromEmail: true });
 
 $('#f-forgot').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
@@ -624,16 +954,122 @@ async function afterSignIn() {
   // If they arrived from a recipient link (share back / request flow), land on the share screen.
   cleanUrl();
   const me = await api('GET', '/neerly/me');
-  S.session.user = me.user; store.set(SESSION_KEY, S.session);
+  setMe(me);
   if (me.activeShare) { S.share = me.activeShare; return goLive(); }
+  if (!me.user.avatar) return openBuddyPicker();   // new accounts (and pre-v0.4 ones) pick a buddy once
   return openShare();
 }
+function setMe(me) {
+  S.session.user = me.user; if (me.stats) S.stats = me.stats;
+  store.set(SESSION_KEY, S.session);
+}
+const myBuddy = () => S.session?.user?.avatar || DEFAULT_BUDDY;
 
-$('#btn-account').addEventListener('click', () => {
-  modal('Signed in as ' + (S.session?.user?.name || ''), S.session?.user?.email || '', [
+// ─────────────────────────────────────────────────────────────────────────────
+// Buddy picker (first run)
+// ─────────────────────────────────────────────────────────────────────────────
+function openBuddyPicker() {
+  S.pickBuddy = null;
+  const btn = $('#btn-buddy-save'); btn.disabled = true; btn.textContent = 'Pick one';
+  $('#buddy-err').classList.remove('on');
+  renderBuddyGrid($('#buddy-grid'), null, (id) => { S.pickBuddy = id; btn.disabled = false; btn.textContent = `That’s me: ${BUDDIES[id].name}`; });
+  show('buddy');
+}
+$('#btn-buddy-save').addEventListener('click', async () => {
+  const btn = $('#btn-buddy-save'); if (!S.pickBuddy) return;
+  busy(btn, true);
+  try {
+    const d = await api('POST', '/neerly/me/profile', { avatar: S.pickBuddy });
+    S.session.user = d.user; store.set(SESSION_KEY, S.session);
+    toast(`Say hi to your ${BUDDIES[S.pickBuddy].name.toLowerCase()}!`);
+    openShare();
+  } catch (err) { const e = $('#buddy-err'); e.textContent = err.message; e.classList.add('on'); }
+  finally { busy(btn, false); }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Profile, stats, account
+// ─────────────────────────────────────────────────────────────────────────────
+$('#btn-account').addEventListener('click', () => openProfile());
+
+async function openProfile() {
+  renderProfile();
+  show('profile');
+  try { setMe(await api('GET', '/neerly/me')); renderProfile(); } catch (err) { if (err.status === 401) show('signin'); }
+}
+function renderProfile() {
+  const u = S.session?.user; if (!u) return;
+  paintBuddy($('#p-buddy'), myBuddy());
+  $('#p-name').textContent = u.name;
+  $('#p-handle').textContent = u.username ? '@' + u.username : '';
+  $('#p-email').textContent = 'Signed in as ' + u.email;
+  const st = S.stats || {};
+  const tile = (v, label) => `<div class="stile"><b>${esc(v)}</b><span>${esc(label)}</span></div>`;
+  const streak = st.streakWeeks || 0;
+  $('#p-stats').innerHTML =
+    tile(fmtDist(st.distanceM), 'traveled while sharing') +
+    tile((st.shares || 0).toLocaleString(), st.shares === 1 ? 'share' : 'shares') +
+    tile(fmtMins(st.minutesShared), 'shared in total') +
+    tile((st.people || 0).toLocaleString(), st.people === 1 ? 'person shared with' : 'people shared with') +
+    tile((st.timesWatched || 0).toLocaleString(), 'times watched') +
+    tile((st.requestsAnswered || 0).toLocaleString(), 'update requests answered') +
+    `<div class="stile wide"><span class="fire">${streak ? '🔥' : '🌱'}</span><div><b>${streak} week${streak === 1 ? '' : 's'}</b><span>${streak ? 'sharing streak' : 'Share this week to start a streak'}${st.bestStreak > streak ? ` · best ${st.bestStreak}` : ''}</span></div></div>`;
+}
+$('#profile-back').addEventListener('click', (e) => { e.preventDefault(); S.share ? goLive() : openShare(); });
+
+$('#btn-edit-profile').addEventListener('click', () => openEditProfile());
+function openEditProfile() {
+  const f = $('#f-profile'), u = S.session.user;
+  showErr(f, ''); f.name.value = u.name; f.username.value = u.username || ''; usernameHint(f, '', '');
+  S.editBuddy = myBuddy();
+  renderBuddyGrid($('#edit-buddy-grid'), S.editBuddy, (id) => { S.editBuddy = id; });
+  show('editprofile');
+}
+wireUsername($('#f-profile'), { fromEmail: false });
+$('#f-profile').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  const name = f.name.value.trim(), username = f.username.value.trim().replace(/^@/, '');
+  if (!name) return showErr(f, 'Add your name');
+  if (!username) return showErr(f, 'Pick a username');
+  busy(btn, true);
+  try {
+    const d = await api('POST', '/neerly/me/profile', { name, username, avatar: S.editBuddy });
+    S.session.user = d.user; store.set(SESSION_KEY, S.session);
+    toast('Profile saved'); openProfile();
+  } catch (err) {
+    if (err.body?.field === 'username') usernameHint(f, err.body.suggestion ? `@${username} is taken` : err.message, 'bad', err.body.suggestion);
+    showErr(f, err.message);
+  } finally { busy(btn, false); }
+});
+
+$('#btn-pw').addEventListener('click', () => { const f = $('#f-password'); f.reset(); showErr(f, ''); show('password'); });
+$('#f-password').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  if (f.password.value.length < 8) return showErr(f, 'New password needs at least 8 characters');
+  busy(btn, true);
+  try { await api('POST', '/neerly/me/password', { current: f.current.value, password: f.password.value }); f.reset(); toast('Password changed'); openProfile(); }
+  catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
+});
+
+$('#btn-signout').addEventListener('click', () => {
+  modal('Sign out?', S.session?.user?.email || '', [
     { label: 'Sign out', cls: 'btn-outline', fn: async () => { try { await api('POST', '/neerly/auth/signout'); } catch {} signOutLocal(); show('signin'); } },
-    { label: 'Close', cls: 'btn-ghost' },
+    { label: 'Cancel', cls: 'btn-ghost' },
   ]);
+});
+
+$('#btn-delete').addEventListener('click', () => { const f = $('#f-delete'); f.reset(); showErr(f, ''); show('delete'); });
+$('#f-delete').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
+  if (!f.password.value) return showErr(f, 'Type your password to confirm');
+  busy(btn, true);
+  try {
+    await api('POST', '/neerly/me/delete', { password: f.password.value });
+    if (S.share) { clearTimers(); stopWatch(); releaseWakeLock(); S.share = null; }
+    signOutLocal(); f.reset(); show('signin'); toast('Your account is deleted');
+  } catch (err) { showErr(f, err.message); }
+  finally { busy(btn, false); }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -641,6 +1077,7 @@ $('#btn-account').addEventListener('click', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 async function openShare() {
   $('#me-name').textContent = S.session.user.name;
+  paintBuddy($('#me-buddy'), myBuddy());
   show('share');
   S.editing = false; renderContacts(); updateShareHint();
   try { const d = await api('GET', '/neerly/contacts'); S.contacts = d.contacts; renderContacts(); }
@@ -760,7 +1197,9 @@ async function goLive() {
   $('#live-banner').classList.remove('on');
   renderLive();
   if (S.map) { S.map.destroy(); S.map = null; }
-  S.map = await createMap($('#live-map'), $('#live-recenter'));
+  S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy());
+  S.trail = mergeTrail([], S.share).trail;
+  S.map.setTrail(S.trail);
   const loc = S.fix || S.share.location;
   if (loc) S.map.set(loc.lat, loc.lng, loc.accuracy);
 
@@ -804,19 +1243,26 @@ async function syncLive() {
     const tok = encodeURIComponent(S.share.token);
     if (S.fix && S.fix.ts > S.pushedFixTs) {
       const fix = S.fix;
-      d = await api('POST', `/neerly/shares/${tok}/location`, { lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy });
+      d = await api('POST', `/neerly/shares/${tok}/location`, { lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy, trailFrom: S.trail.length });
       S.pushedFixTs = fix.ts;
     } else {
-      d = await api('GET', `/neerly/shares/${tok}/status`);
+      d = await api('GET', `/neerly/shares/${tok}/status?t=${S.trail.length}`);
     }
     S.share = d.share;
     if (!S.share.active) return endLive();
+    applyLiveTrail(S.share);
     renderLive();
   } catch (err) {
     if (err.status === 410) { S.share = err.body?.share || S.share; return endLive(); }
     if (err.status === 401) return;
     // transient network error: keep going; next tick retries
   } finally { S.syncing = false; }
+}
+
+function applyLiveTrail(sh) {
+  const m = mergeTrail(S.trail || [], sh);
+  S.trail = m.trail;
+  if (m.changed && S.map) S.map.setTrail(S.trail);
 }
 
 function tickLive() {
@@ -861,6 +1307,7 @@ function renderLive() {
   const room = sh.maxExpiresAt - sh.expiresAt;
   $$('#live-ext button').forEach(b => b.disabled = room <= 0);
   $('#live-ext-note').textContent = room <= 0 ? 'This share is at the 4-hour max.' : 'A share can run up to 4 hours in total.';
+  $('#live-dist').textContent = sh.distanceM > 0 ? `${fmtDist(sh.distanceM)} so far` : 'Keep this screen open';
 }
 
 $$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
@@ -868,7 +1315,7 @@ $$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
   busy(b, true);
   try {
     const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/extend`, { minutes: Number(b.dataset.min) });
-    S.share = d.share; renderLive(); tickLive();
+    S.share = d.share; applyLiveTrail(S.share); renderLive(); tickLive();
     toast(d.capped ? 'Extended to the 4-hour max' : `Added ${added}`);
   } catch (err) { if (err.status === 410) { S.share = err.body?.share || S.share; endLive(); } else toast(err.message); }
   finally { busy(b, false); if (S.share) renderLive(); }
@@ -895,12 +1342,41 @@ $('#btn-stop').addEventListener('click', () => {
 function endLive(stopped) {
   clearTimers(); stopWatch(); releaseWakeLock();
   if (S.map) { S.map.destroy(); S.map = null; }
-  S.fix = null; S.pushedFixTs = 0;
+  S.fix = null; S.pushedFixTs = 0; S.trail = [];
   $('#ended-sub').textContent = stopped
-    ? 'You stopped sharing. Your location isn’t being shared anymore — and it isn’t kept.'
-    : 'Time’s up. Your location isn’t being shared anymore — and it isn’t kept.';
+    ? 'You stopped sharing. Your location isn’t being shared anymore, and your route isn’t kept.'
+    : 'Time’s up. Your location isn’t being shared anymore, and your route isn’t kept.';
+  renderSummary(S.share?.summary, S.share);
   S.share = null;
   show('ended');
+  refreshLifetime();
+}
+
+// End-of-share card: how long, how far, who watched. Then the lifetime line.
+function renderSummary(sum, sh) {
+  paintBuddy($('#sum-buddy'), myBuddy());
+  const minutes = sum ? sum.minutes : sh ? Math.round(((sh.endedAt || serverNow()) - sh.startedAt) / 60000) : 0;
+  const dist = sum ? sum.distanceM : sh?.distanceM || 0;
+  const who = sum?.watchedBy || [];
+  const link = sum?.linkViewers || 0;
+  const watchers = who.length + link;
+  $('#sum-time').textContent = fmtMins(Math.max(minutes, 0));
+  $('#sum-dist').textContent = fmtDist(dist);
+  $('#sum-watch').textContent = watchers;
+  $('#sum-watch-l').textContent = watchers === 1 ? 'viewer' : 'viewers';
+  let line = '';
+  if (who.length) line = 'Watched by ' + (who.length <= 2 ? who.join(' and ') : `${who.slice(0, 2).join(', ')} and ${who.length - 2} more`) + (link ? `, plus ${link} via your link` : '');
+  else if (link) line = `${link} ${link === 1 ? 'person' : 'people'} watched via your link`;
+  else line = 'No one opened it this time.';
+  $('#sum-who').textContent = line;
+  $('#sum-life').textContent = '';
+}
+async function refreshLifetime() {
+  try {
+    setMe(await api('GET', '/neerly/me'));
+    const st = S.stats; if (!st) return;
+    $('#sum-life').textContent = `That’s ${fmtDist(st.distanceM)} and ${st.shares} share${st.shares === 1 ? '' : 's'} with Neerly so far` + (st.streakWeeks > 1 ? ` · 🔥 ${st.streakWeeks}-week streak` : '');
+  } catch {}
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -928,7 +1404,7 @@ async function pollRecipient(first) {
   const R = S.recip; if (!R || R.loading) return;
   R.loading = true;
   try {
-    const qs = R.r ? `r=${encodeURIComponent(R.r)}` : `v=${encodeURIComponent(R.viewerId)}`;
+    const qs = (R.r ? `r=${encodeURIComponent(R.r)}` : `v=${encodeURIComponent(R.viewerId)}`) + `&t=${(R.trail || []).length}`;
     const d = await api('GET', `/neerly/shares/${encodeURIComponent(R.token)}?${qs}`);
     const wasActive = R.share?.active;
     R.share = d.share; R.recipient = d.recipient;
@@ -936,6 +1412,7 @@ async function pollRecipient(first) {
     document.title = d.share.active ? `${d.share.senderName} is on the way · Neerly` : 'Neerly';
     if (d.share.active) {
       if (first || !wasActive) await showRecipLive();
+      else { const m = mergeTrail(R.trail || [], d.share); R.trail = m.trail; if (m.changed && R.map) R.map.setTrail(R.trail); }
       renderRecipLive();
     } else if (first || wasActive) {
       showRecipExpired();
@@ -947,7 +1424,9 @@ async function showRecipLive() {
   show('rlive');
   const R = S.recip;
   if (R.map) R.map.destroy();
-  R.map = await createMap($('#r-map'), $('#r-recenter'));
+  R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar);
+  paintBuddy($('#r-buddy'), R.share.senderAvatar);
+  R.trail = mergeTrail([], R.share).trail; R.map.setTrail(R.trail);
   every(UPDATE_MS, () => pollRecipient().catch(() => {}));
   every(500, tickRecip);
 }
@@ -981,8 +1460,12 @@ function tickRecip() {
 function showRecipExpired() {
   const R = S.recip;
   if (R.map) { R.map.destroy(); R.map = null; }
-  $('#rx-emoji').textContent = '👋';
-  $('#rx-sub').textContent = 'Hope they made it in one piece.';
+  R.trail = [];
+  $('#rx-emoji').innerHTML = R.share?.senderAvatar ? `<span class="buddy" style="width:88px;height:88px;background:var(--accent-softer)">${buddySvg(R.share.senderAvatar)}</span>` : '👋';
+  const sum = R.share?.summary;
+  $('#rx-sub').textContent = sum && sum.distanceM > 0
+    ? `They traveled ${fmtDist(sum.distanceM)} in ${fmtMins(sum.minutes)}. Hope they made it in one piece.`
+    : 'Hope they made it in one piece.';
   $('#rx-actions').classList.remove('hidden');
   $('#btn-request').classList.remove('hidden');
   $('#f-request').classList.add('hidden');
@@ -1094,8 +1577,9 @@ document.addEventListener('visibilitychange', () => {
   if (!S.session?.token) return show('signin');
   try {
     const me = await api('GET', '/neerly/me');
-    S.session.user = me.user; store.set(SESSION_KEY, S.session);
+    setMe(me);
     if (me.activeShare) { S.share = me.activeShare; return goLive(); }
+    if (!me.user.avatar) return openBuddyPicker();
     openShare();
   } catch (err) {
     if (err.status === 401) return show('signin');
