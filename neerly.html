@@ -11,7 +11,14 @@
 <meta property="og:title" content="Neerly — I'm on my way.">
 <meta property="og:description" content="Live location, for a little while. Tap to watch — no app needed.">
 <title>Neerly — I'm on my way.</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23e85d26'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="neerly-assets/mark.svg" id="fav-svg">
+<link rel="icon" type="image/png" sizes="32x32" href="neerly-assets/favicon-32.png">
+<link rel="apple-touch-icon" href="neerly-assets/apple-touch-icon.png" id="touch-icon">
+<link rel="manifest" href="neerly-assets/manifest.webmanifest">
+<meta property="og:image" content="https://joybanerjee99.github.io/Orbyt/neerly-assets/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,11 +45,11 @@ a{color:var(--accent-dark)}
 
 /* Brand */
 .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--accent)}
-.brand .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.brand .dot{width:17px;height:27px;background:url(neerly-assets/mark.svg) center/contain no-repeat}
 .topbar{display:flex;align-items:center;justify-content:space-between;min-height:40px;margin-bottom:20px}
 .hero{padding:40px 0 28px;text-align:center}
 .hero .brand{justify-content:center;font-size:34px}
-.hero .brand .dot{width:22px;height:22px;box-shadow:0 0 0 6px var(--accent-soft)}
+.hero .brand .dot{width:28px;height:44px}
 .tagline{color:var(--sub);font-size:18px;margin-top:6px}
 
 h1{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
@@ -214,6 +221,38 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 .lifetime{margin-top:16px;font-weight:600;color:var(--accent-dark)}
 .r-title{display:flex;align-items:center;gap:12px}
 .r-title .buddy{width:48px;height:48px;background:var(--accent-softer)}
+#rx-sub:empty{display:none}
+
+/* v0.5 — share back, badges, look, install */
+.sb-banner{display:flex;gap:12px;align-items:center;background:var(--accent-softer);border:1.5px solid var(--accent-soft);border-radius:16px;padding:12px 14px;margin:18px 0 4px}
+.sb-banner .buddy{width:46px;height:46px}
+.sb-banner b{display:block}
+.sb-banner .link{padding:4px 0;font-size:14px}
+.bshelf{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btile{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.btile b{font-size:13px;line-height:1.2}
+.btile span{font-size:11px;color:var(--muted)}
+.btile.new{box-shadow:0 0 0 2px var(--accent)}
+.btile.more{border-style:dashed;border-color:var(--border-strong);background:transparent;justify-content:center}
+.medal{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:radial-gradient(circle at 35% 30%,#fff7f1,#ffd6bd);box-shadow:inset 0 0 0 3px var(--accent)}
+.medal svg{width:70%;height:70%}
+.medal.night{background:radial-gradient(circle at 50% 35%,#5a2d6e,#2a1638);box-shadow:inset 0 0 0 3px #ffcf4d}
+.medal.mystery{background:#f6efe9;box-shadow:inset 0 0 0 2px var(--border-strong);color:var(--muted);font-weight:800;font-size:24px}
+.medal.big{width:108px;height:108px;font-size:54px;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 13px;border-radius:999px;border:1.5px solid var(--border-strong);background:#fff;font-weight:600;font-size:14px;color:var(--text)}
+.chip.on{border-color:var(--accent);background:var(--accent-softer);color:var(--accent-dark)}
+.look-prev{display:flex;justify-content:center;margin:6px 0 12px}
+.look-prev .buddy{width:96px;height:96px;background:var(--accent-softer)}
+.look-label{font-size:13px;font-weight:700;color:var(--sub);margin:14px 0 8px}
+.install{display:flex;gap:14px;align-items:center;margin-top:24px}
+.install img{width:52px;height:52px;border-radius:12px;flex:none}
+.sum-badges{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.sum-badge{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--accent-soft);border-radius:14px;padding:10px 12px;text-align:left}
+.sum-badge .medal{width:44px;height:44px;font-size:22px;flex:none}
+.sum-badge b{display:block;font-size:15px}
+.sum-badge span{font-size:13px;color:var(--sub)}
 </style>
 </head>
 <body>
@@ -283,7 +322,12 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <button class="me-btn" id="btn-account" aria-label="Your profile"><span class="buddy" id="me-buddy"></span><span class="nm" id="me-name"></span></button>
   </div>
   <h1>On your way?</h1>
-  <p class="lead">Pick how long and who can watch. It ends on its own.</p>
+  <p class="lead" id="share-lead">Pick how long and who can watch. It ends on its own.</p>
+  <div class="sb-banner hidden" id="sb-banner">
+    <span class="buddy" id="sb-buddy"></span>
+    <div style="flex:1;min-width:0"><b>Sharing back with <span id="sb-name"></span></b><span class="muted small">They'll get a link. Their email stays private.</span></div>
+    <button class="link" id="sb-cancel">Cancel</button>
+  </div>
 
   <h2>For how long</h2>
   <div class="seg" id="durations">
@@ -292,6 +336,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <button data-min="60">1<small>hour</small></button>
   </div>
 
+  <div id="who-section">
   <div class="section-head"><h2>Who can watch</h2><button id="btn-edit-contacts" class="hidden">Edit</button></div>
   <div class="contacts" id="contacts">
     <div id="contact-list"></div>
@@ -304,6 +349,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     </form>
   </div>
   <p class="muted small" style="margin-top:10px">They'll get an email with a link. No app or account needed to watch.</p>
+  </div>
 
   <div class="sticky-cta">
     <div class="err" id="share-err"></div>
@@ -358,6 +404,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     </div>
     <p class="sumwho" id="sum-who"></p>
     <p class="lifetime" id="sum-life"></p>
+    <div class="sum-badges" id="sum-badges"></div>
   </div>
   <button class="btn btn-primary" data-go="share" style="margin-top:24px">Share again</button>
   <p class="center" style="margin-top:10px"><a href="#" class="link" data-go="profile">See your stats</a></p>
@@ -386,6 +433,13 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   <h2>Your Neerly so far</h2>
   <div class="sgrid" id="p-stats"></div>
   <p class="muted small" style="margin-top:10px">Counted only while you share. We keep the totals, never the places.</p>
+  <h2>Badges</h2>
+  <div class="bshelf" id="p-badges"></div>
+  <div class="card install hidden" id="p-install">
+    <img src="neerly-assets/apple-touch-icon.png" alt="" id="p-install-icon">
+    <div style="flex:1"><b>Put Neerly on your home screen</b><p class="muted small" id="p-install-how" style="margin-top:4px"></p>
+      <button class="btn btn-primary hidden" id="btn-install" style="margin-top:10px;min-height:44px;padding:10px 16px;font-size:15px">Add to Home Screen</button></div>
+  </div>
   <h2>Account</h2>
   <div class="alist">
     <button id="btn-pw">Change password</button>
@@ -407,6 +461,11 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     </div>
     <h2>Your buddy</h2>
     <div class="bgrid" id="edit-buddy-grid"></div>
+    <h2>Your buddy's look</h2>
+    <div class="card" id="look-editor">
+      <div class="look-prev"><span class="buddy ring" id="look-buddy"></span></div>
+      <div id="look-body"></div>
+    </div>
     <div class="sticky-cta"><button class="btn btn-primary" type="submit">Save</button></div>
   </form>
 </section>
@@ -444,7 +503,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   </div>
   <div class="r-head">
     <h1 class="r-title"><span class="buddy" id="r-buddy"></span><span><span class="sender-name"></span> is on the way</span></h1>
-    <p class="lead">Sharing live · updates every 17 seconds</p>
+    <p class="lead">Live</p>
   </div>
   <div class="map-wrap"><div class="map r-map" id="r-map"></div><button class="recenter" id="r-recenter">Recenter</button></div>
   <div class="map-foot"><span id="r-updated">Loading…</span><a class="link small" id="r-directions" target="_blank" rel="noopener" style="padding:0">Open in Maps ↗</a></div>
@@ -461,7 +520,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   <div class="topbar"><div class="brand"><span class="dot"></span>Neerly</div><span class="pill grey">Ended</span></div>
   <div class="big-emoji" id="rx-emoji">👋</div>
   <h1 class="center" id="rx-title"><span class="sender-name"></span> is no longer sharing their location</h1>
-  <p class="lead center" id="rx-sub">Hope they made it in one piece.</p>
+  <p class="lead center" id="rx-sub"></p>
   <div id="rx-actions" style="margin-top:28px">
     <button class="btn btn-primary" id="btn-request">Request an update</button>
     <form class="card hidden" id="f-request" novalidate style="margin-top:4px">
@@ -471,6 +530,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
       <label class="field"><span>Your email</span><input class="input" type="email" name="email" autocomplete="email" inputmode="email" required></label>
       <button class="btn btn-primary" type="submit">Send request</button>
     </form>
+    <button class="btn btn-ghost hidden" id="btn-shareback2" style="margin-top:12px">Share yours back</button>
   </div>
 </section>
 
@@ -494,7 +554,7 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <p class="center" style="margin-top:14px"><a href="#" class="link link-muted" data-go="signin">I already have an account</a></p>
   </div>
   <div id="rsent-signedin" class="hidden" style="margin-top:28px">
-    <button class="btn btn-ghost" data-go="share">Share my location</button>
+    <button class="btn btn-ghost" id="btn-rsent-share">Share my location back</button>
   </div>
 </section>
 
@@ -506,6 +566,16 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <h1 id="modal-title" style="font-size:22px"></h1>
     <p class="lead" id="modal-body"></p>
     <div class="stack" style="margin-top:20px" id="modal-actions"></div>
+  </div>
+</div>
+<div class="scrim" id="celebrate">
+  <div class="sheet center">
+    <p class="muted small" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase">New badge</p>
+    <div style="display:flex;justify-content:center;margin:14px 0 10px"><span class="medal big" id="cel-medal"></span></div>
+    <h1 id="cel-name" style="font-size:24px"></h1>
+    <p class="lead" id="cel-how"></p>
+    <p class="note" id="cel-reward" style="margin-top:14px"></p>
+    <div class="stack" style="margin-top:18px"><button class="btn btn-primary" id="cel-next">Nice!</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -555,6 +625,7 @@ const S = {
   trail: [],              // v0.4: this share's route, [[lat,lng],…] (lives only in memory)
   stats: null,            // v0.4: lifetime totals from /me
   pickBuddy: null, editBuddy: null,
+  badges: null, unlocked: null, editLook: null, shareBack: null, celebrating: false,
 };
 const serverNow = () => Date.now() + S.offset;
 
@@ -676,8 +747,69 @@ const BUDDIES = {
      <circle cx="18" cy="50" r="1.6" fill="#6d8fb3"/><circle cx="46" cy="50" r="1.6" fill="#6d8fb3"/>` },
 };
 const DEFAULT_BUDDY = 'fox';
-function buddySvg(id) { const b = BUDDIES[id] || BUDDIES[DEFAULT_BUDDY]; return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${b.svg}</svg>`; }
-function paintBuddy(el, id) { if (el) el.innerHTML = buddySvg(id); }
+// v0.5 — outfits. Each buddy has anchor points so items sit on the head, eyes and neck.
+// top: where a hat rests · eye: eye line · dx: half the eye spacing · neck: chin line
+const ANCHOR = {
+  cat: { top: 17, eye: 35, dx: 7, neck: 54 },   pup: { top: 17, eye: 34, dx: 7, neck: 54 },
+  bunny: { top: 20, eye: 37, dx: 7, neck: 55 }, fox: { top: 17, eye: 34, dx: 7, neck: 54 },
+  bear: { top: 17, eye: 33, dx: 7, neck: 54 },  panda: { top: 17, eye: 34.5, dx: 7.5, neck: 54 },
+  owl: { top: 17, eye: 33.5, dx: 7.5, neck: 54 }, frog: { top: 17, eye: 23.5, dx: 10.5, neck: 54 },
+  dragon: { top: 18, eye: 34, dx: 7, neck: 55 }, unicorn: { top: 19, eye: 36, dx: 7, neck: 54, hornOver: true },
+  ghost: { top: 15, eye: 32, dx: 7, neck: 47 }, robot: { top: 17, eye: 33, dx: 7, neck: 53 },
+};
+const ACCESSORIES = {
+  beanie:   { slot: 'head', name: 'Beanie',  draw: (a) => { const t = a.top; return `<path d="M19 ${t + 3} a13 11.5 0 0 1 26 0 z" fill="#3d8bd3"/><path d="M24 ${t - 5} v7 M29 ${t - 7.5} v9 M35 ${t - 7.5} v9 M40 ${t - 5} v7" stroke="#2f73b3" stroke-width="1.4"/><rect x="17.5" y="${t + 0.5}" width="29" height="5.5" rx="2.7" fill="#2a66a3"/><circle cx="32" cy="${t - 9.5}" r="3.4" fill="#f4f1ee"/>`; } },
+  crown:    { slot: 'head', name: 'Crown',   draw: (a) => { const t = a.top; return `<path d="M21 ${t + 2} L20.5 ${t - 8} L26.5 ${t - 2.5} L32 ${t - 11} L37.5 ${t - 2.5} L43.5 ${t - 8} L43 ${t + 2} Z" fill="#ffc83d" stroke="#e3a106" stroke-width="1.2" stroke-linejoin="round"/><circle cx="32" cy="${t - 2}" r="1.8" fill="#e8475f"/><circle cx="25.5" cy="${t - 0.5}" r="1.3" fill="#4cc9f0"/><circle cx="38.5" cy="${t - 0.5}" r="1.3" fill="#4cc9f0"/>`; } },
+  flowers:  { slot: 'head', name: 'Flower crown', draw: (a) => { const t = a.top; const f = (x, y, c) => `<g transform="translate(${x} ${y})"><circle r="2.3" cx="0" cy="-2" fill="${c}"/><circle r="2.3" cx="1.9" cy="-0.6" fill="${c}"/><circle r="2.3" cx="1.2" cy="1.7" fill="${c}"/><circle r="2.3" cx="-1.2" cy="1.7" fill="${c}"/><circle r="2.3" cx="-1.9" cy="-0.6" fill="${c}"/><circle r="1.4" fill="#ffd166"/></g>`; return `<path d="M17 ${t + 3} Q32 ${t - 5} 47 ${t + 3}" stroke="#5cae5a" stroke-width="2" fill="none"/>` + f(19, t + 1.5, '#ff8fb1') + f(25.5, t - 1.5, '#fff') + f(32, t - 2.5, '#b69cff') + f(38.5, t - 1.5, '#fff') + f(45, t + 1.5, '#ff8fb1'); } },
+  partyhat: { slot: 'head', name: 'Party hat', draw: (a) => { const t = a.top; return `<path d="M25.5 ${t + 2} L33 ${t - 16} L40.5 ${t + 2} Z" fill="#7c5cff"/><circle cx="30" cy="${t - 3}" r="1.4" fill="#ffd166"/><circle cx="35" cy="${t - 7}" r="1.4" fill="#ff8fb1"/><circle cx="33.5" cy="${t - 0.5}" r="1.4" fill="#4cc9f0"/><circle cx="33" cy="${t - 16.5}" r="2.8" fill="#ffd166"/>`; } },
+  wizard:   { slot: 'head', name: 'Wizard hat', draw: (a) => { const t = a.top; return `<path d="M24.5 ${t + 1} Q30 ${t - 12} 36 ${t - 21} Q37 ${t - 10} 40 ${t + 1} Z" fill="#5b47a8"/><ellipse cx="32" cy="${t + 1.5}" rx="15" ry="3.4" fill="#45358a"/><path d="M33 ${t - 9} l1 2.2 2.4 .3 -1.8 1.6 .5 2.4 -2.1 -1.2 -2.1 1.2 .5 -2.4 -1.8 -1.6 2.4 -.3z" fill="#ffd166"/>`; } },
+  sunglasses: { slot: 'face', name: 'Sunglasses', draw: (a) => { const y = a.eye, dx = a.dx, w = dx >= 10 ? 13 : 11; return `<rect x="${32 - dx - w / 2}" y="${y - 4.2}" width="${w}" height="8" rx="3.2" fill="#1f1d2b"/><rect x="${32 + dx - w / 2}" y="${y - 4.2}" width="${w}" height="8" rx="3.2" fill="#1f1d2b"/><path d="M${32 - dx + w / 2} ${y - 1.5} Q32 ${y - 3.5} ${32 + dx - w / 2} ${y - 1.5}" stroke="#1f1d2b" stroke-width="1.6" fill="none"/><path d="M${32 - dx - 3} ${y - 2} l2.5 -1.2 M${32 + dx - 3} ${y - 2} l2.5 -1.2" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity=".8"/>`; } },
+  scarf:    { slot: 'neck', name: 'Scarf', draw: (a) => { const c = a.neck; return `<path d="M17.5 ${c - 4} Q32 ${c + 2.5} 46.5 ${c - 4} L46.5 ${c + 1.5} Q32 ${c + 8} 17.5 ${c + 1.5} Z" fill="#e2463b"/><path d="M20 ${c - 1.5} Q32 ${c + 4.5} 44 ${c - 1.5}" stroke="#fff" stroke-width="1" stroke-dasharray="2 2" fill="none" opacity=".6"/><rect x="37" y="${c + 1}" width="5.5" height="9" rx="2" fill="#c7362c" transform="rotate(-14 39.7 ${c + 1})"/>`; } },
+  bowtie:   { slot: 'neck', name: 'Bow tie', draw: (a) => { const c = a.neck; return `<path d="M32 ${c} L24.5 ${c - 4.5} Q23 ${c} 24.5 ${c + 4.5} Z M32 ${c} L39.5 ${c - 4.5} Q41 ${c} 39.5 ${c + 4.5} Z" fill="#e2463b"/><rect x="29.8" y="${c - 2.3}" width="4.4" height="4.6" rx="1.4" fill="#b8302a"/>`; } },
+};
+const TRAIL_STYLES = { dots: 'Dots', footprints: 'Footprints', paws: 'Paw prints', sparkles: 'Sparkles', rainbow: 'Rainbow' };
+function buddyInner(id, outfit) {
+  const key = BUDDIES[id] ? id : DEFAULT_BUDDY;
+  const a = ANCHOR[key];
+  let s = BUDDIES[key].svg;
+  const o = outfit || {};
+  for (const slot of ['neck', 'face', 'head']) {
+    const item = ACCESSORIES[o[slot]];
+    if (item && item.slot === slot) s += item.draw(a);
+  }
+  if (a.hornOver && o.head && ACCESSORIES[o.head]) s += `<path d="M33 2 L28.5 19 L37.5 19 Z" fill="#ffc94d"/><path d="M30 13 l6 -2 M29.5 16.5 l7 -2 M31 9.5 l4 -1.5" stroke="#e59f1f" stroke-width="1.1"/>`;
+  return s;
+}
+function buddySvg(id, outfit) { return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" overflow="visible">${buddyInner(id, outfit)}</svg>`; }
+function paintBuddy(el, id, outfit) { if (el) el.innerHTML = buddySvg(id, outfit); }
+
+// v0.5 — badges. Only earned badges are shown by name; the rest stay a surprise.
+const BADGE_INFO = {
+  first_steps:    { name: 'First Steps',    icon: '👣', how: () => 'Your first share' },
+  out_and_about:  { name: 'Out and About',  icon: '🎒', how: () => '10 shares' },
+  trailblazer:    { name: 'Trailblazer',    icon: '🥾', how: () => IMPERIAL ? '6 miles traveled while sharing' : '10 km traveled while sharing' },
+  marathon:       { name: 'Marathon',       icon: '🏅', how: () => IMPERIAL ? '26.2 miles traveled while sharing' : '42.2 km traveled while sharing' },
+  coast_to_coast: { name: 'Coast to Coast', icon: '🗺️', how: () => IMPERIAL ? '2,800 miles traveled while sharing' : '4,500 km traveled while sharing' },
+  on_call:        { name: 'On Call',        icon: '📣', how: () => 'Answered 5 update requests' },
+  popular:        { name: 'Popular',        icon: '👀', how: () => 'Watched 25 times' },
+  my_people:      { name: 'My People',      icon: '🫶', how: () => 'Shared with 5 different people' },
+  regular:        { name: 'Regular',        icon: '🔥', how: () => 'A 4-week sharing streak' },
+  night_owl:      { name: 'Night Owl',      icon: 'night', how: () => 'Shared late at night' },
+  early_bird:     { name: 'Early Bird',     icon: '🌅', how: () => 'Shared at the crack of dawn' },
+  mutual:         { name: 'Mutual',         icon: '🔁', how: () => 'Shared back with 5 people' },
+  connector:      { name: 'Connector',      icon: '🤝', how: () => '3 friends joined through your links' },
+};
+function rewardName(r) {
+  if (!r) return '';
+  if (r.kind === 'trail') return `${TRAIL_STYLES[r.id] || r.id} trail`;
+  if (r.kind === 'icon') return 'Night fox app icon';
+  return ACCESSORIES[r.id]?.name || r.id;
+}
+function medalHtml(id, cls = '') {
+  const info = BADGE_INFO[id] || { icon: '🏅' };
+  if (info.icon === 'night') return `<span class="medal night ${cls}"><img src="neerly-assets/mark-night.svg" alt="" style="width:58%;height:74%"></span>`;
+  return `<span class="medal ${cls}">${info.icon}</span>`;
+}
 function renderBuddyGrid(box, selected, onPick) {
   box.innerHTML = Object.entries(BUDDIES).map(([id, b]) =>
     `<button type="button" data-buddy="${id}" class="${id === selected ? 'on' : ''}" aria-pressed="${id === selected}">${buddySvg(id)}${b.name}</button>`).join('');
@@ -756,10 +888,13 @@ function loadGoogle() {
   return googleReady;
 }
 
-// createMap(el, recenterBtn, buddyId) → { set(lat,lng,acc), setTrail(points), destroy() }
-// The buddy is the marker; the trail is a dotted line of everywhere it has been during this share.
+// createMap(el, recenterBtn, buddyId, look) → { set(lat,lng,acc), setTrail(points), destroy() }
+// The buddy (in its outfit) is the marker; the trail shows everywhere it has been during this share,
+// drawn in the sender's trail style (dots by default).
 const TRAIL_COLOR = '#e85d26';
-async function createMap(el, recenterBtn, buddyId) {
+async function createMap(el, recenterBtn, buddyId, look = {}) {
+  const outfit = look.outfit || {};
+  const trailStyle = TRAIL_STYLES[look.trail] ? look.trail : 'dots';
   let follow = true;
   const setFollow = (v) => { follow = v; if (recenterBtn) recenterBtn.style.display = v ? 'none' : 'block'; };
   let last = null;
@@ -770,7 +905,7 @@ async function createMap(el, recenterBtn, buddyId) {
       await loadGoogle();
       const g = google.maps;
       const map = new g.Map(el, { zoom: 15, center: { lat: 0, lng: 0 }, disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy' });
-      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="44" fill="#fff" stroke="${TRAIL_COLOR}" stroke-width="6"/><svg x="14" y="14" width="68" height="68" viewBox="0 0 64 64">${(BUDDIES[buddyId] || BUDDIES[DEFAULT_BUDDY]).svg}</svg></svg>`;
+      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="44" fill="#fff" stroke="${TRAIL_COLOR}" stroke-width="6"/><svg x="14" y="14" width="68" height="68" viewBox="0 0 64 64">${buddyInner(buddyId, outfit)}</svg></svg>`;
       const marker = new g.Marker({ map, visible: false, zIndex: 10, icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(pinSvg), scaledSize: new g.Size(48, 48), anchor: new g.Point(24, 24) } });
       const circle = new g.Circle({ map, visible: false, fillColor: TRAIL_COLOR, fillOpacity: .12, strokeColor: TRAIL_COLOR, strokeOpacity: .35, strokeWeight: 1 });
       const line = new g.Polyline({ map, path: [], strokeOpacity: 0, icons: [{ icon: { path: g.SymbolPath.CIRCLE, fillColor: TRAIL_COLOR, fillOpacity: .9, strokeOpacity: 0, scale: 3 }, offset: '0', repeat: '12px' }] });
@@ -792,11 +927,11 @@ async function createMap(el, recenterBtn, buddyId) {
 
   if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, destroy() {} }; }
   const map = L.map(el, { zoomControl: true, attributionControl: true }).setView([20, 0], 2);
+  map.attributionControl.setPrefix(false); // drop Leaflet's own link + flag; the OpenStreetMap credit (required by its licence) stays
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
   const circle = L.circle([0, 0], { radius: 1, color: TRAIL_COLOR, weight: 1, opacity: .35, fillOpacity: .12, interactive: false });
-  // Dotted trail: zero-length dashes with round caps draw as dots.
-  const line = L.polyline([], { color: TRAIL_COLOR, weight: 6, opacity: .85, dashArray: '0 12', lineCap: 'round', interactive: false }).addTo(map);
-  const icon = L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin">${buddySvg(buddyId)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
+  const trail = makeTrailLayer(trailStyle).addTo(map);
+  const icon = L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin">${buddySvg(buddyId, outfit)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
   const pin = L.marker([0, 0], { icon, keyboard: false, zIndexOffset: 1000 });
   let placed = false, walkT;
   map.on('dragstart', () => setFollow(false));
@@ -816,9 +951,48 @@ async function createMap(el, recenterBtn, buddyId) {
         if (b) { b.classList.remove('walk'); void b.offsetWidth; b.classList.add('walk'); clearTimeout(walkT); walkT = setTimeout(() => b.classList.remove('walk'), 2100); }
       }
     },
-    setTrail(points) { line.setLatLngs(points); },
+    setTrail(points) { trail.setPoints(points); },
     destroy() { map.remove(); },
   };
+}
+
+// Trail layers (Leaflet). Dots and rainbow are lines; footprints, paws and sparkles are small
+// marks placed along the route and turned to face the direction of travel.
+const TRAIL_MARKS = {
+  footprints: (i) => `<svg viewBox="0 0 20 20" width="18" height="18"><ellipse cx="${i % 2 ? 13 : 7}" cy="9" rx="2.6" ry="4.2" fill="${TRAIL_COLOR}" opacity=".85"/><circle cx="${i % 2 ? 13 : 7}" cy="3.4" r="1.6" fill="${TRAIL_COLOR}" opacity=".85"/></svg>`,
+  paws: () => `<svg viewBox="0 0 20 20" width="18" height="18" fill="${TRAIL_COLOR}" opacity=".85"><ellipse cx="10" cy="12.5" rx="4" ry="3.4"/><circle cx="5" cy="7.5" r="1.8"/><circle cx="8.2" cy="4.8" r="1.8"/><circle cx="11.8" cy="4.8" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/></svg>`,
+  sparkles: (i) => { const r = i % 3 === 0 ? 8 : 5.5; return `<svg viewBox="0 0 20 20" width="20" height="20"><path d="M10 ${10 - r} Q${10 + r * .2} ${10 - r * .2} ${10 + r} 10 Q${10 + r * .2} ${10 + r * .2} 10 ${10 + r} Q${10 - r * .2} ${10 + r * .2} ${10 - r} 10 Q${10 - r * .2} ${10 - r * .2} 10 ${10 - r} Z" fill="${i % 2 ? '#ffc83d' : '#ff9ecf'}"/></svg>`; },
+};
+function bearing(a, b) {
+  const r = Math.PI / 180, y = Math.sin((b[1] - a[1]) * r) * Math.cos(b[0] * r);
+  const x = Math.cos(a[0] * r) * Math.sin(b[0] * r) - Math.sin(a[0] * r) * Math.cos(b[0] * r) * Math.cos((b[1] - a[1]) * r);
+  return Math.atan2(y, x) / r;
+}
+function makeTrailLayer(style) {
+  const group = L.layerGroup();
+  const lines = [];
+  if (style === 'rainbow') {
+    [['#ff6b6b', 13], ['#ffd166', 9], ['#4cc9f0', 5]].forEach(([c, w]) => lines.push(L.polyline([], { color: c, weight: w, opacity: .9, lineCap: 'round', lineJoin: 'round', interactive: false })));
+  } else if (style === 'dots') {
+    // Zero-length dashes with round caps draw as dots.
+    lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 6, opacity: .85, dashArray: '0 12', lineCap: 'round', interactive: false }));
+  } else if (style === 'sparkles') {
+    lines.push(L.polyline([], { color: '#ffc83d', weight: 2, opacity: .5, dashArray: '2 8', lineCap: 'round', interactive: false }));
+  }
+  lines.forEach(l => group.addLayer(l));
+  const marks = L.layerGroup().addTo(group);
+  group.setPoints = (pts) => {
+    lines.forEach(l => l.setLatLngs(pts));
+    if (!TRAIL_MARKS[style]) return;
+    marks.clearLayers();
+    const step = Math.max(1, Math.ceil(pts.length / 400)); // keep it light on long trips
+    for (let i = 1; i < pts.length; i += step) {
+      const deg = bearing(pts[i - 1], pts[i]);
+      const html = `<div style="transform:rotate(${style === 'sparkles' ? 0 : deg}deg)">${TRAIL_MARKS[style](i)}</div>`;
+      marks.addLayer(L.marker(pts[i], { icon: L.divIcon({ className: 'bpin-wrap', html, iconSize: [20, 20], iconAnchor: [10, 10] }), interactive: false, keyboard: false }));
+    }
+  };
+  return group;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -868,7 +1042,7 @@ $('#f-signup').addEventListener('submit', async (e) => {
   if (!username) return showErr(f, 'Pick a username');
   if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
   busy(btn, true);
-  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password, username })); f.reset(); f._uEdited = false; await afterSignIn(); }
+  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password, username, ref: refToken() })); f.reset(); f._uEdited = false; await afterSignIn(); }
   catch (err) {
     if (err.body?.field === 'username') usernameHint(f, err.body.suggestion ? `@${username} is taken` : err.message, 'bad', err.body.suggestion);
     showErr(f, err.message);
@@ -959,11 +1133,70 @@ async function afterSignIn() {
   if (!me.user.avatar) return openBuddyPicker();   // new accounts (and pre-v0.4 ones) pick a buddy once
   return openShare();
 }
+function refToken() { try { return sessionStorage.getItem('neerly_ref') || undefined; } catch { return undefined; } }
 function setMe(me) {
   S.session.user = me.user; if (me.stats) S.stats = me.stats;
+  if (me.badges) S.badges = me.badges;
+  if (me.unlocked) S.unlocked = me.unlocked;
   store.set(SESSION_KEY, S.session);
+  applyAppIcon(me.user.appIcon);
 }
 const myBuddy = () => S.session?.user?.avatar || DEFAULT_BUDDY;
+const myLook = () => ({ outfit: S.session?.user?.outfit || {}, trail: S.session?.user?.trailStyle || 'dots' });
+
+// v0.5 — alternate app icon. A web app can't change an installed icon, but Safari reads the
+// apple-touch-icon when you tap "Add to Home Screen", and the browser tab picks up the favicon.
+function applyAppIcon(icon) {
+  const night = icon === 'night';
+  try { localStorage.setItem('neerly_icon', night ? 'night' : 'classic'); } catch {}
+  const t = $('#touch-icon'); if (t) t.href = night ? 'neerly-assets/apple-touch-icon-night.png' : 'neerly-assets/apple-touch-icon.png';
+  const f = $('#fav-svg'); if (f) f.href = night ? 'neerly-assets/mark-night.svg' : 'neerly-assets/mark.svg';
+  const i = $('#p-install-icon'); if (i) i.src = t ? t.href : '';
+}
+
+// ── Badge celebrations: shown once, then marked seen ──
+async function celebrateNewBadges() {
+  const fresh = (S.badges?.earned || []).filter(b => !b.seen);
+  if (!fresh.length || S.celebrating) return;
+  S.celebrating = true;
+  for (const b of fresh) await celebrate(b);
+  S.celebrating = false;
+  try { const d = await api('POST', '/neerly/me/badges/seen'); S.badges = d.badges; } catch {}
+  if ($('#s-profile').classList.contains('on')) renderProfile();
+}
+function celebrate(b) {
+  return new Promise((resolve) => {
+    const info = BADGE_INFO[b.id] || { name: b.id, how: () => '' };
+    $('#cel-medal').outerHTML = medalHtml(b.id, 'big').replace('class="medal', 'id="cel-medal" class="medal');
+    $('#cel-name').textContent = info.name;
+    $('#cel-how').textContent = info.how();
+    const r = b.reward;
+    $('#cel-reward').innerHTML = r ? `🎁 Unlocked: <b>${esc(rewardName(r))}</b>. ${r.kind === 'icon' ? 'Switch to it in Edit profile.' : 'Try it on in Edit profile.'}` : '';
+    $('#celebrate').classList.add('on');
+    $('#cel-next').onclick = () => { $('#celebrate').classList.remove('on'); setTimeout(resolve, 150); };
+  });
+}
+
+// ── Add to Home Screen ──
+let installPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); installPrompt = e; if ($('#s-profile').classList.contains('on')) renderInstall(); });
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function renderInstall() {
+  const card = $('#p-install');
+  if (isStandalone()) { card.classList.add('hidden'); return; }
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  $('#btn-install').classList.toggle('hidden', !installPrompt);
+  $('#p-install-how').textContent = installPrompt ? 'One tap, and it opens like an app.'
+    : ios ? 'In Safari, tap the Share button, then “Add to Home Screen”.'
+    : 'Open your browser menu and choose “Add to Home screen” or “Install app”.';
+  card.classList.remove('hidden');
+}
+$('#btn-install').addEventListener('click', async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  try { await installPrompt.userChoice; } catch {}
+  installPrompt = null; renderInstall();
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Buddy picker (first run)
@@ -999,7 +1232,7 @@ async function openProfile() {
 }
 function renderProfile() {
   const u = S.session?.user; if (!u) return;
-  paintBuddy($('#p-buddy'), myBuddy());
+  paintBuddy($('#p-buddy'), myBuddy(), myLook().outfit);
   $('#p-name').textContent = u.name;
   $('#p-handle').textContent = u.username ? '@' + u.username : '';
   $('#p-email').textContent = 'Signed in as ' + u.email;
@@ -1014,6 +1247,16 @@ function renderProfile() {
     tile((st.timesWatched || 0).toLocaleString(), 'times watched') +
     tile((st.requestsAnswered || 0).toLocaleString(), 'update requests answered') +
     `<div class="stile wide"><span class="fire">${streak ? '🔥' : '🌱'}</span><div><b>${streak} week${streak === 1 ? '' : 's'}</b><span>${streak ? 'sharing streak' : 'Share this week to start a streak'}${st.bestStreak > streak ? ` · best ${st.bestStreak}` : ''}</span></div></div>`;
+  // Badge shelf: earned badges by name; the rest are a single mystery tile.
+  const bd = S.badges || { earned: [], total: 13 };
+  const left = Math.max(0, bd.total - bd.earned.length);
+  $('#p-badges').innerHTML = bd.earned.map(b => {
+    const info = BADGE_INFO[b.id] || { name: b.id };
+    const when = new Date(b.earnedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return `<div class="btile ${b.seen ? '' : 'new'}">${medalHtml(b.id)}<b>${esc(info.name)}</b><span>${esc(when)}</span></div>`;
+  }).join('') + (left ? `<div class="btile more"><span class="medal mystery">?</span><b>${left} more</b><span>to discover</span></div>` : '');
+  renderInstall();
+  setTimeout(celebrateNewBadges, 300);
 }
 $('#profile-back').addEventListener('click', (e) => { e.preventDefault(); S.share ? goLive() : openShare(); });
 
@@ -1022,9 +1265,34 @@ function openEditProfile() {
   const f = $('#f-profile'), u = S.session.user;
   showErr(f, ''); f.name.value = u.name; f.username.value = u.username || ''; usernameHint(f, '', '');
   S.editBuddy = myBuddy();
-  renderBuddyGrid($('#edit-buddy-grid'), S.editBuddy, (id) => { S.editBuddy = id; });
+  const lk = myLook();
+  S.editLook = { outfit: { ...lk.outfit }, trail: lk.trail, icon: u.appIcon || 'classic' };
+  renderBuddyGrid($('#edit-buddy-grid'), S.editBuddy, (id) => { S.editBuddy = id; renderLookEditor(); });
+  renderLookEditor();
   show('editprofile');
 }
+function renderLookEditor() {
+  const un = S.unlocked || { head: [], face: [], neck: [], trail: ['dots'], icon: ['classic'] };
+  const L = S.editLook;
+  paintBuddy($('#look-buddy'), S.editBuddy, L.outfit);
+  const chip = (group, val, label, on) => `<button type="button" class="chip ${on ? 'on' : ''}" data-g="${group}" data-v="${esc(val)}">${esc(label)}</button>`;
+  const slotRow = (slot, title) => {
+    if (!un[slot].length) return '';
+    return `<p class="look-label">${title}</p><div class="chips">${chip(slot, '', 'None', !L.outfit[slot])}${un[slot].map(id => chip(slot, id, ACCESSORIES[id]?.name || id, L.outfit[slot] === id)).join('')}</div>`;
+  };
+  let html = slotRow('head', 'On the head') + slotRow('face', 'On the face') + slotRow('neck', 'Around the neck');
+  html += `<p class="look-label">Trail</p><div class="chips">${un.trail.map(id => chip('trail', id, TRAIL_STYLES[id] || id, L.trail === id)).join('')}</div>`;
+  if (un.icon.includes('night')) html += `<p class="look-label">App icon</p><div class="chips">${chip('icon', 'classic', 'Classic fox', L.icon !== 'night')}${chip('icon', 'night', 'Night fox', L.icon === 'night')}</div>`;
+  const locked = !un.head.length && !un.face.length && !un.neck.length && un.trail.length === 1;
+  if (locked) html = `<p class="muted small center">Earn badges to unlock outfits, trail styles and more. Your first share gets you started.</p>` + html;
+  $('#look-body').innerHTML = html;
+}
+$('#look-body').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-g]'); if (!b) return;
+  const g = b.dataset.g, v = b.dataset.v, L = S.editLook;
+  if (g === 'trail') L.trail = v; else if (g === 'icon') L.icon = v; else L.outfit[g] = v || undefined;
+  renderLookEditor();
+});
 wireUsername($('#f-profile'), { fromEmail: false });
 $('#f-profile').addEventListener('submit', async (e) => {
   e.preventDefault(); const f = e.target; const btn = $('button[type=submit]', f); showErr(f, '');
@@ -1033,8 +1301,11 @@ $('#f-profile').addEventListener('submit', async (e) => {
   if (!username) return showErr(f, 'Pick a username');
   busy(btn, true);
   try {
-    const d = await api('POST', '/neerly/me/profile', { name, username, avatar: S.editBuddy });
-    S.session.user = d.user; store.set(SESSION_KEY, S.session);
+    await api('POST', '/neerly/me/profile', { name, username, avatar: S.editBuddy });
+    const L = S.editLook, outfit = {};
+    for (const k of ['head', 'face', 'neck']) outfit[k] = L.outfit[k] || null;
+    const d = await api('POST', '/neerly/me/look', { outfit, trailStyle: L.trail, appIcon: L.icon });
+    S.session.user = d.user; store.set(SESSION_KEY, S.session); applyAppIcon(d.user.appIcon);
     toast('Profile saved'); openProfile();
   } catch (err) {
     if (err.body?.field === 'username') usernameHint(f, err.body.suggestion ? `@${username} is taken` : err.message, 'bad', err.body.suggestion);
@@ -1077,7 +1348,8 @@ $('#f-delete').addEventListener('submit', async (e) => {
 // ─────────────────────────────────────────────────────────────────────────────
 async function openShare() {
   $('#me-name').textContent = S.session.user.name;
-  paintBuddy($('#me-buddy'), myBuddy());
+  paintBuddy($('#me-buddy'), myBuddy(), myLook().outfit);
+  renderShareBack();
   show('share');
   S.editing = false; renderContacts(); updateShareHint();
   try { const d = await api('GET', '/neerly/contacts'); S.contacts = d.contacts; renderContacts(); }
@@ -1140,9 +1412,37 @@ $('#f-add').addEventListener('submit', async (e) => {
   finally { busy(btn, false); }
 });
 
+// v0.5 — one-tap share back. S.shareBack = { token, name, avatar, outfit } from the share you were watching.
+function setShareBack(sb) {
+  S.shareBack = sb;
+  try { sb ? sessionStorage.setItem('neerly_shareback', JSON.stringify(sb)) : sessionStorage.removeItem('neerly_shareback'); } catch {}
+}
+function renderShareBack() {
+  const sb = S.shareBack;
+  $('#sb-banner').classList.toggle('hidden', !sb);
+  $('#who-section').classList.toggle('hidden', !!sb);
+  $('#share-lead').textContent = sb ? `Pick how long, and ${sb.name} will see you on your way.` : 'Pick how long and who can watch. It ends on its own.';
+  if (sb) { $('#sb-name').textContent = sb.name; paintBuddy($('#sb-buddy'), sb.avatar, sb.outfit); }
+  updateShareHint();
+}
+$('#sb-cancel').addEventListener('click', () => { setShareBack(null); renderShareBack(); });
+function startShareBack() {
+  const R = S.recip; if (!R?.share) return;
+  setShareBack({ token: R.token, name: R.share.senderName, avatar: R.share.senderAvatar, outfit: R.share.senderOutfit || {} });
+  if (S.session) { cleanUrl(); openShare(); return; }
+  cleanUrl();
+  $('#signup-tag').textContent = `Create a free account to share yours back with ${R.share.senderName}. Nobody sees it unless you send it.`;
+  show('signup');
+}
+
 function updateShareHint() {
-  const picked = S.contacts.filter(c => S.selected.has(c.email));
   const btn = $('#btn-share');
+  if (S.shareBack) {
+    if (!btn.disabled) btn.textContent = `Share back with ${S.shareBack.name}`;
+    $('#share-hint').textContent = `${S.shareBack.name} gets an email with your live link. We'll copy the link too.`;
+    return;
+  }
+  const picked = S.contacts.filter(c => S.selected.has(c.email));
   if (!btn.disabled) btn.textContent = picked.length ? 'Share my location' : 'Share my location · link only';
   $('#share-hint').textContent = picked.length
     ? `${listNames(picked.map(displayName))} will get an email. We'll copy the link too.`
@@ -1168,11 +1468,15 @@ $('#btn-share').addEventListener('click', async () => {
     const pos = await getPosition();
     S.fix = pos;
     btn.innerHTML = '<span class="spinner"></span>Starting your share…';
-    const recipients = S.contacts.filter(c => S.selected.has(c.email)).map(c => ({ email: c.email, nickname: c.nickname }));
-    const d = await api('POST', '/neerly/shares', { minutes: S.minutes, recipients, lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy });
+    const sb = S.shareBack;
+    const recipients = sb ? [] : S.contacts.filter(c => S.selected.has(c.email)).map(c => ({ email: c.email, nickname: c.nickname }));
+    const d = await api('POST', '/neerly/shares', { minutes: S.minutes, recipients, lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy,
+      tzOffset: new Date().getTimezoneOffset(), shareBack: sb ? sb.token : undefined });
+    if (sb) setShareBack(null);
+    if (d.newBadges?.length) setTimeout(() => toast(`🏅 New badge: ${d.newBadges.map(id => BADGE_INFO[id]?.name || id).join(', ')}`, 3500), 2800);
     S.share = d.share; S.pushedFixTs = pos.ts;
     const copied = await copyText(S.share.link);
-    toast(recipients.length ? (copied ? 'Shared — emails sent and link copied' : 'Shared — emails on their way') : (copied ? 'Link copied — paste it anywhere' : 'You’re live — send the link below'));
+    toast(d.shareBackTo ? `Shared back with ${d.shareBackTo}` : recipients.length ? (copied ? 'Shared — emails sent and link copied' : 'Shared — emails on their way') : (copied ? 'Link copied — paste it anywhere' : 'You’re live — send the link below'));
     S.selected.clear();
     goLive();
   } catch (err) {
@@ -1197,7 +1501,7 @@ async function goLive() {
   $('#live-banner').classList.remove('on');
   renderLive();
   if (S.map) { S.map.destroy(); S.map = null; }
-  S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy());
+  S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy(), myLook());
   S.trail = mergeTrail([], S.share).trail;
   S.map.setTrail(S.trail);
   const loc = S.fix || S.share.location;
@@ -1354,7 +1658,8 @@ function endLive(stopped) {
 
 // End-of-share card: how long, how far, who watched. Then the lifetime line.
 function renderSummary(sum, sh) {
-  paintBuddy($('#sum-buddy'), myBuddy());
+  paintBuddy($('#sum-buddy'), myBuddy(), myLook().outfit);
+  $('#sum-badges').innerHTML = '';
   const minutes = sum ? sum.minutes : sh ? Math.round(((sh.endedAt || serverNow()) - sh.startedAt) / 60000) : 0;
   const dist = sum ? sum.distanceM : sh?.distanceM || 0;
   const who = sum?.watchedBy || [];
@@ -1376,6 +1681,10 @@ async function refreshLifetime() {
     setMe(await api('GET', '/neerly/me'));
     const st = S.stats; if (!st) return;
     $('#sum-life').textContent = `That’s ${fmtDist(st.distanceM)} and ${st.shares} share${st.shares === 1 ? '' : 's'} with Neerly so far` + (st.streakWeeks > 1 ? ` · 🔥 ${st.streakWeeks}-week streak` : '');
+    // New badges get their moment right here on the card.
+    const fresh = (S.badges?.earned || []).filter(b => !b.seen);
+    $('#sum-badges').innerHTML = fresh.map(b => `<div class="sum-badge">${medalHtml(b.id)}<div><b>New badge: ${esc(BADGE_INFO[b.id]?.name || b.id)}</b><span>${b.reward ? '🎁 Unlocked: ' + esc(rewardName(b.reward)) : esc(BADGE_INFO[b.id]?.how() || '')}</span></div></div>`).join('');
+    if (fresh.length) { const d = await api('POST', '/neerly/me/badges/seen'); S.badges = d.badges; }
   } catch {}
 }
 
@@ -1391,6 +1700,7 @@ function viewerId() {
 
 async function openRecipient(token, r) {
   S.recip = { token, r, viewerId: viewerId(), share: null, recipient: null, map: null, loading: false };
+  try { sessionStorage.setItem('neerly_ref', token); } catch {} // credits the sender if this visit turns into a sign-up
   try { await pollRecipient(true); }
   catch (err) {
     if (err.status === 404) { setSenderName('This share'); $('#rx-title').textContent = 'This link doesn’t match a share'; $('#rx-sub').textContent = 'Double-check the link, or ask the person to send it again.'; $('#rx-actions').classList.add('hidden'); $('#rx-emoji').textContent = '🤔'; show('rexpired'); }
@@ -1424,8 +1734,8 @@ async function showRecipLive() {
   show('rlive');
   const R = S.recip;
   if (R.map) R.map.destroy();
-  R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar);
-  paintBuddy($('#r-buddy'), R.share.senderAvatar);
+  R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar, { outfit: R.share.senderOutfit, trail: R.share.senderTrail });
+  paintBuddy($('#r-buddy'), R.share.senderAvatar, R.share.senderOutfit);
   R.trail = mergeTrail([], R.share).trail; R.map.setTrail(R.trail);
   every(UPDATE_MS, () => pollRecipient().catch(() => {}));
   every(500, tickRecip);
@@ -1461,23 +1771,19 @@ function showRecipExpired() {
   const R = S.recip;
   if (R.map) { R.map.destroy(); R.map = null; }
   R.trail = [];
-  $('#rx-emoji').innerHTML = R.share?.senderAvatar ? `<span class="buddy" style="width:88px;height:88px;background:var(--accent-softer)">${buddySvg(R.share.senderAvatar)}</span>` : '👋';
-  const sum = R.share?.summary;
-  $('#rx-sub').textContent = sum && sum.distanceM > 0
-    ? `They traveled ${fmtDist(sum.distanceM)} in ${fmtMins(sum.minutes)}. Hope they made it in one piece.`
-    : 'Hope they made it in one piece.';
+  $('#rx-emoji').innerHTML = R.share?.senderAvatar ? `<span class="buddy" style="width:88px;height:88px;background:var(--accent-softer)">${buddySvg(R.share.senderAvatar, R.share.senderOutfit)}</span>` : '👋';
+  $('#rx-sub').textContent = ''; // just the headline and the buttons
   $('#rx-actions').classList.remove('hidden');
   $('#btn-request').classList.remove('hidden');
   $('#f-request').classList.add('hidden');
+  $('#btn-shareback2').classList.toggle('hidden', !R.share?.canShareBack);
   show('rexpired');
 }
 
-$('#btn-shareback').addEventListener('click', () => {
-  if (S.session) { go('share'); return; }
-  cleanUrl();
-  $('#signup-tag').textContent = 'Create a free account to share yours back. Nobody sees it unless you send it.';
-  show('signup');
-});
+$('#btn-shareback').addEventListener('click', startShareBack);
+$('#btn-shareback2').addEventListener('click', startShareBack);
+
+$('#btn-rsent-share').addEventListener('click', () => { if (S.recip?.share?.canShareBack) startShareBack(); else go('share'); });
 
 $('#btn-request').addEventListener('click', async () => {
   const btn = $('#btn-request');
@@ -1528,7 +1834,7 @@ $('#f-rsignup').addEventListener('submit', async (e) => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr(f, 'That email doesn’t look right');
   if (password.length < 8) return showErr(f, 'Password needs at least 8 characters');
   busy(btn, true);
-  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password })); toast('Welcome to Neerly'); await afterSignIn(); }
+  try { signIn(await api('POST', '/neerly/auth/signup', { name, email, password, ref: refToken() })); toast('Welcome to Neerly'); await afterSignIn(); }
   catch (err) {
     if (err.status === 409) { $('#f-signin [name=email]').value = email; cleanUrl(); show('signin'); toast('You already have an account — sign in'); }
     else showErr(f, err.message);
@@ -1567,6 +1873,8 @@ document.addEventListener('visibilitychange', () => {
 (async function boot() {
   const p = new URLSearchParams(location.search);
   S.session = store.get(SESSION_KEY);
+  try { applyAppIcon(localStorage.getItem('neerly_icon')); } catch {}
+  try { const sb = JSON.parse(sessionStorage.getItem('neerly_shareback') || 'null'); if (sb?.token) S.shareBack = sb; } catch {}
 
   const share = p.get('share');
   if (share) return openRecipient(share, p.get('r'));
