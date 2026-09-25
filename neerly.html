@@ -253,6 +253,51 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 .sum-badge .medal{width:44px;height:44px;font-size:22px;flex:none}
 .sum-badge b{display:block;font-size:15px}
 .sum-badge span{font-size:13px;color:var(--sub)}
+
+/* v0.6 — share modes, status, weather, trail marks */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#f4ebe4;border-radius:999px;padding:4px;margin-bottom:18px}
+.modes button{padding:10px 8px;border-radius:999px;font-weight:700;font-size:15px;color:var(--sub);transition:all .15s}
+.modes button.on{background:#fff;color:var(--accent-dark);box-shadow:0 1px 4px rgba(80,40,20,.14)}
+.seg.four{grid-template-columns:repeat(4,1fr)}
+.seg.four button{font-size:16px;padding:13px 4px}
+.note-field{margin-top:14px}
+.note-field .input{padding-right:40px}
+.note-wrap{position:relative}
+.note-wrap .clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;color:var(--muted);font-size:18px;line-height:1}
+.chips.status{margin-top:10px}
+.chips.status .chip{font-size:13px;padding:7px 11px}
+.switch-row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-top:14px;cursor:pointer}
+.switch-row .txt{flex:1;min-width:0}
+.switch-row b{display:block;font-weight:600}
+.switch-row span.sub{display:block;font-size:13px;color:var(--muted)}
+.switch{flex:none;width:50px;height:30px;border-radius:999px;background:var(--border-strong);position:relative;transition:background .15s}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
+.switch.on{background:var(--green)}
+.switch.on::after{transform:translateX(20px)}
+.switch-row.compact{margin-top:10px;padding:10px 12px}
+/* speech bubble next to the buddy (Right now) */
+.bubble{position:relative;display:inline-block;background:#fff;border:1.5px solid var(--accent-soft);border-radius:16px;padding:9px 14px;font-weight:600;font-size:16px;box-shadow:var(--shadow);max-width:100%;overflow-wrap:anywhere}
+.bubble small{display:block;font-weight:500;font-size:13px;color:var(--muted);margin-top:1px}
+.now-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 20px;background:linear-gradient(180deg,var(--accent-softer),#fff 75%);border:1px solid var(--border);border-radius:var(--radius);text-align:center}
+.now-card .buddy{width:96px;height:96px;box-shadow:0 0 0 3px var(--accent),0 4px 14px rgba(80,40,20,.15);animation:bob 2.4s ease-in-out infinite}
+.now-card .bubble::before{content:'';position:absolute;left:50%;top:-8px;width:14px;height:14px;background:#fff;border-left:1.5px solid var(--accent-soft);border-top:1.5px solid var(--accent-soft);transform:translateX(-50%) rotate(45deg)}
+.r-sub{color:var(--sub);font-weight:600;margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.r-sub:empty{display:none}
+.wx{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700;color:var(--sub);white-space:nowrap}
+.live-note{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:12px}
+.live-note .txt{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.live-note .txt .muted{font-weight:500;font-size:15px}
+.live-note .txt small{display:block;font-weight:500;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.live-note .link{font-size:14px;padding:4px 2px}
+.live-note form{display:flex;gap:8px;flex:1}
+.live-note form .input{padding:9px 12px}
+.live-note form .btn{width:auto;min-height:0;padding:9px 16px;font-size:15px}
+/* pin for Right now: a soft pulse under the buddy */
+.bpin.here{animation:none;position:relative}
+.bpin.here::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:3px solid var(--accent);animation:ring 2s ease-out infinite}
+@keyframes ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.bpin.here::before,.now-card .buddy{animation:none}}
+.tmark{pointer-events:none}
 </style>
 </head>
 <body>
@@ -321,7 +366,11 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <div class="brand"><span class="dot"></span>Neerly</div>
     <button class="me-btn" id="btn-account" aria-label="Your profile"><span class="buddy" id="me-buddy"></span><span class="nm" id="me-name"></span></button>
   </div>
-  <h1>On your way?</h1>
+  <div class="modes" id="modes" role="tablist" aria-label="What to share">
+    <button type="button" role="tab" data-mode="way" class="on" aria-selected="true">👣 On my way</button>
+    <button type="button" role="tab" data-mode="now" aria-selected="false">📍 Right now</button>
+  </div>
+  <h1 id="share-title">On your way?</h1>
   <p class="lead" id="share-lead">Pick how long and who can watch. It ends on its own.</p>
   <div class="sb-banner hidden" id="sb-banner">
     <span class="buddy" id="sb-buddy"></span>
@@ -329,12 +378,18 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <button class="link" id="sb-cancel">Cancel</button>
   </div>
 
-  <h2>For how long</h2>
-  <div class="seg" id="durations">
-    <button data-min="15">15<small>min</small></button>
-    <button data-min="30" class="on">30<small>min</small></button>
-    <button data-min="60">1<small>hour</small></button>
+  <label class="field note-field" id="note-field">
+    <span id="note-label">Heading to <span class="muted" style="display:inline;font-weight:400">(optional)</span></span>
+    <div class="note-wrap"><input class="input" id="note-input" maxlength="60" autocomplete="off" enterkeyhint="done" placeholder="Grandma’s, the office, Blue Bottle…"><button type="button" class="clear hidden" id="note-clear" aria-label="Clear">×</button></div>
+  </label>
+  <div class="chips status hidden" id="status-chips"></div>
+  <div class="switch-row hidden" id="loc-row" role="switch" aria-checked="true" tabindex="0">
+    <div class="txt"><b>Show where I am</b><span class="sub" id="loc-sub">A pin on the map, no trail</span></div>
+    <span class="switch on" id="loc-switch"></span>
   </div>
+
+  <h2>For how long</h2>
+  <div class="seg" id="durations"></div>
 
   <div id="who-section">
   <div class="section-head"><h2>Who can watch</h2><button id="btn-edit-contacts" class="hidden">Edit</button></div>
@@ -370,8 +425,20 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <div class="bar"><i id="live-bar" style="width:100%"></i></div>
   </div>
   <div class="banner" id="live-banner"></div>
-  <div class="map-wrap"><div class="map" id="live-map"></div><button class="recenter" id="live-recenter">Recenter</button></div>
-  <div class="map-foot"><span id="live-updated">Finding you…</span><span id="live-dist">Keep this screen open</span></div>
+  <div class="live-note" id="live-note">
+    <div class="txt" id="live-note-view"><small id="live-note-label">Heading to</small><span id="live-note-text"></span></div>
+    <button class="link" id="btn-note-edit">Edit</button>
+    <form id="f-note" class="hidden" novalidate><input class="input" name="note" maxlength="60" autocomplete="off" enterkeyhint="done"><button class="btn btn-primary" type="submit">Save</button></form>
+  </div>
+  <div id="live-mapbox">
+    <div class="map-wrap"><div class="map" id="live-map"></div><button class="recenter" id="live-recenter">Recenter</button></div>
+    <div class="map-foot"><span id="live-updated">Finding you…</span><span id="live-dist">Keep this screen open</span></div>
+  </div>
+  <div class="now-card hidden" id="live-nomap"><span class="buddy" id="live-nm-buddy"></span><div class="bubble" id="live-nm-bubble"></div><p class="muted small">Your location isn’t shared, just this.</p></div>
+  <div class="switch-row compact" id="chime-row" role="switch" aria-checked="true" tabindex="0">
+    <div class="txt"><b>🔔 Tell me when someone starts watching</b><span class="sub">A soft chime while this screen is open</span></div>
+    <span class="switch on" id="chime-switch"></span>
+  </div>
 
   <div class="row" style="margin-top:16px">
     <button class="btn btn-ghost" id="btn-copy">Copy link</button>
@@ -502,16 +569,20 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
     <span class="pill"><span class="pulse"></span>Live</span>
   </div>
   <div class="r-head">
-    <h1 class="r-title"><span class="buddy" id="r-buddy"></span><span><span class="sender-name"></span> is on the way</span></h1>
+    <h1 class="r-title"><span class="buddy" id="r-buddy"></span><span id="r-title-text"><span class="sender-name"></span> is on the way</span></h1>
+    <div class="r-sub" id="r-sub"></div>
   </div>
-  <div class="map-wrap"><div class="map r-map" id="r-map"></div><button class="recenter" id="r-recenter">Recenter</button></div>
-  <div class="map-foot"><span id="r-updated">Loading…</span><a class="link small" id="r-directions" target="_blank" rel="noopener" style="padding:0">Open in Maps ↗</a></div>
+  <div id="r-mapbox">
+    <div class="map-wrap"><div class="map r-map" id="r-map"></div><button class="recenter" id="r-recenter">Recenter</button></div>
+    <div class="map-foot"><span id="r-updated">Loading…</span><a class="link small" id="r-directions" target="_blank" rel="noopener" style="padding:0">Open in Maps ↗</a></div>
+  </div>
+  <div class="now-card hidden" id="r-nomap"><span class="buddy" id="r-nm-buddy"></span><div class="bubble" id="r-nm-bubble"></div></div>
   <div id="r-clock" style="margin-top:14px">
     <div class="bar" style="margin-top:0"><i id="r-bar" style="width:100%"></i></div>
     <p class="center"><b id="r-timer" style="font-variant-numeric:tabular-nums;font-size:20px">--:--</b> <span class="muted">left in this share</span></p>
   </div>
   <button class="btn btn-ghost" id="btn-shareback" style="margin-top:20px">Share my location back</button>
-  <p class="muted small center" style="margin-top:14px">Neerly shares are time-limited. When this one ends, <span class="sender-name"></span>'s location disappears.</p>
+  <p class="muted small center" style="margin-top:14px" id="r-foot">Neerly shares are time-limited. When this one ends, <span class="sender-name"></span>'s location disappears.</p>
 </section>
 
 <!-- ═════════════ RECIPIENT EXPIRED ═════════════ -->
@@ -610,6 +681,10 @@ const S = {
   contacts: [],
   selected: new Set(),    // emails
   minutes: 30,
+  mode: 'way',            // v0.6: 'way' (On my way) | 'now' (Right now)
+  minutesBy: { way: 30, now: 60 },
+  showLoc: true,          // v0.6: Right now can hide the location
+  prevWatch: null,        // v0.6: who was watching at the last sync (for the chime)
   share: null,            // sender view from server
   offset: 0,              // serverNow - Date.now()
   timers: [],
@@ -767,20 +842,49 @@ const ACCESSORIES = {
   bowtie:   { slot: 'neck', name: 'Bow tie', draw: (a) => { const c = a.neck; return `<path d="M32 ${c} L24.5 ${c - 4.5} Q23 ${c} 24.5 ${c + 4.5} Z M32 ${c} L39.5 ${c - 4.5} Q41 ${c} 39.5 ${c + 4.5} Z" fill="#e2463b"/><rect x="29.8" y="${c - 2.3}" width="4.4" height="4.6" rx="1.4" fill="#b8302a"/>`; } },
 };
 const TRAIL_STYLES = { dots: 'Dots', footprints: 'Footprints', paws: 'Paw prints', sparkles: 'Sparkles', rainbow: 'Rainbow' };
-function buddyInner(id, outfit) {
+// v0.6 — weather look. The server sends { kind, tempC, isDay } for the sender's rough location.
+// Weather only fills empty outfit slots (your own outfit always wins), plus an umbrella or snowflakes.
+function weatherOutfit(outfit, wx) {
+  const o = { ...(outfit || {}) };
+  if (!wx) return { o, extra: '' };
+  const wet = wx.kind === 'rain' || wx.kind === 'storm';
+  if (!o.face && wx.kind === 'clear' && wx.isDay && wx.tempC >= 22) o.face = 'sunglasses';
+  if (!o.neck && (wx.tempC <= 5 || wx.kind === 'snow')) o.neck = 'scarf';
+  let extra = '';
+  if (wet) extra = 'umbrella';
+  else if (wx.kind === 'snow') extra = 'snow';
+  return { o, extra };
+}
+const WX_EXTRA = {
+  // An umbrella held over the head: canopy above the hat line, handle down the right side.
+  umbrella: (a) => { const t = a.top - 12; return `<g class="wx-umbrella"><path d="M53 ${t + 4} V58 q0 4 -3.6 4 q-3 0 -3 -3" stroke="#6b5a50" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 ${t + 4} Q9 ${t - 18} 32 ${t - 19} Q55 ${t - 18} 58 ${t + 4} Q52.5 ${t - 1} 47 ${t + 4} Q41.5 ${t - 1} 36.5 ${t + 4} Q32 ${t - 1} 27.5 ${t + 4} Q22.5 ${t - 1} 17 ${t + 4} Q11.5 ${t - 1} 6 ${t + 4} Z" fill="#3d8bd3"/><path d="M32 ${t - 19} Q24 ${t - 10} 27.5 ${t + 4} M32 ${t - 19} Q40 ${t - 10} 36.5 ${t + 4}" stroke="#2f73b3" stroke-width="1.2" fill="none"/><circle cx="32" cy="${t - 20}" r="1.8" fill="#2f73b3"/></g>`; },
+  snow: () => { const f = (x, y, r) => `<g transform="translate(${x} ${y})" stroke="#9cc9ee" stroke-width="1.2" stroke-linecap="round"><path d="M0 -${r} V${r} M-${r} 0 H${r} M-${r * .7} -${r * .7} L${r * .7} ${r * .7} M-${r * .7} ${r * .7} L${r * .7} -${r * .7}"/></g>`; return `<g class="wx-snow">${f(6, 12, 3)}${f(58, 20, 2.6)}${f(9, 44, 2.2)}${f(57, 48, 3)}</g>`; },
+};
+function buddyInner(id, outfit, wx) {
   const key = BUDDIES[id] ? id : DEFAULT_BUDDY;
   const a = ANCHOR[key];
   let s = BUDDIES[key].svg;
-  const o = outfit || {};
+  const { o, extra } = weatherOutfit(outfit, wx);
   for (const slot of ['neck', 'face', 'head']) {
     const item = ACCESSORIES[o[slot]];
     if (item && item.slot === slot) s += item.draw(a);
   }
   if (a.hornOver && o.head && ACCESSORIES[o.head]) s += `<path d="M33 2 L28.5 19 L37.5 19 Z" fill="#ffc94d"/><path d="M30 13 l6 -2 M29.5 16.5 l7 -2 M31 9.5 l4 -1.5" stroke="#e59f1f" stroke-width="1.1"/>`;
+  if (extra) s += WX_EXTRA[extra](a);
   return s;
 }
-function buddySvg(id, outfit) { return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" overflow="visible">${buddyInner(id, outfit)}</svg>`; }
-function paintBuddy(el, id, outfit) { if (el) el.innerHTML = buddySvg(id, outfit); }
+function buddySvg(id, outfit, wx) { return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" overflow="visible">${buddyInner(id, outfit, wx)}</svg>`; }
+function paintBuddy(el, id, outfit, wx) { if (el) el.innerHTML = buddySvg(id, outfit, wx); }
+const FAHRENHEIT = /^en-(US|LR|MM)$/i.test(navigator.language || '') || (navigator.language || '').toLowerCase() === 'en';
+function wxChip(wx) {
+  if (!wx) return '';
+  const icon = { clear: wx.isDay ? '☀️' : '🌙', cloud: '☁️', fog: '🌫️', rain: '🌧️', storm: '⛈️', snow: '❄️' }[wx.kind] || '🌡️';
+  const temp = FAHRENHEIT ? `${Math.round(wx.tempC * 9 / 5 + 32)}°F` : `${wx.tempC}°C`;
+  const word = { clear: wx.isDay ? 'Sunny' : 'Clear', cloud: 'Cloudy', fog: 'Foggy', rain: 'Rain', storm: 'Storms', snow: 'Snow' }[wx.kind] || '';
+  return `<span class="wx" title="Weather where they are">${icon} ${temp}${word ? ' · ' + word : ''}</span>`;
+}
+// End time as a clock, e.g. "till 7:05 PM".
+function tillClock(ts) { try { return 'till ' + new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch { return ''; } }
 
 // v0.5 — badges. Only earned badges are shown by name; the rest stay a surprise.
 const BADGE_INFO = {
@@ -887,13 +991,15 @@ function loadGoogle() {
   return googleReady;
 }
 
-// createMap(el, recenterBtn, buddyId, look) → { set(lat,lng,acc), setTrail(points), destroy() }
-// The buddy (in its outfit) is the marker; the trail shows everywhere it has been during this share,
-// drawn in the sender's trail style (dots by default).
+// createMap(el, recenterBtn, buddyId, look) → { set(lat,lng,acc), setTrail(points), setWeather(wx), destroy() }
+// The buddy (in its outfit, dressed for the weather) is the marker. On my way shows everywhere it has been
+// during this share, drawn in the sender's trail style. Right now (look.here) is a pin with a soft pulse, no trail.
 const TRAIL_COLOR = '#e85d26';
 async function createMap(el, recenterBtn, buddyId, look = {}) {
   const outfit = look.outfit || {};
   const trailStyle = TRAIL_STYLES[look.trail] ? look.trail : 'dots';
+  const here = !!look.here;
+  let wx = look.weather || null;
   let follow = true;
   const setFollow = (v) => { follow = v; if (recenterBtn) recenterBtn.style.display = v ? 'none' : 'block'; };
   let last = null;
@@ -904,10 +1010,10 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
       await loadGoogle();
       const g = google.maps;
       const map = new g.Map(el, { zoom: 15, center: { lat: 0, lng: 0 }, disableDefaultUI: true, zoomControl: true, gestureHandling: 'greedy' });
-      const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="44" fill="#fff" stroke="${TRAIL_COLOR}" stroke-width="6"/><svg x="14" y="14" width="68" height="68" viewBox="0 0 64 64">${buddyInner(buddyId, outfit)}</svg></svg>`;
-      const marker = new g.Marker({ map, visible: false, zIndex: 10, icon: { url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(pinSvg), scaledSize: new g.Size(48, 48), anchor: new g.Point(24, 24) } });
+      const pinIcon = () => ({ url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" overflow="visible"><circle cx="48" cy="48" r="44" fill="#fff" stroke="${TRAIL_COLOR}" stroke-width="6"/><svg x="14" y="14" width="68" height="68" viewBox="0 0 64 64" overflow="visible">${buddyInner(buddyId, outfit, wx)}</svg></svg>`), scaledSize: new g.Size(48, 48), anchor: new g.Point(24, 24) });
+      const marker = new g.Marker({ map, visible: false, zIndex: 10, icon: pinIcon() });
       const circle = new g.Circle({ map, visible: false, fillColor: TRAIL_COLOR, fillOpacity: .12, strokeColor: TRAIL_COLOR, strokeOpacity: .35, strokeWeight: 1 });
-      const line = new g.Polyline({ map, path: [], strokeOpacity: 0, icons: [{ icon: { path: g.SymbolPath.CIRCLE, fillColor: TRAIL_COLOR, fillOpacity: .9, strokeOpacity: 0, scale: 3 }, offset: '0', repeat: '12px' }] });
+      const line = new g.Polyline({ map, path: [], strokeColor: TRAIL_COLOR, strokeOpacity: .45, strokeWeight: 4 });
       let placed = false;
       map.addListener('dragstart', () => setFollow(false));
       if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo(last); };
@@ -918,20 +1024,21 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
           if (acc) { circle.setCenter(last); circle.setRadius(acc); circle.setVisible(true); } else circle.setVisible(false);
           if (!placed) { map.setCenter(last); map.setZoom(16); placed = true; } else if (follow) map.panTo(last);
         },
-        setTrail(points) { line.setPath(points.map(([a, b]) => ({ lat: a, lng: b }))); },
+        setTrail(points) { if (!here) line.setPath(points.map(([a, b]) => ({ lat: a, lng: b }))); },
+        setWeather(next) { if (JSON.stringify(next || null) === JSON.stringify(wx)) return; wx = next || null; marker.setIcon(pinIcon()); },
         destroy() { el.innerHTML = ''; },
       };
     } catch (e) { console.warn('Google Maps failed, falling back to OpenStreetMap', e); }
   }
 
-  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, destroy() {} }; }
+  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, setWeather() {}, destroy() {} }; }
   const map = L.map(el, { zoomControl: true, attributionControl: true }).setView([20, 0], 2);
   map.attributionControl.setPrefix(false); // drop Leaflet's own link + flag; the OpenStreetMap credit (required by its licence) stays
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
   const circle = L.circle([0, 0], { radius: 1, color: TRAIL_COLOR, weight: 1, opacity: .35, fillOpacity: .12, interactive: false });
-  const trail = makeTrailLayer(trailStyle).addTo(map);
-  const icon = L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin">${buddySvg(buddyId, outfit)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
-  const pin = L.marker([0, 0], { icon, keyboard: false, zIndexOffset: 1000 });
+  const trail = here ? null : makeTrailLayer(map, trailStyle).addTo(map);
+  const pinIcon = () => L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin${here ? ' here' : ''}">${buddySvg(buddyId, outfit, wx)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
+  const pin = L.marker([0, 0], { icon: pinIcon(), keyboard: false, zIndexOffset: 1000 });
   let placed = false, walkT;
   map.on('dragstart', () => setFollow(false));
   if (recenterBtn) recenterBtn.onclick = () => { setFollow(true); if (last) map.panTo([last.lat, last.lng]); };
@@ -939,7 +1046,7 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
   return {
     set(lat, lng, acc) {
       const next = { lat, lng };
-      const walking = placed && moved(last, next);
+      const walking = placed && !here && moved(last, next);
       last = next;
       pin.setLatLng([lat, lng]); circle.setLatLng([lat, lng]).setRadius(acc || 1);
       if (!placed) { circle.addTo(map); pin.addTo(map); map.setView([lat, lng], 16); placed = true; }
@@ -950,24 +1057,23 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
         if (b) { b.classList.remove('walk'); void b.offsetWidth; b.classList.add('walk'); clearTimeout(walkT); walkT = setTimeout(() => b.classList.remove('walk'), 2100); }
       }
     },
-    setTrail(points) { trail.setPoints(points); },
+    setTrail(points) { if (trail) trail.setPoints(points); },
+    setWeather(next) { if (JSON.stringify(next || null) === JSON.stringify(wx)) return; wx = next || null; pin.setIcon(pinIcon()); },
     destroy() { map.remove(); },
   };
 }
 
-// Trail layers (Leaflet). Dots and rainbow are lines; footprints, paws and sparkles are small
-// marks placed along the route and turned to face the direction of travel.
+// Trail layers (Leaflet). Dots and rainbow are lines. Footprints, paws and sparkles (v0.6) are a solid line
+// with marks on top, spaced evenly on screen (so a car trip isn't a scatter of far-apart prints) and
+// re-placed whenever the zoom changes. Marks turn to face the direction of travel.
+const FOOT = '<path d="M10 9.5C13.6 9.5 15.2 13 14.8 17.6 14.4 21.5 13.2 23.6 13.2 26.2 13.2 28.6 11.8 30 10 30 8 30 6.8 28.7 7 26.2 7.2 23.4 5.4 21 5.4 16.6 5.4 12.4 7 9.5 10 9.5Z"/><circle cx="6.6" cy="5.9" r="2.3"/><circle cx="10" cy="4.3" r="1.7"/><circle cx="12.8" cy="5" r="1.5"/><circle cx="15" cy="6.6" r="1.3"/><circle cx="16.4" cy="8.8" r="1.15"/>';
 const TRAIL_MARKS = {
-  footprints: (i) => `<svg viewBox="0 0 20 20" width="18" height="18"><ellipse cx="${i % 2 ? 13 : 7}" cy="9" rx="2.6" ry="4.2" fill="${TRAIL_COLOR}" opacity=".85"/><circle cx="${i % 2 ? 13 : 7}" cy="3.4" r="1.6" fill="${TRAIL_COLOR}" opacity=".85"/></svg>`,
-  paws: () => `<svg viewBox="0 0 20 20" width="18" height="18" fill="${TRAIL_COLOR}" opacity=".85"><ellipse cx="10" cy="12.5" rx="4" ry="3.4"/><circle cx="5" cy="7.5" r="1.8"/><circle cx="8.2" cy="4.8" r="1.8"/><circle cx="11.8" cy="4.8" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/></svg>`,
-  sparkles: (i) => { const r = i % 3 === 0 ? 8 : 5.5; return `<svg viewBox="0 0 20 20" width="20" height="20"><path d="M10 ${10 - r} Q${10 + r * .2} ${10 - r * .2} ${10 + r} 10 Q${10 + r * .2} ${10 + r * .2} 10 ${10 + r} Q${10 - r * .2} ${10 + r * .2} ${10 - r} 10 Q${10 - r * .2} ${10 - r * .2} 10 ${10 - r} Z" fill="${i % 2 ? '#ffc83d' : '#ff9ecf'}"/></svg>`; },
+  footprints: { size: [20, 30], spacing: 22, svg: (i) => `<svg viewBox="0 0 20 30" width="20" height="30" fill="${TRAIL_COLOR}" opacity=".9"><g${i % 2 ? '' : ' transform="translate(20 0) scale(-1 1)"'}>${FOOT}</g></svg>` },
+  paws:       { size: [26, 26], spacing: 30, svg: () => `<svg viewBox="0 0 20 20" width="26" height="26" fill="${TRAIL_COLOR}" opacity=".9"><ellipse cx="10" cy="12.5" rx="4" ry="3.4"/><circle cx="5" cy="7.5" r="1.8"/><circle cx="8.2" cy="4.8" r="1.8"/><circle cx="11.8" cy="4.8" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/></svg>` },
+  sparkles:   { size: [24, 24], spacing: 34, svg: (i) => { const r = i % 3 === 0 ? 8.5 : 6; return `<svg viewBox="0 0 20 20" width="24" height="24"><path d="M10 ${10 - r} Q${10 + r * .2} ${10 - r * .2} ${10 + r} 10 Q${10 + r * .2} ${10 + r * .2} 10 ${10 + r} Q${10 - r * .2} ${10 + r * .2} ${10 - r} 10 Q${10 - r * .2} ${10 - r * .2} 10 ${10 - r} Z" fill="${i % 2 ? '#ffc83d' : '#ff9ecf'}"/></svg>`; } },
 };
-function bearing(a, b) {
-  const r = Math.PI / 180, y = Math.sin((b[1] - a[1]) * r) * Math.cos(b[0] * r);
-  const x = Math.cos(a[0] * r) * Math.sin(b[0] * r) - Math.sin(a[0] * r) * Math.cos(b[0] * r) * Math.cos((b[1] - a[1]) * r);
-  return Math.atan2(y, x) / r;
-}
-function makeTrailLayer(style) {
+const MAX_MARKS = 400;
+function makeTrailLayer(map, style) {
   const group = L.layerGroup();
   const lines = [];
   if (style === 'rainbow') {
@@ -976,21 +1082,40 @@ function makeTrailLayer(style) {
     // Zero-length dashes with round caps draw as dots.
     lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 6, opacity: .85, dashArray: '0 12', lineCap: 'round', interactive: false }));
   } else if (style === 'sparkles') {
-    lines.push(L.polyline([], { color: '#ffc83d', weight: 2, opacity: .5, dashArray: '2 8', lineCap: 'round', interactive: false }));
+    lines.push(L.polyline([], { color: '#ffc83d', weight: 4, opacity: .55, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
+  } else {
+    lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 5, opacity: .35, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
   }
   lines.forEach(l => group.addLayer(l));
   const marks = L.layerGroup().addTo(group);
-  group.setPoints = (pts) => {
-    lines.forEach(l => l.setLatLngs(pts));
-    if (!TRAIL_MARKS[style]) return;
+  const spec = TRAIL_MARKS[style];
+  let pts = [];
+  function place() {
     marks.clearLayers();
-    const step = Math.max(1, Math.ceil(pts.length / 400)); // keep it light on long trips
-    for (let i = 1; i < pts.length; i += step) {
-      const deg = bearing(pts[i - 1], pts[i]);
-      const html = `<div style="transform:rotate(${style === 'sparkles' ? 0 : deg}deg)">${TRAIL_MARKS[style](i)}</div>`;
-      marks.addLayer(L.marker(pts[i], { icon: L.divIcon({ className: 'bpin-wrap', html, iconSize: [20, 20], iconAnchor: [10, 10] }), interactive: false, keyboard: false }));
+    if (!spec || pts.length < 2) return;
+    const P = pts.map(p => map.latLngToLayerPoint(p));
+    let total = 0;
+    for (let i = 1; i < P.length; i++) total += P[i].distanceTo(P[i - 1]);
+    if (total < 4) return;
+    const gap = Math.max(spec.spacing, total / MAX_MARKS);
+    const endClear = 20; // the buddy sits on the last point; don't bury prints under it
+    let seg = 1, segStart = 0, n = 0;
+    for (let d = gap / 2; d < total - endClear; d += gap, n++) {
+      while (seg < P.length - 1 && segStart + P[seg].distanceTo(P[seg - 1]) < d) { segStart += P[seg].distanceTo(P[seg - 1]); seg++; }
+      const a = P[seg - 1], b = P[seg], len = a.distanceTo(b) || 1;
+      const t = Math.min(1, (d - segStart) / len);
+      const ux = (b.x - a.x) / len, uy = (b.y - a.y) / len;
+      let x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t;
+      if (style === 'footprints') { const side = n % 2 ? 1 : -1; x += -uy * 5 * side; y += ux * 5 * side; } // left, right, left…
+      const deg = Math.atan2(uy, ux) * 180 / Math.PI + 90; // marks are drawn pointing up
+      const rot = style === 'sparkles' ? 0 : deg;
+      const html = `<div style="transform:rotate(${rot.toFixed(1)}deg)">${spec.svg(n)}</div>`;
+      const [w, h] = spec.size;
+      marks.addLayer(L.marker(map.layerPointToLatLng([x, y]), { icon: L.divIcon({ className: `bpin-wrap tmark tm-${style}`, html, iconSize: [w, h], iconAnchor: [w / 2, h / 2] }), interactive: false, keyboard: false }));
     }
-  };
+  }
+  group.setPoints = (p) => { pts = p || []; lines.forEach(l => l.setLatLngs(pts)); place(); };
+  map.on('zoomend viewreset', place);
   return group;
 }
 
@@ -1355,10 +1480,52 @@ async function openShare() {
   catch (err) { if (err.status !== 401) toast(err.message); else show('signin'); }
 }
 
-$$('#durations button').forEach(b => b.addEventListener('click', () => {
-  S.minutes = Number(b.dataset.min);
+// v0.6 — two modes on one screen. On my way: live trail + optional destination.
+// Right now: a status, with the location switched on (a pin, no trail) or off (no map at all).
+const DURATIONS_BY_MODE = { way: [[15, '15', 'min'], [30, '30', 'min'], [60, '1', 'hour']], now: [[30, '30', 'min'], [60, '1', 'hour'], [120, '2', 'hours'], [240, '4', 'hours']] };
+const STATUS_CHIPS = ['☕ Grabbing coffee', '💪 At the gym', '💼 At work', '🍽️ Out for dinner', '🏠 Home', '📵 In a meeting'];
+function renderDurations() {
+  const box = $('#durations');
+  box.classList.toggle('four', S.mode === 'now');
+  S.minutes = S.minutesBy[S.mode];
+  box.innerHTML = DURATIONS_BY_MODE[S.mode].map(([m, big, small]) => `<button type="button" data-min="${m}" class="${m === S.minutes ? 'on' : ''}">${big}<small>${small}</small></button>`).join('');
+}
+$('#durations').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-min]'); if (!b) return;
+  S.minutes = S.minutesBy[S.mode] = Number(b.dataset.min);
   $$('#durations button').forEach(x => x.classList.toggle('on', x === b));
-}));
+});
+function setMode(mode) {
+  S.mode = mode;
+  $$('#modes [data-mode]').forEach(b => { const on = b.dataset.mode === mode; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  const now = mode === 'now';
+  $('#share-title').textContent = now ? 'What’s up?' : 'On your way?';
+  $('#note-label').innerHTML = now ? 'What you’re up to' : 'Heading to <span class="muted" style="display:inline;font-weight:400">(optional)</span>';
+  $('#note-input').placeholder = now ? 'At the gym, Blue Bottle — come by!' : 'Grandma’s, the office, Blue Bottle…';
+  $('#status-chips').classList.toggle('hidden', !now);
+  $('#loc-row').classList.toggle('hidden', !now);
+  renderChips(); renderLocSwitch(); renderDurations(); renderShareBack();
+}
+$('#modes').addEventListener('click', (e) => { const b = e.target.closest('[data-mode]'); if (b && b.dataset.mode !== S.mode) setMode(b.dataset.mode); });
+function renderChips() {
+  const v = $('#note-input').value.trim();
+  $('#status-chips').innerHTML = STATUS_CHIPS.map(c => `<button type="button" class="chip ${c === v ? 'on' : ''}" data-chip="${esc(c)}">${esc(c)}</button>`).join('');
+  $('#note-clear').classList.toggle('hidden', !v);
+}
+$('#status-chips').addEventListener('click', (e) => { const c = e.target.closest('[data-chip]'); if (!c) return; $('#note-input').value = c.dataset.chip; renderChips(); updateShareHint(); });
+$('#note-input').addEventListener('input', () => { renderChips(); updateShareHint(); });
+$('#note-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+$('#note-clear').addEventListener('click', () => { $('#note-input').value = ''; renderChips(); updateShareHint(); $('#note-input').focus(); });
+function renderLocSwitch() {
+  $('#loc-switch').classList.toggle('on', S.showLoc);
+  $('#loc-row').setAttribute('aria-checked', S.showLoc);
+  $('#loc-sub').textContent = S.showLoc ? 'A pin on the map, no trail' : 'Off: they’ll only see your status';
+  updateShareHint();
+}
+function toggleLoc() { S.showLoc = !S.showLoc; renderLocSwitch(); }
+$('#loc-row').addEventListener('click', toggleLoc);
+$('#loc-row').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleLoc(); } });
+setMode('way');
 
 function renderContacts() {
   const list = $('#contact-list');
@@ -1420,7 +1587,9 @@ function renderShareBack() {
   const sb = S.shareBack;
   $('#sb-banner').classList.toggle('hidden', !sb);
   $('#who-section').classList.toggle('hidden', !!sb);
-  $('#share-lead').textContent = sb ? `Pick how long, and ${sb.name} will see you on your way.` : 'Pick how long and who can watch. It ends on its own.';
+  $('#share-lead').textContent = sb
+    ? (S.mode === 'now' ? `Pick how long, and ${sb.name} will see what you’re up to.` : `Pick how long, and ${sb.name} will see you on your way.`)
+    : (S.mode === 'now' ? 'Say what you’re up to, pick who sees it and for how long. It ends on its own.' : 'Pick how long and who can watch. It ends on its own.');
   if (sb) { $('#sb-name').textContent = sb.name; paintBuddy($('#sb-buddy'), sb.avatar, sb.outfit); }
   updateShareHint();
 }
@@ -1434,6 +1603,10 @@ function startShareBack() {
   show('signup');
 }
 
+function shareButtonLabel() {
+  if (S.mode === 'now') return 'Share what’s up';
+  return 'Share my location';
+}
 function updateShareHint() {
   const btn = $('#btn-share');
   if (S.shareBack) {
@@ -1442,7 +1615,7 @@ function updateShareHint() {
     return;
   }
   const picked = S.contacts.filter(c => S.selected.has(c.email));
-  if (!btn.disabled) btn.textContent = picked.length ? 'Share my location' : 'Share my location · link only';
+  if (!btn.disabled) btn.textContent = picked.length ? shareButtonLabel() : `${shareButtonLabel()} · link only`;
   $('#share-hint').textContent = picked.length
     ? `${listNames(picked.map(displayName))} will get an email. We'll copy the link too.`
     : 'No one picked — you’ll get a link to paste into WhatsApp, iMessage, anywhere.';
@@ -1462,18 +1635,23 @@ function getPosition() {
 
 $('#btn-share').addEventListener('click', async () => {
   const btn = $('#btn-share'); const errEl = $('#share-err'); errEl.classList.remove('on');
-  busy(btn, true, 'Finding you…');
+  const mode = S.mode, note = $('#note-input').value.trim(), withLoc = mode === 'way' || S.showLoc;
+  if (mode === 'now' && !withLoc && !note) { errEl.textContent = 'Say what you’re up to, or switch on “Show where I am”.'; errEl.classList.add('on'); $('#note-input').focus(); return; }
+  chime.unlock(); // the tap lets the live screen play its soft "someone's watching" chime later
+  busy(btn, true, withLoc ? 'Finding you…' : 'Starting…');
   try {
-    const pos = await getPosition();
+    const pos = withLoc ? await getPosition() : null;
     S.fix = pos;
     btn.innerHTML = '<span class="spinner"></span>Starting your share…';
     const sb = S.shareBack;
     const recipients = sb ? [] : S.contacts.filter(c => S.selected.has(c.email)).map(c => ({ email: c.email, nickname: c.nickname }));
-    const d = await api('POST', '/neerly/shares', { minutes: S.minutes, recipients, lat: pos.lat, lng: pos.lng, accuracy: pos.accuracy,
+    const d = await api('POST', '/neerly/shares', { minutes: S.minutes, recipients, lat: pos?.lat, lng: pos?.lng, accuracy: pos?.accuracy,
+      mode, note, showLocation: withLoc,
       tzOffset: new Date().getTimezoneOffset(), shareBack: sb ? sb.token : undefined });
     if (sb) setShareBack(null);
     if (d.newBadges?.length) setTimeout(() => toast(`🏅 New badge: ${d.newBadges.map(id => BADGE_INFO[id]?.name || id).join(', ')}`, 3500), 2800);
-    S.share = d.share; S.pushedFixTs = pos.ts;
+    S.share = d.share; S.pushedFixTs = pos ? pos.ts : 0;
+    $('#note-input').value = ''; renderChips();
     const copied = await copyText(S.share.link);
     toast(d.shareBackTo ? `Shared back with ${d.shareBackTo}` : recipients.length ? (copied ? 'Shared — emails sent and link copied' : 'Shared — emails on their way') : (copied ? 'Link copied — paste it anywhere' : 'You’re live — send the link below'));
     S.selected.clear();
@@ -1495,18 +1673,92 @@ async function copyText(text) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Live share (sender)
 // ─────────────────────────────────────────────────────────────────────────────
+// v0.6 — soft chime (and a buzz on Android) when someone starts watching. The sound needs a tap first,
+// so the Share button unlocks it. iPhone browsers can't vibrate; the chime still plays there.
+const chime = {
+  ctx: null,
+  get on() { return store.get('neerly_chime') !== false; },
+  set on(v) { store.set('neerly_chime', !!v); },
+  unlock() { try { this.ctx = this.ctx || new (window.AudioContext || window.webkitAudioContext)(); this.ctx.resume?.(); } catch {} },
+  play() {
+    if (!this.on) return;
+    try { navigator.vibrate?.([40, 60, 40]); } catch {}
+    try {
+      this.unlock(); const c = this.ctx; if (!c) return;
+      const t0 = c.currentTime + .02;
+      [[880, 0], [1318.5, .16]].forEach(([f, dt]) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t0 + dt); g.gain.linearRampToValueAtTime(.07, t0 + dt + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + dt + .5);
+        o.connect(g).connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + .55);
+      });
+    } catch {}
+  },
+};
+function renderChimeSwitch() { const on = chime.on; $('#chime-switch').classList.toggle('on', on); $('#chime-row').setAttribute('aria-checked', on); }
+function toggleChime() { chime.on = !chime.on; if (chime.on) chime.unlock(); renderChimeSwitch(); }
+$('#chime-row').addEventListener('click', toggleChime);
+$('#chime-row').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleChime(); } });
+// Compares who's watching now with the last sync and chimes for anyone new.
+function checkNewWatchers(sh) {
+  const names = (sh.recipients || []).filter(r => r.status === 'watching').map(displayName);
+  const cur = { names: new Set(names), link: sh.linkViewersWatching || 0 };
+  const prev = S.prevWatch; S.prevWatch = cur;
+  if (!prev) return; // first look after opening the live screen: no alert for people already there
+  const fresh = names.filter(n => !prev.names.has(n));
+  const moreLink = cur.link > prev.link;
+  if (!fresh.length && !moreLink) return;
+  chime.play();
+  toast(fresh.length ? `👀 ${listNames(fresh)} ${fresh.length === 1 ? 'is' : 'are'} watching` : '👀 Someone opened your link', 3000);
+}
+
+const shareHasMap = (sh) => !!sh && (sh.mode !== 'now' || sh.showLocation);
+function renderLiveNote() {
+  const sh = S.share; if (!sh) return;
+  const now = sh.mode === 'now';
+  $('#live-note-label').textContent = now ? 'Your status' : 'Heading to';
+  $('#live-note-text').textContent = sh.note || (now ? 'Just where you are' : 'Add where you’re going');
+  $('#live-note-text').classList.toggle('muted', !sh.note);
+  $('#btn-note-edit').textContent = sh.note ? 'Edit' : 'Add';
+  const hasMap = shareHasMap(sh);
+  $('#live-mapbox').classList.toggle('hidden', !hasMap);
+  $('#live-nomap').classList.toggle('hidden', hasMap);
+  if (!hasMap) {
+    paintBuddy($('#live-nm-buddy'), myBuddy(), myLook().outfit);
+    $('#live-nm-bubble').innerHTML = `${esc(sh.note)}<small>${esc(tillClock(sh.expiresAt))}</small>`;
+  }
+}
+$('#btn-note-edit').addEventListener('click', () => {
+  const f = $('#f-note'); f.note.value = S.share?.note || '';
+  f.note.placeholder = S.share?.mode === 'now' ? 'At the gym' : 'Grandma’s';
+  $('#live-note-view').classList.add('hidden'); $('#btn-note-edit').classList.add('hidden'); f.classList.remove('hidden'); f.note.focus();
+});
+function closeNoteEdit() { $('#f-note').classList.add('hidden'); $('#live-note-view').classList.remove('hidden'); $('#btn-note-edit').classList.remove('hidden'); }
+$('#f-note').addEventListener('submit', async (e) => {
+  e.preventDefault(); const f = e.target; const btn = $('button', f);
+  busy(btn, true);
+  try {
+    const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/note`, { note: f.note.value.trim() });
+    S.share = d.share; closeNoteEdit(); renderLiveNote(); toast('Updated — they’ll see it on their next refresh');
+  } catch (err) { if (err.status === 410) { S.share = err.body?.share || S.share; endLive(); } else toast(err.message); }
+  finally { busy(btn, false); }
+});
+
 async function goLive() {
   show('live');
   $('#live-banner').classList.remove('on');
-  renderLive();
+  S.prevWatch = null; closeNoteEdit(); renderChimeSwitch();
+  renderLive(); renderLiveNote();
   if (S.map) { S.map.destroy(); S.map = null; }
-  S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy(), myLook());
-  S.trail = mergeTrail([], S.share).trail;
-  S.map.setTrail(S.trail);
-  const loc = S.fix || S.share.location;
-  if (loc) S.map.set(loc.lat, loc.lng, loc.accuracy);
-
-  startWatch();
+  const hasMap = shareHasMap(S.share);
+  if (hasMap) {
+    S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy(), { ...myLook(), here: S.share.mode === 'now', weather: S.share.weather });
+    S.trail = mergeTrail([], S.share).trail;
+    S.map.setTrail(S.trail);
+    const loc = S.fix || S.share.location;
+    if (loc) S.map.set(loc.lat, loc.lng, loc.accuracy);
+    startWatch();
+  } else { S.trail = []; stopWatch(); }
   requestWakeLock();
   every(500, tickLive);
   every(UPDATE_MS, syncLive);
@@ -1544,7 +1796,7 @@ async function syncLive() {
   try {
     let d;
     const tok = encodeURIComponent(S.share.token);
-    if (S.fix && S.fix.ts > S.pushedFixTs) {
+    if (S.fix && S.fix.ts > S.pushedFixTs && shareHasMap(S.share)) {
       const fix = S.fix;
       d = await api('POST', `/neerly/shares/${tok}/location`, { lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy, trailFrom: S.trail.length });
       S.pushedFixTs = fix.ts;
@@ -1554,6 +1806,8 @@ async function syncLive() {
     S.share = d.share;
     if (!S.share.active) return endLive();
     applyLiveTrail(S.share);
+    if (S.map) S.map.setWeather(S.share.weather);
+    checkNewWatchers(S.share);
     renderLive();
   } catch (err) {
     if (err.status === 410) { S.share = err.body?.share || S.share; return endLive(); }
@@ -1576,6 +1830,7 @@ function tickLive() {
   $('#live-bar').style.width = Math.max(0, Math.min(100, left / total * 100)) + '%';
   $('#live-clock').classList.toggle('urgent', left < 60000);
   if (S.share.location?.at) $('#live-updated').textContent = 'Location sent ' + ago(S.share.location.at);
+  if (!shareHasMap(S.share) && S.share.note) $('#live-nm-bubble small').textContent = tillClock(S.share.expiresAt);
   if (left <= 0 && !S.syncing) syncLive();
 }
 
@@ -1610,7 +1865,8 @@ function renderLive() {
   const room = sh.maxExpiresAt - sh.expiresAt;
   $$('#live-ext button').forEach(b => b.disabled = room <= 0);
   $('#live-ext-note').textContent = room <= 0 ? 'This share is at the 4-hour max.' : 'A share can run up to 4 hours in total.';
-  $('#live-dist').textContent = sh.distanceM > 0 ? `${fmtDist(sh.distanceM)} so far` : 'Keep this screen open';
+  $('#live-dist').textContent = sh.mode === 'now' ? (sh.weather ? '' : 'Keep this screen open') : sh.distanceM > 0 ? `${fmtDist(sh.distanceM)} so far` : 'Keep this screen open';
+  if (sh.mode === 'now' && sh.weather) $('#live-dist').innerHTML = wxChip(sh.weather);
 }
 
 $$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
@@ -1618,7 +1874,7 @@ $$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
   busy(b, true);
   try {
     const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/extend`, { minutes: Number(b.dataset.min) });
-    S.share = d.share; applyLiveTrail(S.share); renderLive(); tickLive();
+    S.share = d.share; applyLiveTrail(S.share); renderLive(); renderLiveNote(); tickLive();
     toast(d.capped ? 'Extended to the 4-hour max' : `Added ${added}`);
   } catch (err) { if (err.status === 410) { S.share = err.body?.share || S.share; endLive(); } else toast(err.message); }
   finally { busy(b, false); if (S.share) renderLive(); }
@@ -1627,7 +1883,10 @@ $$('#live-ext button').forEach(b => b.addEventListener('click', async () => {
 $('#btn-copy').addEventListener('click', async () => { toast(await copyText(S.share.link) ? 'Link copied' : 'Couldn’t copy — try “Send via…”'); });
 $('#btn-sharesheet').addEventListener('click', async () => {
   const name = S.session?.user?.name || 'I';
-  const text = `${name} is on the way — watch live for the next ${fmtClock(S.share.expiresAt - serverNow())}:`;
+  const sh = S.share, left = fmtClock(sh.expiresAt - serverNow());
+  const text = sh.mode === 'now'
+    ? (sh.note ? `${name}: ${sh.note} — live for the next ${left}:` : `Here's where ${name === 'I' ? 'I am' : name + ' is'} for the next ${left}:`)
+    : `${name} is on the way${sh.note ? ' to ' + sh.note : ''} — watch live for the next ${left}:`;
   if (navigator.share) { try { await navigator.share({ title: 'Neerly', text, url: S.share.link }); } catch {} }
   else toast(await copyText(`${text} ${S.share.link}`) ? 'Message and link copied' : 'Couldn’t copy the link');
 });
@@ -1646,9 +1905,11 @@ function endLive(stopped) {
   clearTimers(); stopWatch(); releaseWakeLock();
   if (S.map) { S.map.destroy(); S.map = null; }
   S.fix = null; S.pushedFixTs = 0; S.trail = [];
-  $('#ended-sub').textContent = stopped
-    ? 'You stopped sharing. Your location isn’t being shared anymore, and your route isn’t kept.'
-    : 'Time’s up. Your location isn’t being shared anymore, and your route isn’t kept.';
+  const was = S.share || {};
+  const what = was.mode === 'now' ? (shareHasMap(was) ? 'Your status and spot aren’t being shared anymore, and nothing is kept.' : 'Your status isn’t being shared anymore.')
+    : 'Your location isn’t being shared anymore, and your route isn’t kept.';
+  $('#ended-sub').textContent = (stopped ? 'You stopped sharing. ' : 'Time’s up. ') + what;
+  S.prevWatch = null;
   renderSummary(S.share?.summary, S.share);
   S.share = null;
   show('ended');
@@ -1665,7 +1926,9 @@ function renderSummary(sum, sh) {
   const link = sum?.linkViewers || 0;
   const watchers = who.length + link;
   $('#sum-time').textContent = fmtMins(Math.max(minutes, 0));
-  $('#sum-dist').textContent = fmtDist(dist);
+  const nowMode = sh?.mode === 'now';
+  $('#sum-dist').textContent = nowMode ? (shareHasMap(sh) ? '📍' : '💬') : fmtDist(dist);
+  $('#sum-dist').nextElementSibling.textContent = nowMode ? 'right now' : 'traveled';
   $('#sum-watch').textContent = watchers;
   $('#sum-watch-l').textContent = watchers === 1 ? 'viewer' : 'viewers';
   let line = '';
@@ -1718,10 +1981,10 @@ async function pollRecipient(first) {
     const wasActive = R.share?.active;
     R.share = d.share; R.recipient = d.recipient;
     setSenderName(d.share.senderName);
-    document.title = d.share.active ? `${d.share.senderName} is on the way · Neerly` : 'Neerly';
+    document.title = d.share.active ? `${recipTitle(d.share)} · Neerly` : 'Neerly';
     if (d.share.active) {
       if (first || !wasActive) await showRecipLive();
-      else { const m = mergeTrail(R.trail || [], d.share); R.trail = m.trail; if (m.changed && R.map) R.map.setTrail(R.trail); }
+      else { const m = mergeTrail(R.trail || [], d.share); R.trail = m.trail; if (m.changed && R.map) R.map.setTrail(R.trail); if (R.map) R.map.setWeather(d.share.weather); }
       renderRecipLive();
     } else if (first || wasActive) {
       showRecipExpired();
@@ -1729,13 +1992,22 @@ async function pollRecipient(first) {
   } finally { R.loading = false; }
 }
 
+// v0.6 — what the watcher's headline says, per mode.
+function recipTitle(sh) {
+  if (sh.mode === 'now') return `${sh.senderName}, right now`;
+  return sh.note ? `${sh.senderName} is on the way to ${sh.note}` : `${sh.senderName} is on the way`;
+}
 async function showRecipLive() {
   show('rlive');
   const R = S.recip;
-  if (R.map) R.map.destroy();
-  R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar, { outfit: R.share.senderOutfit, trail: R.share.senderTrail });
-  paintBuddy($('#r-buddy'), R.share.senderAvatar, R.share.senderOutfit);
-  R.trail = mergeTrail([], R.share).trail; R.map.setTrail(R.trail);
+  if (R.map) { R.map.destroy(); R.map = null; }
+  const hasMap = shareHasMap(R.share);
+  $('#r-mapbox').classList.toggle('hidden', !hasMap);
+  $('#r-nomap').classList.toggle('hidden', hasMap);
+  if (hasMap) {
+    R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar, { outfit: R.share.senderOutfit, trail: R.share.senderTrail, here: R.share.mode === 'now', weather: R.share.weather });
+    R.trail = mergeTrail([], R.share).trail; R.map.setTrail(R.trail);
+  } else R.trail = [];
   every(UPDATE_MS, () => pollRecipient().catch(() => {}));
   every(500, tickRecip);
 }
@@ -1743,6 +2015,20 @@ async function showRecipLive() {
 function renderRecipLive() {
   const R = S.recip, sh = R.share;
   const loc = sh.location;
+  // Headline: "Joy is on the way to Grandma's" / "Joy, right now". The sender's text is escaped.
+  $('#r-title-text').textContent = recipTitle(sh);
+  paintBuddy($('#r-buddy'), sh.senderAvatar, sh.senderOutfit, sh.weather);
+  $('#r-buddy').classList.toggle('hidden', !shareHasMap(sh)); // the big buddy below says it all
+  $('#r-foot').textContent = `Neerly shares are time-limited. When this one ends, ${sh.senderName}’s ${shareHasMap(sh) ? 'location disappears' : 'status disappears'}.`;
+  const till = tillClock(sh.expiresAt);
+  let sub = '';
+  if (sh.mode === 'now' && shareHasMap(sh)) sub = `<span class="bubble">${esc(sh.note || 'Here')}<small>${esc(till)}</small></span>`;
+  if (sh.weather) sub += ' ' + wxChip(sh.weather);
+  $('#r-sub').innerHTML = sub.trim();
+  if (!shareHasMap(sh)) {
+    paintBuddy($('#r-nm-buddy'), sh.senderAvatar, sh.senderOutfit, sh.weather);
+    $('#r-nm-bubble').innerHTML = `${esc(sh.note)}<small>${esc(till)}</small>`;
+  }
   if (loc && R.map) R.map.set(loc.lat, loc.lng, loc.accuracy);
   $('#r-directions').href = loc ? `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.lng}` : '#';
   $('#r-directions').style.visibility = loc ? 'visible' : 'hidden';
@@ -1772,6 +2058,9 @@ function showRecipExpired() {
   R.trail = [];
   $('#rx-emoji').innerHTML = R.share?.senderAvatar ? `<span class="buddy" style="width:88px;height:88px;background:var(--accent-softer)">${buddySvg(R.share.senderAvatar, R.share.senderOutfit)}</span>` : '👋';
   $('#rx-sub').textContent = ''; // just the headline and the buttons
+  $('#rx-title').innerHTML = R.share?.mode === 'now' && !R.share?.showLocation
+    ? `${esc(R.share.senderName)}’s update has ended`
+    : `${esc(R.share?.senderName || '')} is no longer sharing their location`;
   $('#rx-actions').classList.remove('hidden');
   $('#btn-request').classList.remove('hidden');
   $('#f-request').classList.add('hidden');
