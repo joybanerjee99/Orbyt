@@ -1068,9 +1068,9 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
 // re-placed whenever the zoom changes. Marks turn to face the direction of travel.
 const FOOT = '<path d="M10 9.5C13.6 9.5 15.2 13 14.8 17.6 14.4 21.5 13.2 23.6 13.2 26.2 13.2 28.6 11.8 30 10 30 8 30 6.8 28.7 7 26.2 7.2 23.4 5.4 21 5.4 16.6 5.4 12.4 7 9.5 10 9.5Z"/><circle cx="6.6" cy="5.9" r="2.3"/><circle cx="10" cy="4.3" r="1.7"/><circle cx="12.8" cy="5" r="1.5"/><circle cx="15" cy="6.6" r="1.3"/><circle cx="16.4" cy="8.8" r="1.15"/>';
 const TRAIL_MARKS = {
-  footprints: { size: [20, 30], spacing: 22, svg: (i) => `<svg viewBox="0 0 20 30" width="20" height="30" fill="${TRAIL_COLOR}" opacity=".9"><g${i % 2 ? '' : ' transform="translate(20 0) scale(-1 1)"'}>${FOOT}</g></svg>` },
-  paws:       { size: [26, 26], spacing: 30, svg: () => `<svg viewBox="0 0 20 20" width="26" height="26" fill="${TRAIL_COLOR}" opacity=".9"><ellipse cx="10" cy="12.5" rx="4" ry="3.4"/><circle cx="5" cy="7.5" r="1.8"/><circle cx="8.2" cy="4.8" r="1.8"/><circle cx="11.8" cy="4.8" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/></svg>` },
-  sparkles:   { size: [24, 24], spacing: 34, svg: (i) => { const r = i % 3 === 0 ? 8.5 : 6; return `<svg viewBox="0 0 20 20" width="24" height="24"><path d="M10 ${10 - r} Q${10 + r * .2} ${10 - r * .2} ${10 + r} 10 Q${10 + r * .2} ${10 + r * .2} 10 ${10 + r} Q${10 - r * .2} ${10 + r * .2} ${10 - r} 10 Q${10 - r * .2} ${10 - r * .2} 10 ${10 - r} Z" fill="${i % 2 ? '#ffc83d' : '#ff9ecf'}"/></svg>`; } },
+  footprints: { size: [20, 30], spacing: 36, svg: (i) => `<svg viewBox="0 0 20 30" width="20" height="30" fill="${TRAIL_COLOR}" opacity=".9"><g${i % 2 ? '' : ' transform="translate(20 0) scale(-1 1)"'}>${FOOT}</g></svg>` },
+  paws:       { size: [26, 26], spacing: 38, svg: () => `<svg viewBox="0 0 20 20" width="26" height="26" fill="${TRAIL_COLOR}" opacity=".9"><ellipse cx="10" cy="12.5" rx="4" ry="3.4"/><circle cx="5" cy="7.5" r="1.8"/><circle cx="8.2" cy="4.8" r="1.8"/><circle cx="11.8" cy="4.8" r="1.8"/><circle cx="15" cy="7.5" r="1.8"/></svg>` },
+  sparkles:   { size: [24, 24], spacing: 38, svg: (i) => { const r = i % 3 === 0 ? 8.5 : 6; return `<svg viewBox="0 0 20 20" width="24" height="24"><path d="M10 ${10 - r} Q${10 + r * .2} ${10 - r * .2} ${10 + r} 10 Q${10 + r * .2} ${10 + r * .2} 10 ${10 + r} Q${10 - r * .2} ${10 + r * .2} ${10 - r} 10 Q${10 - r * .2} ${10 - r * .2} 10 ${10 - r} Z" fill="${i % 2 ? '#ffc83d' : '#ff9ecf'}"/></svg>`; } },
 };
 const MAX_MARKS = 400;
 function makeTrailLayer(map, style) {
@@ -1082,9 +1082,9 @@ function makeTrailLayer(map, style) {
     // Zero-length dashes with round caps draw as dots.
     lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 6, opacity: .85, dashArray: '0 12', lineCap: 'round', interactive: false }));
   } else if (style === 'sparkles') {
-    lines.push(L.polyline([], { color: '#ffc83d', weight: 4, opacity: .55, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
+    lines.push(L.polyline([], { color: '#ffc83d', weight: 4, opacity: .8, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
   } else {
-    lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 5, opacity: .35, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
+    lines.push(L.polyline([], { color: TRAIL_COLOR, weight: 4, opacity: .7, lineCap: 'round', lineJoin: 'round', interactive: false, className: 'trail-line' }));
   }
   lines.forEach(l => group.addLayer(l));
   const marks = L.layerGroup().addTo(group);
@@ -1106,7 +1106,7 @@ function makeTrailLayer(map, style) {
       const t = Math.min(1, (d - segStart) / len);
       const ux = (b.x - a.x) / len, uy = (b.y - a.y) / len;
       let x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t;
-      if (style === 'footprints') { const side = n % 2 ? 1 : -1; x += -uy * 5 * side; y += ux * 5 * side; } // left, right, left…
+      if (style === 'footprints') { const side = n % 2 ? 1 : -1; x += -uy * 8 * side; y += ux * 8 * side; } // left, right, left…
       const deg = Math.atan2(uy, ux) * 180 / Math.PI + 90; // marks are drawn pointing up
       const rot = style === 'sparkles' ? 0 : deg;
       const html = `<div style="transform:rotate(${rot.toFixed(1)}deg)">${spec.svg(n)}</div>`;
@@ -1689,8 +1689,8 @@ const chime = {
       [[880, 0], [1318.5, .16]].forEach(([f, dt]) => {
         const o = c.createOscillator(), g = c.createGain();
         o.type = 'sine'; o.frequency.value = f;
-        g.gain.setValueAtTime(0, t0 + dt); g.gain.linearRampToValueAtTime(.07, t0 + dt + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + dt + .5);
-        o.connect(g).connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + .55);
+        g.gain.setValueAtTime(0, t0 + dt); g.gain.linearRampToValueAtTime(.25, t0 + dt + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + dt + .7);
+        o.connect(g).connect(c.destination); o.start(t0 + dt); o.stop(t0 + dt + .75);
       });
     } catch {}
   },
