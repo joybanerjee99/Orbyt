@@ -296,7 +296,11 @@ h2{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
 .bpin.here{animation:none;position:relative}
 .bpin.here::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:3px solid var(--accent);animation:ring 2s ease-out infinite}
 @keyframes ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
-@media (prefers-reduced-motion:reduce){.bpin.here::before,.now-card .buddy{animation:none}}
+@media (prefers-reduced-motion:reduce){.bpin.here::before,.now-card .buddy{animation:none}.bpin.here::before{transform:scale(1.3);opacity:.35}} /* v0.6.1: a steady ring instead of none */
+/* v0.6.1 — Right now: the status as a speech bubble above the buddy's pin */
+.map-bubble{position:absolute;z-index:2;left:50%;bottom:calc(100% + 18px);transform:translateX(-50%);width:max-content;max-width:190px;background:#fff;border:1.5px solid var(--accent-soft);border-radius:14px;padding:6px 11px;font-weight:600;font-size:14px;line-height:1.25;color:var(--text);text-align:center;box-shadow:0 3px 10px rgba(80,40,20,.2);overflow-wrap:anywhere;pointer-events:none}
+.map-bubble small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.map-bubble::after{content:'';position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:#fff;border-right:1.5px solid var(--accent-soft);border-bottom:1.5px solid var(--accent-soft);transform:translateX(-50%) rotate(45deg)}
 .tmark{pointer-events:none}
 </style>
 </head>
@@ -848,7 +852,7 @@ function weatherOutfit(outfit, wx) {
   const o = { ...(outfit || {}) };
   if (!wx) return { o, extra: '' };
   const wet = wx.kind === 'rain' || wx.kind === 'storm';
-  if (!o.face && wx.kind === 'clear' && wx.isDay && wx.tempC >= 22) o.face = 'sunglasses';
+  if (!o.face && wx.kind === 'clear' && wx.isDay && wx.tempC >= 20) o.face = 'sunglasses'; // v0.6.1: 20 °C / 68 °F (was 22, right at a sunny 72 °F)
   if (!o.neck && (wx.tempC <= 5 || wx.kind === 'snow')) o.neck = 'scarf';
   let extra = '';
   if (wet) extra = 'umbrella';
@@ -883,6 +887,8 @@ function wxChip(wx) {
   const word = { clear: wx.isDay ? 'Sunny' : 'Clear', cloud: 'Cloudy', fog: 'Foggy', rain: 'Rain', storm: 'Storms', snow: 'Snow' }[wx.kind] || '';
   return `<span class="wx" title="Weather where they are">${icon} ${temp}${word ? ' · ' + word : ''}</span>`;
 }
+// v0.6.1 — the Right now bubble on the map: status (or "Here") and the end time. Escaped.
+function statusBubble(sh) { return sh && sh.mode === 'now' ? `${esc(sh.note || 'Here')}<small>${esc(tillClock(sh.expiresAt))}</small>` : ''; }
 // End time as a clock, e.g. "till 7:05 PM".
 function tillClock(ts) { try { return 'till ' + new Date(ts).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch { return ''; } }
 
@@ -1000,6 +1006,7 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
   const trailStyle = TRAIL_STYLES[look.trail] ? look.trail : 'dots';
   const here = !!look.here;
   let wx = look.weather || null;
+  let bubble = look.bubble || '';   // v0.6.1: Right now speech bubble (escaped HTML)
   let follow = true;
   const setFollow = (v) => { follow = v; if (recenterBtn) recenterBtn.style.display = v ? 'none' : 'block'; };
   let last = null;
@@ -1026,18 +1033,19 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
         },
         setTrail(points) { if (!here) line.setPath(points.map(([a, b]) => ({ lat: a, lng: b }))); },
         setWeather(next) { if (JSON.stringify(next || null) === JSON.stringify(wx)) return; wx = next || null; marker.setIcon(pinIcon()); },
+        setBubble() {}, // Google Maps: the status stays in the header for now
         destroy() { el.innerHTML = ''; },
       };
     } catch (e) { console.warn('Google Maps failed, falling back to OpenStreetMap', e); }
   }
 
-  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, setWeather() {}, destroy() {} }; }
+  if (!window.L) { el.innerHTML = '<div class="empty">Map couldn’t load. Location updates still work.</div>'; return { set() {}, setTrail() {}, setWeather() {}, setBubble() {}, destroy() {} }; }
   const map = L.map(el, { zoomControl: true, attributionControl: true }).setView([20, 0], 2);
   map.attributionControl.setPrefix(false); // drop Leaflet's own link + flag; the OpenStreetMap credit (required by its licence) stays
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
   const circle = L.circle([0, 0], { radius: 1, color: TRAIL_COLOR, weight: 1, opacity: .35, fillOpacity: .12, interactive: false });
   const trail = here ? null : makeTrailLayer(map, trailStyle).addTo(map);
-  const pinIcon = () => L.divIcon({ className: 'bpin-wrap', html: `<div class="bpin${here ? ' here' : ''}">${buddySvg(buddyId, outfit, wx)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
+  const pinIcon = () => L.divIcon({ className: 'bpin-wrap', html: `${here && bubble ? `<div class="map-bubble">${bubble}</div>` : ''}<div class="bpin${here ? ' here' : ''}">${buddySvg(buddyId, outfit, wx)}</div>`, iconSize: [48, 48], iconAnchor: [24, 24] });
   const pin = L.marker([0, 0], { icon: pinIcon(), keyboard: false, zIndexOffset: 1000 });
   let placed = false, walkT;
   map.on('dragstart', () => setFollow(false));
@@ -1059,6 +1067,7 @@ async function createMap(el, recenterBtn, buddyId, look = {}) {
     },
     setTrail(points) { if (trail) trail.setPoints(points); },
     setWeather(next) { if (JSON.stringify(next || null) === JSON.stringify(wx)) return; wx = next || null; pin.setIcon(pinIcon()); },
+    setBubble(html) { html = html || ''; if (html === bubble) return; bubble = html; pin.setIcon(pinIcon()); },
     destroy() { map.remove(); },
   };
 }
@@ -1702,11 +1711,14 @@ $('#chime-row').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.
 // Compares who's watching now with the last sync and chimes for anyone new.
 function checkNewWatchers(sh) {
   const names = (sh.recipients || []).filter(r => r.status === 'watching').map(displayName);
-  const cur = { names: new Set(names), link: sh.linkViewersWatching || 0 };
-  const prev = S.prevWatch; S.prevWatch = cur;
-  if (!prev) return; // first look after opening the live screen: no alert for people already there
+  const link = sh.linkViewersWatching || 0;
+  const prev = S.prevWatch;
+  // v0.6.1: remember everyone already announced for this share (and the most link viewers seen).
+  // "Watching" flickers when a viewer's tab is in the background, so someone coming back isn't new.
+  if (!prev) { S.prevWatch = { names: new Set(names), link }; return; } // first look: no alert for people already there
   const fresh = names.filter(n => !prev.names.has(n));
-  const moreLink = cur.link > prev.link;
+  const moreLink = link > prev.link;
+  fresh.forEach(n => prev.names.add(n)); prev.link = Math.max(prev.link, link);
   if (!fresh.length && !moreLink) return;
   chime.play();
   toast(fresh.length ? `👀 ${listNames(fresh)} ${fresh.length === 1 ? 'is' : 'are'} watching` : '👀 Someone opened your link', 3000);
@@ -1739,7 +1751,7 @@ $('#f-note').addEventListener('submit', async (e) => {
   busy(btn, true);
   try {
     const d = await api('POST', `/neerly/shares/${encodeURIComponent(S.share.token)}/note`, { note: f.note.value.trim() });
-    S.share = d.share; closeNoteEdit(); renderLiveNote(); toast('Updated — they’ll see it on their next refresh');
+    S.share = d.share; closeNoteEdit(); renderLiveNote(); if (S.map) S.map.setBubble(statusBubble(S.share)); toast('Updated — they’ll see it on their next refresh');
   } catch (err) { if (err.status === 410) { S.share = err.body?.share || S.share; endLive(); } else toast(err.message); }
   finally { busy(btn, false); }
 });
@@ -1752,7 +1764,7 @@ async function goLive() {
   if (S.map) { S.map.destroy(); S.map = null; }
   const hasMap = shareHasMap(S.share);
   if (hasMap) {
-    S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy(), { ...myLook(), here: S.share.mode === 'now', weather: S.share.weather });
+    S.map = await createMap($('#live-map'), $('#live-recenter'), myBuddy(), { ...myLook(), here: S.share.mode === 'now', weather: S.share.weather, bubble: statusBubble(S.share) });
     S.trail = mergeTrail([], S.share).trail;
     S.map.setTrail(S.trail);
     const loc = S.fix || S.share.location;
@@ -1836,6 +1848,7 @@ function tickLive() {
 
 function renderLive() {
   const sh = S.share; if (!sh) return;
+  if (S.map) S.map.setBubble(statusBubble(sh));
   const rs = sh.recipients || [];
   const watching = rs.filter(r => r.status === 'watching').map(displayName);
   const linkW = sh.linkViewersWatching || 0;
@@ -2005,7 +2018,7 @@ async function showRecipLive() {
   $('#r-mapbox').classList.toggle('hidden', !hasMap);
   $('#r-nomap').classList.toggle('hidden', hasMap);
   if (hasMap) {
-    R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar, { outfit: R.share.senderOutfit, trail: R.share.senderTrail, here: R.share.mode === 'now', weather: R.share.weather });
+    R.map = await createMap($('#r-map'), $('#r-recenter'), R.share.senderAvatar, { outfit: R.share.senderOutfit, trail: R.share.senderTrail, here: R.share.mode === 'now', weather: R.share.weather, bubble: statusBubble(R.share) });
     R.trail = mergeTrail([], R.share).trail; R.map.setTrail(R.trail);
   } else R.trail = [];
   every(UPDATE_MS, () => pollRecipient().catch(() => {}));
@@ -2022,7 +2035,7 @@ function renderRecipLive() {
   $('#r-foot').textContent = `Neerly shares are time-limited. When this one ends, ${sh.senderName}’s ${shareHasMap(sh) ? 'location disappears' : 'status disappears'}.`;
   const till = tillClock(sh.expiresAt);
   let sub = '';
-  if (sh.mode === 'now' && shareHasMap(sh)) sub = `<span class="bubble">${esc(sh.note || 'Here')}<small>${esc(till)}</small></span>`;
+  if (R.map) R.map.setBubble(statusBubble(sh)); // v0.6.1: the status is a speech bubble on the map
   if (sh.weather) sub += ' ' + wxChip(sh.weather);
   $('#r-sub').innerHTML = sub.trim();
   if (!shareHasMap(sh)) {
